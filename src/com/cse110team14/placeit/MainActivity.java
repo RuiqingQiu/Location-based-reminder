@@ -1,4 +1,5 @@
-package com.example.mapexample;
+package com.cse110team14.placeit;
+import com.cse110team14.placeit.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;

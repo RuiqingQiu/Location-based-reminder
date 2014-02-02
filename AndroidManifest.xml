@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.mapexample"
+          package="com.cse110team14.placeit"
           android:versionCode="1"
           android:versionName="1.0">
 
@@ -9,9 +9,9 @@
             android:targetSdkVersion="19"/>
 
     <permission
-            android:name="com.example.mapexample.permission.MAPS_RECEIVE"
+            android:name="com.cse110team14.placeit.permission.MAPS_RECEIVE"
             android:protectionLevel="signature"/>
-    <uses-permission android:name="com.example.mapexample.permission.MAPS_RECEIVE"/>
+    <uses-permission android:name="com.cse110team14.placeit.permission.MAPS_RECEIVE"/>
 
     <!-- The following four permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
