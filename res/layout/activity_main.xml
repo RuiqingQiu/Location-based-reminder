@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp" >
+
+    <Button
+        android:id="@+id/view_map"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="@string/map" />
+
+    <Button
+        android:id="@+id/active"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/view_map"
+        android:text="@string/active" />
+
+    <Button
+        android:id="@+id/pulled"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/active"
+        android:text="@string/pulled" />
+
+    <Button
+        android:id="@+id/expired"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/pulled"
+        android:text="@string/expired" />
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_below="@id/view_map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/create"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/map"
+        android:text="@string/create" />
+
+</RelativeLayout>
+<!-- 
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
           android:id="@+id/map"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:name="com.google.android.gms.maps.MapFragment"/>
+ -->
