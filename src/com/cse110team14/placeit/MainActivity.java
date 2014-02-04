@@ -1,5 +1,6 @@
 /*
  * Filename: MainActivity.java
+ * Hello world
  */
 package com.cse110team14.placeit;
 import com.cse110team14.placeit.R;
