@@ -31,6 +31,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
@@ -117,16 +119,24 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 				alert = new AlertDialog.Builder(context);
 		        
 		        alert.setTitle("Placeit information");
-	            alert.setMessage("Title: ");
 
+
+		        // Get the layout inflater
+		        LayoutInflater inflater = getLayoutInflater();
 		        // Set an EditText view to get user input 
-		        final EditText input = new EditText(context);
-		        String title;
-		        alert.setView(input);
+		        
+		        // Inflate and set the layout for the dialog
+		        final View v = inflater.inflate(R.layout.placeitsinfo, null);
+		        final EditText title = (EditText)v.findViewById(R.id.title);
+		        final EditText description = (EditText)v.findViewById(R.id.description);
+		        // Pass null as the parent view because its going in the dialog layout
+		        alert.setView(v);
 		        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 		        public void onClick(DialogInterface dialog, int whichButton) {
-			          String value = input.getText().toString();
-			          m.setTitle(value);
+			          String placeItTitle = title.getText().toString();
+			          m.setTitle(placeItTitle);
+			          String placeItDescription = description.getText().toString();
+			          m.setSnippet(placeItDescription);
 		          }
 		        });
 
