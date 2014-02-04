@@ -1,3 +1,6 @@
+/*
+ * Filename: MainActivity.java
+ */
 package com.cse110team14.placeit;
 import com.cse110team14.placeit.R;
 import com.google.android.gms.common.ConnectionResult;
