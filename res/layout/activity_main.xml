@@ -47,11 +47,7 @@
         android:layout_below="@id/map"
         android:text="@string/create" />
 
+    
 </RelativeLayout>
-<!-- 
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@+id/map"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:name="com.google.android.gms.maps.MapFragment"/>
- -->
+
+ 
