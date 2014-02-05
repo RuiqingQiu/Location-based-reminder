@@ -78,16 +78,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         .position(MELBOURNE)
         .title("Melbourne")
         .snippet("Population: 4,137,400"));
-        
-        // Get back the mutable Polyline
-        //Adding polylines around SF
-    	Polyline polyline = map.addPolyline(rectOptions);
-        //myCurrentLocation = myLocationClient.getLastLocation();
-        //LatLng ME = new LatLng(myCurrentLocation.getLatitude(), myCurrentLocation.getLongitude());
-        //Marker me = map.addMarker(new MarkerOptions().position(ME).title("My Position"));
-    	
-    	
-    	
+
     }
     
     /*
@@ -97,7 +88,6 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     protected void onStart() {
         super.onStart();
 
-        
         map.setOnMapLongClickListener(new OnMapLongClickListener()
         {
             @Override
@@ -108,7 +98,6 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	                      .title("Marker")
 	                      .snippet("latitude: " + point.latitude + " longtitude: " + point.longitude);
             	Marker options = map.addMarker(position);
-            	
 	        }
         });
         map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
@@ -119,7 +108,6 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 				alert = new AlertDialog.Builder(context);
 		        
 		        alert.setTitle("Placeit information");
-
 
 		        // Get the layout inflater
 		        LayoutInflater inflater = getLayoutInflater();
@@ -152,8 +140,6 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         });
         // Connect the client.
         myLocationClient.connect();
-        
-
     }
     
     public void initializeAlert(){
