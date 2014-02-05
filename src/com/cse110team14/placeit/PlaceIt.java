@@ -9,12 +9,16 @@ public class PlaceIt {
 	private String description;
 	private Location location;
 	private Date postDate;
+	//This date field keep track of what kind of placeit it is
+	//1 for active, 2 for pull down list, and 3 for expired
+	private int placeitType;
 	
 	public PlaceIt(String title, String description, Location location, Date postDate){
 		this.title = title;
 		this.description = description;
 		this.location = location;
 		this.postDate = postDate;
+		this.placeitType = 1;
 	}
 	
 	public String getTitle(){
