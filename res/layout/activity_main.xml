@@ -4,6 +4,7 @@
     android:layout_height="fill_parent"
     android:paddingLeft="8dp"
     android:paddingRight="8dp" >
+
  	<Button
         android:id="@+id/pulled"
         android:layout_width="145dp"
@@ -38,22 +39,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-   
-    <Button
-        android:id="@+id/btn_show"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/expired"
-        android:layout_marginTop="17dp"
-        android:text="@string/find" />
-
     <EditText
         android:id="@+id/et_place"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/expired"
-        android:layout_toLeftOf="@+id/btn_show"
+        android:layout_toLeftOf="@+id/pulled"
         android:ems="10"
         android:hint="@string/hint"
         android:inputType="text" >
@@ -68,6 +59,25 @@
         android:layout_alignRight="@+id/map"
         android:layout_below="@+id/btn_show"
         android:text="@string/expired" />
+
+    <Button
+        android:id="@+id/retrack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_show"
+        android:layout_alignLeft="@+id/expired"
+        android:layout_alignRight="@+id/expired"
+        android:text="@string/retrack" />
+
+    <Button
+        android:id="@+id/btn_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/pulled"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/pulled"
+        android:layout_marginTop="18dp"
+        android:text="@string/find" />
     
 </RelativeLayout>
 

@@ -14,5 +14,6 @@
     <string name="description">Description: </string>
     <string name="find">Find</string>
     <string name="hint">Enter Place</string>
+    <string name="retrack">Retrack</string>
     
 </resources>

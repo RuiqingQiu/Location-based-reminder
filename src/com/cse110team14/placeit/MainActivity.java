@@ -11,7 +11,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import com.cse110team14.placeit.GeocodeJSONParser;
 import org.json.JSONObject;
@@ -22,6 +24,7 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -55,6 +58,7 @@ import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
 
 public class MainActivity extends Activity implements
+CancelableCallback,
 GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener {
 	
@@ -75,11 +79,14 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     .add(new LatLng(37.35, -122.2))  // Same longitude, and 16km to the south
     .add(new LatLng(37.35, -122.0)); // Closes the polyline.
 	
+	private List<Marker> mMarkers = new ArrayList<Marker>();
+	private Iterator<Marker> marker;
 	
 	AlertDialog.Builder alert;
 	Location myCurrentLocation;
 	LocationClient myLocationClient;
 	Button mBtnFind;
+	Button retrackBtn;
 	EditText etPlace;
 	final Context context = this;
     @Override
@@ -87,11 +94,11 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
-        
+        mMarkers = new ArrayList<Marker>();
         
         // Getting reference to the find button
         mBtnFind = (Button) findViewById(R.id.btn_show);
- 
+        retrackBtn = (Button)findViewById(R.id.retrack);
 
       
         //An marker example
@@ -103,14 +110,12 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         .position(MELBOURNE)
         .title("Melbourne")
         .snippet("Population: 4,137,400"));
-        
-        
+
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
  
         // Setting click event listener for the find button
         mBtnFind.setOnClickListener(new OnClickListener() {
- 
             @Override
             public void onClick(View v) {
                 // Getting the place entered
@@ -144,6 +149,20 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                 // Start downloading the geocoding places
                 downloadTask.execute(url);
             }
+        });
+        
+        retrackBtn.setOnClickListener(new OnClickListener(){
+        	 @Override
+    		 public void onClick(View v) {
+        		 /*if(marker == null){
+        			 return;
+        		 }*/
+    			 if (marker.hasNext()) {
+    				 Marker current = marker.next();
+    				 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, MainActivity.this);
+    				 current.showInfoWindow();
+    			 }
+    		 }
         });
     }
     
@@ -242,7 +261,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         protected void onPostExecute(List<HashMap<String,String>> list){
  
             // Clears all the existing markers
-            map.clear();
+            //map.clear();
  
             for(int i=0;i<list.size();i++){
  
@@ -268,17 +287,18 @@ GooglePlayServicesClient.OnConnectionFailedListener {
  
                 // Setting the title for the marker
                 markerOptions.title(name);
- 
                 // Placing a marker on the touched position
-                map.addMarker(markerOptions);
- 
+                Marker tmp = map.addMarker(markerOptions);
+                mMarkers.add(tmp);
+                marker=mMarkers.iterator();
+                
                 // Locate the first location
                 if(i==0)
                     map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
             }
         }
         
-    }//End of on create
+    }//End of class
     
     /*
      * Called when the Activity becomes visible.
@@ -286,7 +306,11 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     @Override
     protected void onStart() {
         super.onStart();
-
+        
+        /*
+         * Function for user press on map for a long time, it will create a Marker
+         * at where the user pressed on
+         */
         map.setOnMapLongClickListener(new OnMapLongClickListener()
         {
             @Override
@@ -297,6 +321,8 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	                      .title("Marker")
 	                      .snippet("latitude: " + point.latitude + " longtitude: " + point.longitude);
             	Marker options = map.addMarker(position);
+            	mMarkers.add(options);
+            	marker = mMarkers.iterator();
 	        }
         });
         map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
@@ -371,6 +397,16 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         // Initialize map options. For example:
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
     }
+    
+    @Override
+	public void onFinish() {
+    	marker = mMarkers.iterator();
+   	 	if (marker.hasNext()) {
+	   		 Marker current = marker.next();
+	   		 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, this);
+	   		 current.showInfoWindow();
+	   	 }
+	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
@@ -390,6 +426,10 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		
 	}
 
-    
-   
+	@Override
+	public void onCancel() {
+		// TODO Auto-generated method stub
+		
+	}
+  
 }
