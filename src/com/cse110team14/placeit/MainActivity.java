@@ -148,6 +148,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
  
                 // Start downloading the geocoding places
                 downloadTask.execute(url);
+                
             }
         });
         
@@ -291,6 +292,10 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                 Marker tmp = map.addMarker(markerOptions);
                 mMarkers.add(tmp);
                 marker=mMarkers.iterator();
+                tmp.showInfoWindow();
+                
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+                map.animateCamera(CameraUpdateFactory.zoomIn());
                 
                 // Locate the first location
                 if(i==0)

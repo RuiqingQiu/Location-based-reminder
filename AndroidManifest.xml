@@ -13,7 +13,6 @@
             android:protectionLevel="signature"/>
     <uses-permission android:name="com.cse110team14.placeit.permission.MAPS_RECEIVE"/>
 
-    
     <!-- The following four permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
