@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -109,7 +110,37 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         Marker melbourne = map.addMarker(new MarkerOptions()
         .position(MELBOURNE)
         .title("Melbourne")
-        .snippet("Population: 4,137,400"));
+        .snippet("Population: 4,137,400")
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
+        Marker m1 = map.addMarker(new MarkerOptions()
+        .position(new LatLng(-37, 145))
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        map.addMarker(new MarkerOptions()
+        .position(new LatLng(-37, 146))
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+        map.addMarker(new MarkerOptions()
+        .position(new LatLng(-37, 147))
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        map.addMarker(new MarkerOptions()
+        .position(new LatLng(-37, 148))
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+        map.addMarker(new MarkerOptions()
+        .position(new LatLng(-37, 149))
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+        map.addMarker(new MarkerOptions()
+        .position(new LatLng(-37, 150))
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        map.addMarker(new MarkerOptions()
+        .position(new LatLng(-37, 151))
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+        map.addMarker(new MarkerOptions()
+        .position(new LatLng(-37, 152))
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+        map.addMarker(new MarkerOptions()
+        .position(new LatLng(-37, 153))
+        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+        
 
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
@@ -155,11 +186,19 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         retrackBtn.setOnClickListener(new OnClickListener(){
         	 @Override
     		 public void onClick(View v) {
-        		 /*if(marker == null){
-        			 return;
-        		 }*/
+
+        		 Log.e("test", "" + (marker.hasNext()));
     			 if (marker.hasNext()) {
     				 Marker current = marker.next();
+    				 Log.e("test", ""+current.getTitle());
+    				 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, MainActivity.this);
+    				 current.showInfoWindow();
+    				 
+    			 }
+    			 else{
+    				 marker = mMarkers.iterator();
+    				 Marker current = marker.next();
+    				 Log.e("test", ""+current.getTitle());
     				 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, MainActivity.this);
     				 current.showInfoWindow();
     			 }
@@ -204,7 +243,8 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         return data;
     }
     /** A class, to download Places from Geocoding webservice */
-    private class DownloadTask extends AsyncTask<String, Integer, String>{
+    @SuppressLint("NewApi")
+	private class DownloadTask extends AsyncTask<String, Integer, String>{
  
         String data = null;
  
@@ -234,7 +274,8 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     }
  
     /** A class to parse the Geocoding Places in non-ui thread */
-    class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
+    @SuppressLint("NewApi")
+	class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
  
         JSONObject jObject;
  
@@ -405,12 +446,13 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     
     @Override
 	public void onFinish() {
-    	marker = mMarkers.iterator();
-   	 	if (marker.hasNext()) {
+
+    	Log.e("test", "finish");
+   	 	/*if (marker.hasNext()) {
 	   		 Marker current = marker.next();
 	   		 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, this);
 	   		 current.showInfoWindow();
-	   	 }
+	   	 }*/
 	}
 
 	@Override
