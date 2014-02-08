@@ -3,7 +3,12 @@
  * Hello world
  */
 package com.cse110team14.placeit;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,7 +18,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +51,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -75,7 +80,13 @@ CancelableCallback
 	static final LatLng HAMBURG = new LatLng(53.558, 9.927);
 	private GoogleMap map;
 	static final LatLng MELBOURNE = new LatLng(-37.81319, 144.96298);
-	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
+	
+	PolylineOptions rectOptions = new PolylineOptions()
+    .add(new LatLng(37.35, -122.0))
+    .add(new LatLng(37.45, -122.0))  // North of the previous point, but at the same longitude
+    .add(new LatLng(37.45, -122.2))  // Same latitude, and 30km to the west
+    .add(new LatLng(37.35, -122.2))  // Same longitude, and 16km to the south
+    .add(new LatLng(37.35, -122.0)); // Closes the polyline.
 	
 	private List<Marker> mMarkers = new ArrayList<Marker>();
 	private Iterator<Marker> marker;
@@ -89,9 +100,21 @@ CancelableCallback
 	Button pulled;
 	EditText etPlace;
 	final Context context = this;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    	try {
+    		FileInputStream in = openFileInput("saved_placeits.dat");
+    		byte[] input = new byte[in.available()];
+    		while (in.read(input) != -1){
+    			//read from file
+    		}
+    	} catch (FileNotFoundException e) {
+    		e.printStackTrace();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
         
@@ -185,7 +208,7 @@ CancelableCallback
         });
         
     }
-
+    
     /*
      * Called when the Activity becomes visible.
      */
@@ -273,7 +296,6 @@ CancelableCallback
 		     		      return;
 			          }
 			          mMarkers.add(m);
-			          PlaceIts.add(new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime));
 			          marker = mMarkers.iterator();
 			          
 		          }
@@ -281,12 +303,17 @@ CancelableCallback
 
 		        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 		          public void onClick(DialogInterface dialog, int whichButton) {
-		        	m.setVisible(false);
+		            // Canceled.
 		          }
 		        });
 		        /* Rather than delete, we will set the marker to be invisible and 
 		         * it's never added to the list
 		         */
+		        alert.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+		        	public void onClick(DialogInterface dialog, int whichButton) {
+			            m.setVisible(false);
+			        }
+		        });
 		        alert.show();
 		        m.showInfoWindow();
 			}
@@ -302,7 +329,16 @@ CancelableCallback
      */
     @Override
     protected void onStop() {
-        super.onStop();
+    	super.onStop();
+    	try {
+    		FileOutputStream out = openFileOutput("saved_placeits.dat", 0);
+    		//write place its to file
+    		out.close();
+    	} catch (FileNotFoundException e) {
+    	    e.printStackTrace();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
     }
     
     @Override
@@ -341,6 +377,7 @@ CancelableCallback
 
 	public void goToActiveList(View v){
 		startActivity(new Intent(MainActivity.this, ActiveListActivity.class));
+//		Log.e("Hello","Wang\\");
 	}
 	
 	public void goToPulledList(View v){
