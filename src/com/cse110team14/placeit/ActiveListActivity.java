@@ -12,6 +12,7 @@ public class ActiveListActivity extends Activity{
 	private Iterator<PlaceIt> piIterator;
 	
 	public void onCreate(Bundle savedInstanceState){
+		
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activelist);
         piIterator = MainActivity.PlaceIts.iterator();
