@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -74,13 +75,7 @@ CancelableCallback
 	static final LatLng HAMBURG = new LatLng(53.558, 9.927);
 	private GoogleMap map;
 	static final LatLng MELBOURNE = new LatLng(-37.81319, 144.96298);
-	
-	PolylineOptions rectOptions = new PolylineOptions()
-    .add(new LatLng(37.35, -122.0))
-    .add(new LatLng(37.45, -122.0))  // North of the previous point, but at the same longitude
-    .add(new LatLng(37.45, -122.2))  // Same latitude, and 30km to the west
-    .add(new LatLng(37.35, -122.2))  // Same longitude, and 16km to the south
-    .add(new LatLng(37.35, -122.0)); // Closes the polyline.
+	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
 	
 	private List<Marker> mMarkers = new ArrayList<Marker>();
 	private Iterator<Marker> marker;
@@ -190,10 +185,7 @@ CancelableCallback
         });
         
     }
-    
-    
 
-    
     /*
      * Called when the Activity becomes visible.
      */
@@ -281,6 +273,7 @@ CancelableCallback
 		     		      return;
 			          }
 			          mMarkers.add(m);
+			          PlaceIts.add(new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime));
 			          marker = mMarkers.iterator();
 			          
 		          }
@@ -288,17 +281,12 @@ CancelableCallback
 
 		        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 		          public void onClick(DialogInterface dialog, int whichButton) {
-		            // Canceled.
+		        	m.setVisible(false);
 		          }
 		        });
 		        /* Rather than delete, we will set the marker to be invisible and 
 		         * it's never added to the list
 		         */
-		        alert.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
-		        	public void onClick(DialogInterface dialog, int whichButton) {
-			            m.setVisible(false);
-			        }
-		        });
 		        alert.show();
 		        m.showInfoWindow();
 			}
@@ -353,7 +341,6 @@ CancelableCallback
 
 	public void goToActiveList(View v){
 		startActivity(new Intent(MainActivity.this, ActiveListActivity.class));
-//		Log.e("Hello","Wang\\");
 	}
 	
 	public void goToPulledList(View v){
