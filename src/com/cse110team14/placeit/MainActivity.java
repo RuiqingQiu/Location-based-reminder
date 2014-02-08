@@ -88,6 +88,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	LocationClient myLocationClient;
 	Button mBtnFind;
 	Button retrackBtn;
+	Button active;
 	EditText etPlace;
 	final Context context = this;
     @Override
@@ -100,6 +101,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         // Getting reference to the find button
         mBtnFind = (Button) findViewById(R.id.btn_show);
         retrackBtn = (Button)findViewById(R.id.retrack);
+        active = (Button)findViewById(R.id.active);
 
       
         //An marker example
@@ -204,6 +206,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     			 }
     		 }
         });
+        
     }
     
     private String downloadUrl(String strUrl) throws IOException{
@@ -477,6 +480,14 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	public void onCancel() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void goToActiveList(View v){
+//		Log.e("Hello","Wang");
+//		Intent i = new Intent(MainActivity.this, ActiveListActivitiy.class);
+		//Log.e("Hello","Wang123");
+		startActivity(new Intent(MainActivity.this, ActiveListActivity.class));
+		Log.e("Hello","Wang\\");
 	}
   
 }

@@ -21,6 +21,7 @@
         android:layout_alignBaseline="@+id/pulled"
         android:layout_alignBottom="@+id/pulled"
         android:layout_toLeftOf="@+id/pulled"
+        android:onClick="goToActiveList"
         android:text="@string/active" />
 
     <Button
