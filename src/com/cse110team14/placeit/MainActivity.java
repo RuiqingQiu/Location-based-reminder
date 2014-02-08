@@ -98,6 +98,7 @@ CancelableCallback
 	Button retrackBtn;
 	Button active;
 	Button pulled;
+	Button create;
 	EditText etPlace;
 	final Context context = this;
 	
@@ -126,6 +127,7 @@ CancelableCallback
         retrackBtn = (Button)findViewById(R.id.retrack);
         active = (Button)findViewById(R.id.active);
         pulled = (Button)findViewById(R.id.pulled);
+        create = (Button)findViewById(R.id.create);
       
         map.setMyLocationEnabled(true);
         map.setInfoWindowAdapter(new PlaceItsInfoWindow());
@@ -382,6 +384,10 @@ CancelableCallback
 	
 	public void goToPulledList(View v){
 		startActivity(new Intent(MainActivity.this, PulledListActivity.class));
+	}
+	
+	public void goToCreate(View v){
+		startActivity(new Intent(MainActivity.this, CreatePlaceIts.class));
 	}
 	
 
