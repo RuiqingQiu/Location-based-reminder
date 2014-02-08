@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -55,13 +57,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
 
 public class MainActivity extends Activity implements
-CancelableCallback,
-GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener {
+CancelableCallback
+{
 	
 	// Global constants
     /*
@@ -97,6 +99,8 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
+        
+        //Initilize the mMarkers list
         mMarkers = new ArrayList<Marker>();
         
         // Getting reference to the find button
@@ -105,45 +109,9 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         active = (Button)findViewById(R.id.active);
         pulled = (Button)findViewById(R.id.pulled);
       
-        //An marker example
-        Marker hamburg = map.addMarker(new MarkerOptions().position(HAMBURG).title("Hamburg").snippet("Hello"));
-        myLocationClient =  new LocationClient(this, this, this);
         map.setMyLocationEnabled(true);
-        //Marker with window info
-        Marker melbourne = map.addMarker(new MarkerOptions()
-        .position(MELBOURNE)
-        .title("Melbourne")
-        .snippet("Population: 4,137,400")
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        map.setInfoWindowAdapter(new PlaceItsInfoWindow());
 
-        Marker m1 = map.addMarker(new MarkerOptions()
-        .position(new LatLng(-37, 145))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(-37, 146))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(-37, 147))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(-37, 148))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(-37, 149))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(-37, 150))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(-37, 151))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(-37, 152))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(-37, 153))
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-        
 
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
@@ -189,8 +157,21 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         retrackBtn.setOnClickListener(new OnClickListener(){
         	 @Override
     		 public void onClick(View v) {
-
-        		 Log.e("test", "" + (marker.hasNext()));
+        		 /* Checking errors, if the iterator was never initalized, pop up an dialog
+        		  * box and show what the error is
+        		  */
+        		 if(marker == null){
+        			AlertDialog.Builder temp = new AlertDialog.Builder(context);
+     		        temp.setTitle("PlaceIts not found");
+     		        temp.setMessage("There's no PlaceIts to be retracked. ");
+     		        temp.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+     			        public void onClick(DialogInterface dialog, int whichButton) {
+     				         return;
+     			          }
+     			        });
+     		        temp.show();
+     		        return;
+        		 }
     			 if (marker.hasNext()) {
     				 Marker current = marker.next();
     				 Log.e("test", ""+current.getTitle());
@@ -210,7 +191,227 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         
     }
     
-    private String downloadUrl(String strUrl) throws IOException{
+    
+
+    
+    /*
+     * Called when the Activity becomes visible.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        
+        /*
+         * Function for user press on map for a long time, it will create a Marker
+         * at where the user pressed on
+         */
+        map.setOnMapLongClickListener(new OnMapLongClickListener()
+        {
+            @Override
+            public void onMapLongClick(LatLng point)
+	        {
+            	MarkerOptions position = new MarkerOptions()
+	                      .position(point)
+	                      .title("Click to add a Title")
+	                      .snippet("latitude: " + point.latitude +"###" + "\n longtitude: " + point.longitude + 
+	                    		  "###" + "\nClick on info window to enter your reminder");
+            	map.addMarker(position);
+	        }
+        });
+        map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
+
+			@Override
+			public void onInfoWindowClick(final Marker m) 
+			{		
+				alert = new AlertDialog.Builder(context);
+		        
+		        alert.setTitle("Placeit information");
+
+		        // Get the layout inflater
+		        LayoutInflater inflater = getLayoutInflater();
+		        // Set an EditText view to get user input 
+		        
+		        // Inflate and set the layout for the dialog
+		        final View v = inflater.inflate(R.layout.placeitsinfo, null);
+		        final EditText title = (EditText)v.findViewById(R.id.title);
+		        final EditText description = (EditText)v.findViewById(R.id.description);
+		        final EditText date = (EditText)v.findViewById(R.id.date);
+		        final EditText color = (EditText)v.findViewById(R.id.color);
+		        // Pass null as the parent view because its going in the dialog layout
+		        alert.setView(v);
+		        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		        public void onClick(DialogInterface dialog, int whichButton) {
+			          String placeItTitle = title.getText().toString();
+			          m.setTitle(placeItTitle);
+			          String placeItDescription = description.getText().toString();
+			          String dateToBeReminded = date.getText().toString();
+			          String currentDateTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+			          m.setSnippet(placeItDescription + "###"
+			        		  + dateToBeReminded +"###" + currentDateTime);
+			          String markerColor = color.getText().toString();
+			          if(markerColor.toLowerCase().equals("red"))
+			        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+			          else if(markerColor.toLowerCase().equals("blue"))
+			        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+		        	  else if(markerColor.toLowerCase().equals("azure"))
+		        		  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        			  else if(markerColor.toLowerCase().equals("cyan"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+			          else if(markerColor.toLowerCase().equals("green"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+			          else if(markerColor.toLowerCase().equals("megenta"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+			          else if(markerColor.toLowerCase().equals("orange"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+			          else if(markerColor.toLowerCase().equals("violet"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+			          else if(markerColor.toLowerCase().equals("rose"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+			          else if(markerColor.toLowerCase().equals("yellow"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+			          else{
+			        	  AlertDialog.Builder temp = new AlertDialog.Builder(context);
+		     		      temp.setTitle("Entered Color is not valid");
+		     		      temp.setMessage("Please enter a valid color :)");
+		     		      temp.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		     			        public void onClick(DialogInterface dialog, int whichButton) {
+		     			          }
+		     			        });
+		     		      temp.show();
+		     		      return;
+			          }
+			          mMarkers.add(m);
+			          marker = mMarkers.iterator();
+			          
+		          }
+		        });
+
+		        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		          public void onClick(DialogInterface dialog, int whichButton) {
+		            // Canceled.
+		          }
+		        });
+		        /* Rather than delete, we will set the marker to be invisible and 
+		         * it's never added to the list
+		         */
+		        alert.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+		        	public void onClick(DialogInterface dialog, int whichButton) {
+			            m.setVisible(false);
+			        }
+		        });
+		        alert.show();
+		        m.showInfoWindow();
+			}
+        	
+        });
+    }
+    
+    public void initializeAlert(){
+    	
+    }
+    /*
+     * Called when the Activity is no longer visible.
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpMapIfNeeded();
+    }
+
+    /**
+     * Method name: setUpMapIfNeeded
+     * Description: This method will be called when the map start up, it will check if
+     * the map has set up, if not create a map based on the fragment in the xml file
+     **/
+    private void setUpMapIfNeeded() {
+        if (map != null) {
+            return;
+        }
+        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        if (map == null) {
+            return;
+        }
+        // Initialize map options. For example:
+        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+    }
+    
+    @Override
+	public void onFinish() {
+
+    	//Log.e("test", "finish");
+   	 	/*if (marker.hasNext()) {
+	   		 Marker current = marker.next();
+	   		 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, this);
+	   		 current.showInfoWindow();
+	   	 }*/
+	}
+
+	public void goToActiveList(View v){
+		startActivity(new Intent(MainActivity.this, ActiveListActivity.class));
+//		Log.e("Hello","Wang\\");
+	}
+	
+	public void goToPulledList(View v){
+		startActivity(new Intent(MainActivity.this, PulledListActivity.class));
+	}
+	
+
+	@Override
+	public void onCancel() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/* A CLASS FOR CUSTOM PLACEITS INFO WINDOW ON THE MAP */
+	class PlaceItsInfoWindow implements InfoWindowAdapter{
+
+		private final View myContentsView;
+		  
+		PlaceItsInfoWindow(){
+		   myContentsView = getLayoutInflater().inflate(R.layout.placeits_info_window, null);
+		}
+		@Override
+		public View getInfoContents(Marker marker) {
+			String snippet = marker.getSnippet();
+			if(snippet == null)
+				return null;
+			//Every string that added will concat with ###, and now we split them to get parts
+			String [] splited = snippet.split("###");
+			if(splited[0].startsWith("latitude"))
+			{
+				TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.title));
+	            tvTitle.setText(marker.getTitle());
+	            TextView tvDescription = ((TextView)myContentsView.findViewById(R.id.description));
+	            tvDescription.setText("Description: " +splited[0] + "\n" + splited[1] + "\n" +splited[2]);
+			}
+			else{
+				TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.title));
+	            tvTitle.setText(marker.getTitle());
+	            TextView tvDescription = ((TextView)myContentsView.findViewById(R.id.description));
+	            tvDescription.setText("Description: " +splited[0]);
+	            TextView tvDateRemind = ((TextView)myContentsView.findViewById(R.id.dateToBeReminded));
+	            tvDateRemind.setText("Date to be Reminded: " + splited[1]);
+	            TextView tvDatePost = ((TextView)myContentsView.findViewById(R.id.postDate));
+	            tvDatePost.setText("Post Date and time: " + splited[2]);
+			}
+            return myContentsView;
+		}
+
+		@Override
+		public View getInfoWindow(Marker marker) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	}
+	
+	/* BEGIN OF HELPER FUNCTIONS AND CLASSES FOR GETTING LOCATION DATA FROM GOOGLE */
+	private String downloadUrl(String strUrl) throws IOException{
         String data = "";
         InputStream iStream = null;
         HttpURLConnection urlConnection = null;
@@ -347,149 +548,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
             }
         }
-        
     }//End of class
-    
-    /*
-     * Called when the Activity becomes visible.
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        
-        /*
-         * Function for user press on map for a long time, it will create a Marker
-         * at where the user pressed on
-         */
-        map.setOnMapLongClickListener(new OnMapLongClickListener()
-        {
-            @Override
-            public void onMapLongClick(LatLng point)
-	        {
-            	MarkerOptions position = new MarkerOptions().anchor(0.5f, 0.5f)
-	                      .position(point)
-	                      .title("Marker")
-	                      .snippet("latitude: " + point.latitude + " longtitude: " + point.longitude);
-            	Marker options = map.addMarker(position);
-            	mMarkers.add(options);
-            	marker = mMarkers.iterator();
-	        }
-        });
-        map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
-
-			@Override
-			public void onInfoWindowClick(final Marker m) 
-			{		
-				alert = new AlertDialog.Builder(context);
-		        
-		        alert.setTitle("Placeit information");
-
-		        // Get the layout inflater
-		        LayoutInflater inflater = getLayoutInflater();
-		        // Set an EditText view to get user input 
-		        
-		        // Inflate and set the layout for the dialog
-		        final View v = inflater.inflate(R.layout.placeitsinfo, null);
-		        final EditText title = (EditText)v.findViewById(R.id.title);
-		        final EditText description = (EditText)v.findViewById(R.id.description);
-		        // Pass null as the parent view because its going in the dialog layout
-		        alert.setView(v);
-		        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		        public void onClick(DialogInterface dialog, int whichButton) {
-			          String placeItTitle = title.getText().toString();
-			          m.setTitle(placeItTitle);
-			          String placeItDescription = description.getText().toString();
-			          m.setSnippet(placeItDescription);
-		          }
-		        });
-
-		        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-		          public void onClick(DialogInterface dialog, int whichButton) {
-		            // Canceled.
-		          }
-		        });
-		        alert.show();
-		        m.showInfoWindow();
-			}
-        	
-        });
-        // Connect the client.
-        myLocationClient.connect();
-    }
-    
-    public void initializeAlert(){
-    	
-    }
-    /*
-     * Called when the Activity is no longer visible.
-     */
-    @Override
-    protected void onStop() {
-        // Disconnecting the client invalidates it.
-        myLocationClient.disconnect();
-        super.onStop();
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpMapIfNeeded();
-    }
-
-    private void setUpMapIfNeeded() {
-        if (map != null) {
-            return;
-        }
-        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-        if (map == null) {
-            return;
-        }
-        // Initialize map options. For example:
-        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-    }
-    
-    @Override
-	public void onFinish() {
-
-    	Log.e("test", "finish");
-   	 	/*if (marker.hasNext()) {
-	   		 Marker current = marker.next();
-	   		 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, this);
-	   		 current.showInfoWindow();
-	   	 }*/
-	}
-
-	@Override
-	public void onConnectionFailed(ConnectionResult result) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onConnected(Bundle connectionHint) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onDisconnected() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onCancel() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void goToActiveList(View v){
-		startActivity(new Intent(MainActivity.this, ActiveListActivity.class));
-//		Log.e("Hello","Wang\\");
-	}
-	
-	public void goToPulledList(View v){
-		startActivity(new Intent(MainActivity.this, PulledListActivity.class));
-	}
+	/* END OF HELPER FUNCTIONS AND CLASSES FOR GETTING LOCATION DATA FROM GOOGLE */
   
 }
