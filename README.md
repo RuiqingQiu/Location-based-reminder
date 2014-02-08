@@ -1,3 +1,3 @@
-mapexample
+Location Based Reminder (An Android Applicatio
 ==========
-[![solarized dualmode](https://github.com/altercation/solarized/raw/master/img/solarized-yinyang.png)](#features)
+[![Image 1](http://ruiqingqiu.com/homepage/CSE110PlaceIts/1.png)](#features)
