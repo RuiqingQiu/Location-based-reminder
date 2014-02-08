@@ -50,8 +50,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- active activity -->
+
         <activity
             android:name="com.cse110team14.placeit.ActiveListActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- pulled activity -->
+        <activity
+            android:name="com.cse110team14.placeit.PulledListActivity"
             android:label="@string/app_name" >
         </activity>
     </application>

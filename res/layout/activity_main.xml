@@ -12,6 +12,7 @@
         android:layout_alignBaseline="@+id/expired"
         android:layout_alignBottom="@+id/expired"
         android:layout_toLeftOf="@+id/expired"
+        android:onClick="goToPulledList"
         android:text="@string/pulled" />
 
     <Button
@@ -81,5 +82,3 @@
         android:text="@string/find" />
     
 </RelativeLayout>
-
- 

@@ -89,6 +89,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	Button mBtnFind;
 	Button retrackBtn;
 	Button active;
+	Button pulled;
 	EditText etPlace;
 	final Context context = this;
     @Override
@@ -102,7 +103,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         mBtnFind = (Button) findViewById(R.id.btn_show);
         retrackBtn = (Button)findViewById(R.id.retrack);
         active = (Button)findViewById(R.id.active);
-
+        pulled = (Button)findViewById(R.id.pulled);
       
         //An marker example
         Marker hamburg = map.addMarker(new MarkerOptions().position(HAMBURG).title("Hamburg").snippet("Hello"));
@@ -483,11 +484,12 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	}
 	
 	public void goToActiveList(View v){
-//		Log.e("Hello","Wang");
-//		Intent i = new Intent(MainActivity.this, ActiveListActivitiy.class);
-		//Log.e("Hello","Wang123");
 		startActivity(new Intent(MainActivity.this, ActiveListActivity.class));
-		Log.e("Hello","Wang\\");
+//		Log.e("Hello","Wang\\");
+	}
+	
+	public void goToPulledList(View v){
+		startActivity(new Intent(MainActivity.this, PulledListActivity.class));
 	}
   
 }
