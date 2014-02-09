@@ -385,7 +385,7 @@ CancelableCallback
  	   String postDate = splited[3];
  	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
  	   String color = splited[6];
-       PlaceIts.add(new PlaceIt(placeItTitle, description, color, location, postDate, dateToBeReminded));
+       PlaceIts.add(new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate));
     }
     public void initializeAlert(){
     	
