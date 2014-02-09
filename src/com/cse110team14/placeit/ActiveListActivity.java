@@ -32,9 +32,8 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 		sorted = new ArrayList<PlaceIt>();
 		// piIterator = MainActivity.PlaceIts.iterator();
-
-		for (Iterator<PlaceIt> i = MainActivity.PlaceIts.iterator(); i
-				.hasNext();)
+		List<PlaceIt> active = MainActivity.getActiveList();
+		for (Iterator<PlaceIt> i = active.iterator(); i.hasNext();)
 			sorted.add(i.next());
 
 		Collections.sort(sorted, new CustomComparator());
@@ -53,9 +52,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 		 * map.put("ItemText", curr.getDescription()); activeList.add(map); }
 		 */
 		// for (PlaceIt pi : sorted)
-		
-		
-		
+
 		List<HashMap<String, String>> activeList = new ArrayList<HashMap<String, String>>();
 		for (PlaceIt curr : sorted) {
 			HashMap<String, String> map = new HashMap<String, String>();
@@ -67,8 +64,9 @@ public class ActiveListActivity<activeListView> extends Activity {
 		}
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
-				R.layout.list_item, new String[] { "ItemTitle", "ItemText","ItemDatePosted" },
-				new int[] { R.id.ItemTitle, R.id.ItemText, R.id.ItemDatePosted });
+				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
+						"ItemDatePosted" }, new int[] { R.id.ItemTitle,
+						R.id.ItemText, R.id.ItemDatePosted });
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,30 +76,34 @@ public class ActiveListActivity<activeListView> extends Activity {
 				// ListView listView = (ListView) arg0;
 
 				ActiveListActivity.this.id = (int) id;
-				clicked = sorted.get((int)id);
-/*
-				Toast.makeText(
-						ActiveListActivity.this,
-						"Title: " + clicked.getTitle() + "\n\nDescription: "
-								+ clicked.getDescription()
-								+ "\n\nDate to be Reminded: "
-								+ clicked.getDateReminded()
-								+ "\n\nPost Date and time: " + clicked.getDate()
-								+ "\n\nLocation: ("
-								+ clicked.getLocation().latitude + ", "
-								+ clicked.getLocation().longitude + ")",
-						Toast.LENGTH_LONG).show();
-*/
+				clicked = sorted.get((int) id);
+				/*
+				 * Toast.makeText( ActiveListActivity.this, "Title: " +
+				 * clicked.getTitle() + "\n\nDescription: " +
+				 * clicked.getDescription() + "\n\nDate to be Reminded: " +
+				 * clicked.getDateReminded() + "\n\nPost Date and time: " +
+				 * clicked.getDate() + "\n\nLocation: (" +
+				 * clicked.getLocation().latitude + ", " +
+				 * clicked.getLocation().longitude + ")",
+				 * Toast.LENGTH_LONG).show();
+				 */
 				new AlertDialog.Builder(ActiveListActivity.this)
-				.setTitle("Title: " + clicked.getTitle())
-				.setItems(new String[] {
-						"Description: "+ clicked.getDescription(),
-						"Date to be Reminded: "+ clicked.getDateReminded(),
-						"Post Date and time: " + clicked.getDate(),
-						"Location: (" + clicked.getLocation().latitude + ", "
-						+ clicked.getLocation().longitude + ")"}, null)
-				.setNegativeButton("OK", null).show();
-				
+						.setTitle("Title: " + clicked.getTitle())
+						.setItems(
+								new String[] {
+										"Description: "
+												+ clicked.getDescription(),
+										"Date to be Reminded: "
+												+ clicked.getDateReminded(),
+										"Post Date and time: "
+												+ clicked.getDate(),
+										"Location: ("
+												+ clicked.getLocation().latitude
+												+ ", "
+												+ clicked.getLocation().longitude
+												+ ")" }, null)
+						.setNegativeButton("OK", null).show();
+
 				// Toast.makeText(
 				// ActiveListActivity.this,"ID：" + id + ":" + clicked.getTitle()
 				// + "item："
