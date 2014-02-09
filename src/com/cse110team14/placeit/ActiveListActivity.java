@@ -116,11 +116,11 @@ public class ActiveListActivity<activeListView> extends Activity {
 				// tvDatePost.setText("Post Date and time: " +
 				// clicked.getDate());
 				
-				Intent i = new Intent(ActiveListActivity.this,
+/*				Intent i = new Intent(ActiveListActivity.this,
 						PlaceItViewActivity.class);
 				i.putExtra("clicked", clicked);
 				startActivityForResult(i, arg2);
-//				startActivity(i);
+//				startActivity(i);*/
 			}
 		});
 	}
