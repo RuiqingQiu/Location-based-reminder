@@ -80,11 +80,9 @@ CancelableCallback
      * Define a request code to send to Google Play services
      * This code is returned in Activity.onActivityResult
      */
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-	static final LatLng HAMBURG = new LatLng(53.558, 9.927);
 	private GoogleMap map;
-	static final LatLng MELBOURNE = new LatLng(-37.81319, 144.96298);
-	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
+	private static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
+	private static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
 	
 	private List<Marker> mMarkers = new ArrayList<Marker>();
 	private Iterator<Marker> marker;
@@ -354,8 +352,11 @@ CancelableCallback
         });
     }
     
-    public List<PlaceIt> getActiveList(){
-    	return this.PlaceIts;
+    public static List<PlaceIt> getActiveList(){
+    	return PlaceIts;
+    }
+    public static List<PlaceIt> getPullDownList(){
+    	return pullDown;
     }
     
     /**
