@@ -1,23 +1,26 @@
 package com.cse110team14.placeit;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import android.location.Location;
 
-public class PlaceIt {
+
+public class PlaceIt implements Serializable {
 	private String title;
 	private String description;
 	private LatLng location;
 	private String postDate;
 	private String dateToBeReminded;
-	//This date field keep track of what kind of placeit it is
-	//1 for active, 2 for pull down list, and 3 for expired
+	// This date field keep track of what kind of placeit it is
+	// 1 for active, 2 for pull down list, and 3 for expired
 	private int placeitType;
 	private String color;
-	
-	public PlaceIt(String title, String description, String color, LatLng location, String dateToBeReminded, String postDate){
+
+	public PlaceIt(String title, String description, String color,
+			LatLng location, String dateToBeReminded, String postDate) {
 		this.title = title;
 		this.description = description;
 		this.location = location;
@@ -26,23 +29,28 @@ public class PlaceIt {
 		this.placeitType = 1;
 		this.color = color;
 	}
-	
-	public String getTitle(){
+
+	public String getTitle() {
 		return title;
 	}
-	public String getDescription(){
+
+	public String getDescription() {
 		return description;
 	}
-	public LatLng getLocation(){
+
+	public LatLng getLocation() {
 		return location;
 	}
-	public String getDate(){
+
+	public String getDate() {
 		return postDate;
 	}
-	public String getColor(){
+
+	public String getColor() {
 		return color;
 	}
-	public String getDateReminded(){
+
+	public String getDateReminded() {
 		return dateToBeReminded;
 	}
 
