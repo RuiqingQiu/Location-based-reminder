@@ -1,28 +1,53 @@
 package com.cse110team14.placeit;
 
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
-public class ActiveListActivity extends Activity{
+public class ActiveListActivity extends Activity {
 	private Iterator<PlaceIt> piIterator;
-	
-	public void onCreate(Bundle savedInstanceState){
+	private PlaceIt curr;
+
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_activelist);
-        piIterator = MainActivity.PlaceIts.iterator();
-        
-        
-        
+		setContentView(R.layout.activity_activelist);
+
+		ListView listView = (ListView) findViewById(R.id.ActiveListView);
+
+		piIterator = MainActivity.PlaceIts.iterator();
+
+		List<HashMap<String, String>> activeList = new ArrayList<HashMap<String, String>>();
+		while (piIterator.hasNext()) {
+			HashMap<String, String> map = new HashMap<String, String>();
+			curr = piIterator.next();
+			map.put("ItemTitle", curr.getTitle());
+			map.put("ItemText", curr.getDescription());
+			activeList.add(map);
+		}
+		SimpleAdapter mSchedule = new SimpleAdapter(this, activeList,
+				R.layout.list_item,new String[] { "ItemTitle", "ItemText" }, 
+				new int[] { R.id.ItemTitle, R.id.ItemText });
+		listView.setAdapter(mSchedule);
+
 	}
-	  @Override
-	    public boolean onCreateOptionsMenu(Menu menu) {
-	        // Inflate the menu; this adds items to the action bar if it is present.
-	        getMenuInflater().inflate(R.menu.main, menu);
-	        return true;
-	    }
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+	
+	public void goToPlaceItView(View v){
+		startActivity(new Intent(this, PlaceItViewActivity.class));
+	}
 }
