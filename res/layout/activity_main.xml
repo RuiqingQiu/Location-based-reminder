@@ -32,6 +32,7 @@
         android:layout_alignBaseline="@+id/active"
         android:layout_alignBottom="@+id/active"
         android:layout_toLeftOf="@+id/active"
+        android:onClick="goToCreate"
         android:text="@string/create" />
     
     <fragment

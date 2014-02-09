@@ -19,6 +19,7 @@ public class ActiveListActivity extends Activity {
 	private PlaceIt curr;
 
 	public void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_activelist);
 

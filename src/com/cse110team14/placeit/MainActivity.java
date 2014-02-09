@@ -4,6 +4,9 @@
  */
 package com.cse110team14.placeit;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -87,6 +90,7 @@ CancelableCallback
 	Button retrackBtn;
 	Button active;
 	Button pulled;
+	Button create;
 	EditText etPlace;
 	final Context context = this;
     @Override
@@ -94,6 +98,18 @@ CancelableCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
+        
+        try {
+        	FileInputStream in = openFileInput("saved_placeits.dat");
+        	byte[] input = new byte[in.available()];
+        	while (in.read(input) != -1){
+        	   			//read from file
+            }
+        } catch (FileNotFoundException e) {
+        	e.printStackTrace();
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
         
         //Initilize the mMarkers list
         mMarkers = new ArrayList<Marker>();
@@ -103,6 +119,7 @@ CancelableCallback
         retrackBtn = (Button)findViewById(R.id.retrack);
         active = (Button)findViewById(R.id.active);
         pulled = (Button)findViewById(R.id.pulled);
+        create = (Button)findViewById(R.id.create);
       
         map.setMyLocationEnabled(true);
         map.setInfoWindowAdapter(new PlaceItsInfoWindow());
@@ -303,6 +320,16 @@ CancelableCallback
     @Override
     protected void onStop() {
         super.onStop();
+    	try {
+    		FileOutputStream out = openFileOutput("saved_placeits.dat", 0);
+    		//write place its to file
+    		out.close();
+    	} catch (FileNotFoundException e) {
+    		e.printStackTrace();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+
     }
     
     @Override
@@ -345,6 +372,10 @@ CancelableCallback
 	
 	public void goToPulledList(View v){
 		startActivity(new Intent(MainActivity.this, PulledListActivity.class));
+	}
+	
+	public void goToCreate(View v){
+		startActivity(new Intent(MainActivity.this, CreatePlaceIts.class));
 	}
 	
 
