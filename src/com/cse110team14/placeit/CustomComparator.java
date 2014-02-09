@@ -6,7 +6,7 @@ public class CustomComparator implements Comparator<PlaceIt> {
 
 	@Override
 	public int compare(PlaceIt lhs, PlaceIt rhs) {
-		return Integer.compare(extractBackslashes(lhs),extractBackslashes(rhs));
+		return Integer.valueOf(extractBackslashes(lhs)).compareTo(extractBackslashes(rhs));
 	}
 	public int extractBackslashes(PlaceIt aplaceit){
 		String date = aplaceit.getDateReminded();
