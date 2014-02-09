@@ -4,12 +4,14 @@
  */
 package com.cse110team14.placeit;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -99,18 +101,6 @@ CancelableCallback
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
         
-        try {
-        	FileInputStream in = openFileInput("saved_placeits.dat");
-        	byte[] input = new byte[in.available()];
-        	while (in.read(input) != -1){
-        	   			//read from file
-            }
-        } catch (FileNotFoundException e) {
-        	e.printStackTrace();
-        } catch (IOException e) {
-        	e.printStackTrace();
-        }
-        
         //Initilize the mMarkers list
         mMarkers = new ArrayList<Marker>();
         
@@ -123,7 +113,6 @@ CancelableCallback
       
         map.setMyLocationEnabled(true);
         map.setInfoWindowAdapter(new PlaceItsInfoWindow());
-
 
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
@@ -210,6 +199,8 @@ CancelableCallback
     protected void onStart() {
         super.onStart();
         
+        //ShowMarkerWhenAppOpen();
+        openfiletest();
         /*
          * Function for user press on map for a long time, it will create a Marker
          * at where the user pressed on
@@ -311,6 +302,91 @@ CancelableCallback
         });
     }
     
+    public void ShowMarkerWhenAppOpen(){
+    	try {
+        	FileInputStream in = openFileInput("saved_placeits.dat");
+        	InputStreamReader isr = new InputStreamReader ( in ) ;
+        	BufferedReader reader = new BufferedReader(isr);
+        	String readString = reader.readLine () ;
+        	while (readString != null){
+        	   
+        	   readString = reader.readLine();
+        	   Log.e("hello",readString);
+        	   String []splited = readString.split("###");
+        	   String placeItTitle = splited[0];
+        	   String description = splited[1];
+        	   String dateToBeReminded = splited[2];
+        	   String postDate = splited[3];
+        	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
+        	   String color = splited[6];
+        	   Log.e("hello",location.toString());
+        	   Marker m = map.addMarker(new MarkerOptions()
+        	   .position(location)
+        	   .title(placeItTitle)
+        	   .snippet(description + "###"
+		        		  + dateToBeReminded +"###" + postDate));
+        	   if(color.equals("red"))
+		        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+		          else if(color.equals("blue"))
+		        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+	        	  else if(color.equals("azure"))
+	        		  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+	        	  else if(color.equals("cyan"))
+		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+		          else if(color.equals("green"))
+		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+		          else if(color.equals("megenta"))
+		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+		          else if(color.equals("orange"))
+		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+		          else if(color.equals("violet"))
+		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+		          else if(color.equals("rose"))
+		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+		          else if(color.equals("yellow"))
+		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+        	   
+            }
+        } catch (FileNotFoundException e) {
+        	e.printStackTrace();
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+    }
+    
+    public void openfiletest(){
+    	PlaceIts.clear();
+    	try {
+        	FileInputStream in = openFileInput("saved_placeits.dat");
+        	InputStreamReader isr = new InputStreamReader ( in ) ;
+        	BufferedReader reader = new BufferedReader(isr);
+        	String readString = reader.readLine () ;
+        	while (readString != null){
+        	   Log.e("hello", readString);
+        	   String []splited = readString.split("###");
+        	   for (int i = 0; i < splited.length; i++){
+        		   Log.e("hello", splited[i]);
+        	   }
+        	   Log.e("hello", "Another one");
+        	   putPlaceItsReadFromFileToLists(readString);
+        	   readString = reader.readLine();
+            }
+        } catch (FileNotFoundException e) {
+        	e.printStackTrace();
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+    }
+    public void putPlaceItsReadFromFileToLists(String str){
+       String []splited = str.split("###");
+ 	   String placeItTitle = splited[0];
+ 	   String description = splited[1];
+ 	   String dateToBeReminded = splited[2];
+ 	   String postDate = splited[3];
+ 	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
+ 	   String color = splited[6];
+       PlaceIts.add(new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate));
+    }
     public void initializeAlert(){
     	
     }
@@ -321,8 +397,16 @@ CancelableCallback
     protected void onStop() {
         super.onStop();
     	try {
-    		FileOutputStream out = openFileOutput("saved_placeits.dat", 0);
+    		FileOutputStream out = openFileOutput("saved_placeits.dat", Context.MODE_PRIVATE);
     		//write place its to file
+    		Iterator<PlaceIt> placeitsIterator = PlaceIts.iterator();
+    		while(placeitsIterator.hasNext()){
+    			PlaceIt element = placeitsIterator.next();
+    			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
+    					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
+    					element.getLocation().longitude + "###" + element.getColor()+"\n"; 
+    			out.write(str.getBytes());
+    		}
     		out.close();
     	} catch (FileNotFoundException e) {
     		e.printStackTrace();
