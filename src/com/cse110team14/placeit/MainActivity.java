@@ -348,6 +348,11 @@ CancelableCallback
         });
     }
     
+    /**
+     * Method use to check if user entered a correct date and format
+     * @param date
+     * @return
+     */
     public boolean checkDate(String date){
     	DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
     	formatter.setLenient(false);
@@ -427,6 +432,12 @@ CancelableCallback
         	e.printStackTrace();
         }
     }
+    
+    /**
+     * A helper function for onCreateReadFile, it will get a string that encodes a placeit
+     * and put it into the list
+     * @param str
+     */
     public void putPlaceItsReadFromFileToLists(String str){
        String []splited = str.split("###");
  	   String placeItTitle = splited[0];
@@ -438,7 +449,13 @@ CancelableCallback
        PlaceIts.add(new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate));
     }
     
-    
+    /**
+     * Method to build a alert dialog for error condition, mainly used in user entries for
+     * Placeit information
+     * @param title
+     * @param message
+     * @return The dialog box that contains the title and message
+     */
     public AlertDialog.Builder initializeAlert(String title, String message){
     	AlertDialog.Builder tmp = new AlertDialog.Builder(context);
     	tmp.setTitle(title);
