@@ -232,6 +232,12 @@ CancelableCallback
 			@Override
 			public void onInfoWindowClick(final Marker m) 
 			{		
+				//First case for the marker, if it's already a placeit
+				if(mMarkers.contains(m))
+				{
+				
+				}
+				
 				alert = new AlertDialog.Builder(context);
 		        
 		        alert.setTitle("Placeit information");
@@ -305,7 +311,7 @@ CancelableCallback
 			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
 			          else if(markerColor.toLowerCase().equals("green"))
 			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-			          else if(markerColor.toLowerCase().equals("megenta"))
+			          else if(markerColor.toLowerCase().equals("magenta"))
 			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
 			          else if(markerColor.toLowerCase().equals("orange"))
 			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
@@ -346,6 +352,10 @@ CancelableCallback
 			}
         	
         });
+    }
+    
+    public List<PlaceIt> getActiveList(){
+    	return this.PlaceIts;
     }
     
     /**
@@ -390,7 +400,7 @@ CancelableCallback
 		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
 		       else if(color.equals("green"))
 		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-		       else if(color.equals("megenta"))
+		       else if(color.equals("magenta"))
 		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
 		       else if(color.equals("orange"))
 		              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
