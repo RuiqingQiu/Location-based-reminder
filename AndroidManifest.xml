@@ -61,13 +61,7 @@
         <activity
             android:name="com.cse110team14.placeit.PulledListActivity"
             android:label="@string/app_name" >
-        </activity>
-
-        <!-- pulled activity -->
-        <activity
-            android:name="com.cse110team14.placeit.PlaceItViewActivity"
-            android:label="@string/app_name" >
-        </activity>
+        </activity> 
 
         <!-- Create PlaceIts activity -->
         <activity

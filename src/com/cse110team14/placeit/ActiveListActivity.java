@@ -37,7 +37,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 				.hasNext();)
 			sorted.add(i.next());
 
-		// Collections.sort(sorted, new CustomComparator());
+		Collections.sort(sorted, new CustomComparator());
 
 		setContentView(R.layout.activity_activelist);
 
@@ -60,14 +60,15 @@ public class ActiveListActivity<activeListView> extends Activity {
 		for (PlaceIt curr : sorted) {
 			HashMap<String, String> map = new HashMap<String, String>();
 			// curr = piIterator.next();
-			map.put("ItemTitle", curr.getTitle());
-			map.put("ItemText", curr.getDescription());
+			map.put("ItemTitle", "Title: " + curr.getTitle());
+			map.put("ItemText", "Description: " + curr.getDescription());
+			map.put("ItemDatePosted", "Post Date and time: " + curr.getDate());
 			activeList.add(map);
 		}
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
-				R.layout.list_item, new String[] { "ItemTitle", "ItemText" },
-				new int[] { R.id.ItemTitle, R.id.ItemText });
+				R.layout.list_item, new String[] { "ItemTitle", "ItemText","ItemDatePosted" },
+				new int[] { R.id.ItemTitle, R.id.ItemText, R.id.ItemDatePosted });
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,49 +79,35 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 				ActiveListActivity.this.id = (int) id;
 				clicked = sorted.get((int)id);
-
+/*
 				Toast.makeText(
 						ActiveListActivity.this,
-						"Title: " + clicked.getTitle() + "\nDescription: "
+						"Title: " + clicked.getTitle() + "\n\nDescription: "
 								+ clicked.getDescription()
-								+ "\nDate to be Reminded: "
+								+ "\n\nDate to be Reminded: "
 								+ clicked.getDateReminded()
-								+ "\nDate of Generation: " + clicked.getDate()
-								+ "\nLocation: ("
+								+ "\n\nPost Date and time: " + clicked.getDate()
+								+ "\n\nLocation: ("
 								+ clicked.getLocation().latitude + ", "
 								+ clicked.getLocation().longitude + ")",
 						Toast.LENGTH_LONG).show();
-
+*/
+				new AlertDialog.Builder(ActiveListActivity.this)
+				.setTitle("Title: " + clicked.getTitle())
+				.setItems(new String[] {
+						"Description: "+ clicked.getDescription(),
+						"Date to be Reminded: "+ clicked.getDateReminded(),
+						"Post Date and time: " + clicked.getDate(),
+						"Location: (" + clicked.getLocation().latitude + ", "
+						+ clicked.getLocation().longitude + ")"}, null)
+				.setNegativeButton("OK", null).show();
+				
 				// Toast.makeText(
 				// ActiveListActivity.this,"ID：" + id + ":" + clicked.getTitle()
 				// + "item："
 				// + listView.getItemAtPosition(arg2).toString(),
 				// Toast.LENGTH_LONG).show();
 
-				// TextView tvTitle =
-				// ((TextView)myContentsView.findViewById(R.id.title));
-				// tvTitle.setText("Title: " + clicked.getTitle());
-				//
-				// TextView tvDescription =
-				// ((TextView)myContentsView.findViewById(R.id.description));
-				// tvDescription.setText("Description: " +
-				// clicked.getDescription());
-				//
-				// TextView tvDateRemind =
-				// ((TextView)myContentsView.findViewById(R.id.dateToBeReminded));
-				// tvDateRemind.setText("Date to be Reminded: " +
-				// clicked.getDateReminded());
-				//
-				// TextView tvDatePost =
-				// ((TextView)myContentsView.findViewById(R.id.postDate));
-				// tvDatePost.setText("Post Date and time: " +
-				// clicked.getDate());
-				
-/*				Intent i = new Intent(ActiveListActivity.this,
-						PlaceItViewActivity.class);
-				i.putExtra("clicked", clicked);
-				startActivityForResult(i, arg2);
-//				startActivity(i);*/
 			}
 		});
 	}
@@ -131,29 +118,4 @@ public class ActiveListActivity<activeListView> extends Activity {
 		return true;
 	}
 
-/*	public void goToPlaceItView(View v) {
-		Intent i = new Intent(ActiveListActivity.this,
-				PlaceItViewActivity.class);
-
-		//		Log.e("AAAAA", "AAAAA");
-
-//		startActivity(i);
-
-//		Log.e("BBBBB", "BBBBB");
-		
-		if (clicked == null) {
-			Log.e("__NULL", "__NULL");
-		}
-		i.putExtra("clicked",clicked);
-		
-//		i.putExtra("title", clicked.getTitle());
-//		i.putExtra("description", clicked.getDescription());
-//		i.putExtra("dateReminded", clicked.getDateReminded());
-//		i.putExtra("color", clicked.getColor());
-//		i.putExtra("date", clicked.getDate());
-//		i.putExtra("location", "("+clicked.getLocation().latitude+", "+clicked.getLocation().longitude+")");
-
-//		Log.e("CCCCC", "CCCCC");
-		startActivity(i);
-	}*/
 }
