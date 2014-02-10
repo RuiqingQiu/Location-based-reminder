@@ -8,14 +8,18 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
-public class PulledListActivity extends Activity{
+public class PulledListActivity extends Activity {
 
 	private Iterator<PlaceIt> piIterator;
 	private List<PlaceIt> sorted;
@@ -37,7 +41,6 @@ public class PulledListActivity extends Activity{
 		setContentView(R.layout.activity_pulledlist);
 
 		ListView listView = (ListView) findViewById(R.id.PulledListView);
-
 
 		List<HashMap<String, String>> activeList = new ArrayList<HashMap<String, String>>();
 		for (PlaceIt curr : sorted) {
@@ -62,7 +65,7 @@ public class PulledListActivity extends Activity{
 
 				PulledListActivity.this.id = (int) id;
 				clicked = sorted.get((int) id);
-				new AlertDialog.Builder(PulledListActivity.this)
+				Dialog dialog = new AlertDialog.Builder(PulledListActivity.this)
 						.setTitle("Title: " + clicked.getTitle())
 						.setItems(
 								new String[] {
@@ -77,8 +80,61 @@ public class PulledListActivity extends Activity{
 												+ ", "
 												+ clicked.getLocation().longitude
 												+ ")" }, null)
-						.setNegativeButton("OK", null).show();
+						.setPositiveButton("Move To Active",
+								new OnClickListener() {
 
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+										MainActivity.PlaceIts.add(clicked);
+										sorted.remove(clicked);
+										MainActivity.pullDown.remove(clicked);
+
+										Toast.makeText(
+												PulledListActivity.this,
+												"Item \""
+														+ clicked.getTitle()
+														+ "\" is now moved to Active list.",
+												Toast.LENGTH_LONG).show();
+										finish();
+										startActivity(getIntent());
+									}
+								})
+						.setNegativeButton("Discard",
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+										sorted.remove(clicked);
+										MainActivity.pullDown.remove(clicked);
+
+										Toast.makeText(
+												PulledListActivity.this,
+												"Item \""
+														+ clicked.getTitle()
+														+ "\" is now discarded.",
+												Toast.LENGTH_LONG).show();
+										finish();
+										startActivity(getIntent());
+									}
+								})
+						.setNeutralButton("OK", new OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Toast.makeText(
+										PulledListActivity.this,
+										"Pulled-Down item \"" + clicked.getTitle()
+												+ "\" has been shown.",
+										Toast.LENGTH_LONG).show();
+							}
+						}).create();
+
+				dialog.show();
 			}
 		});
 	}

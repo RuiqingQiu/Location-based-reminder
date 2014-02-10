@@ -100,15 +100,14 @@ public class ActiveListActivity<activeListView> extends Activity {
 												+ ", "
 												+ clicked.getLocation().longitude
 												+ ")" }, null)
-						.setNegativeButton("Move To Pulled-Down",
+						.setPositiveButton("Move To Pulled-Down",
 								new OnClickListener() {
 
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
 										
-										//TODO impl move to pulledlist action
-										List<PlaceIt> pulled = MainActivity.getActiveList();
+										//List<PlaceIt> pulled = MainActivity.getActiveList();
 										MainActivity.pullDown.add(clicked);
 										sorted.remove(clicked);
 										MainActivity.PlaceIts.remove(clicked);
@@ -117,7 +116,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 												ActiveListActivity.this,
 												"Item \""
 														+ clicked.getTitle()
-														+ "\" now moved to Pulled-Down list",
+														+ "\" is now moved to Pulled-Down list",
 												Toast.LENGTH_LONG).show();
 										finish();
 										startActivity(getIntent());
@@ -130,8 +129,8 @@ public class ActiveListActivity<activeListView> extends Activity {
 									int which) {
 								Toast.makeText(
 										ActiveListActivity.this,
-										"Remindi Item \"" + clicked.getTitle()
-												+ "\" Complete",
+										"Reminding item \"" + clicked.getTitle()
+												+ "\" completed.",
 										Toast.LENGTH_LONG).show();
 							}
 						}).create();
