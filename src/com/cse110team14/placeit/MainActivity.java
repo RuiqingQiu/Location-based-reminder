@@ -83,9 +83,12 @@ CancelableCallback
 	private GoogleMap map;
 	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
 	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
-	
+	 
+	//Initilize the mMarkers list
 	private List<Marker> mMarkers = new ArrayList<Marker>();
 	private Iterator<Marker> marker;
+	private String activeListFile = "saved_placeits.dat";
+	private String pulldownListFile = "pulldown_placeits.dat";
 	
 	AlertDialog.Builder alert;
 	Location myCurrentLocation;
@@ -103,9 +106,7 @@ CancelableCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
-        
-        //Initilize the mMarkers list
-        mMarkers = new ArrayList<Marker>();
+
         
         // Getting reference to the find button
         mBtnFind = (Button) findViewById(R.id.btn_show);
@@ -558,7 +559,7 @@ CancelableCallback
     public void onCreateReadFile(){
     	PlaceIts.clear();
     	try {
-        	FileInputStream in = openFileInput("saved_placeits.dat");
+        	FileInputStream in = openFileInput(activeListFile);
         	InputStreamReader isr = new InputStreamReader ( in ) ;
         	BufferedReader reader = new BufferedReader(isr);
         	String readString = reader.readLine () ;
@@ -577,6 +578,30 @@ CancelableCallback
         } catch (IOException e) {
         	e.printStackTrace();
         }
+    	
+    	pullDown.clear();
+    	try {
+        	FileInputStream in = openFileInput(pulldownListFile);
+        	InputStreamReader isr = new InputStreamReader ( in ) ;
+        	BufferedReader reader = new BufferedReader(isr);
+        	String readString = reader.readLine () ;
+        	while (readString != null){
+        	   Log.e("hello", readString);
+        	   String []splited = readString.split("###");
+        	   /*for (int i = 0; i < splited.length; i++){
+        		   Log.e("hello", splited[i]);
+        	   }*/
+        	   Log.e("hello", "Another one");
+        	   putPlaceItsReadFromFileToLists(readString);
+        	   readString = reader.readLine();
+            }
+        } catch (FileNotFoundException e) {
+        	e.printStackTrace();
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+    	
+    	
     }
     
     /**
@@ -626,7 +651,7 @@ CancelableCallback
      */
     public void saveActiveListPlaceIt(){
     	try {
-    		FileOutputStream out = openFileOutput("saved_placeits.dat", Context.MODE_PRIVATE);
+    		FileOutputStream out = openFileOutput(activeListFile, Context.MODE_PRIVATE);
     		//write place its to file
     		Iterator<PlaceIt> placeitsIterator = PlaceIts.iterator();
     		while(placeitsIterator.hasNext()){
@@ -642,7 +667,29 @@ CancelableCallback
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
-
+    }
+    
+    /**
+     * Save the pulldown list of the placeit, called in onStop method
+     */
+    public void savePulldownListPlaceIt(){
+    	try {
+    		FileOutputStream out = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
+    		//write place its to file
+    		Iterator<PlaceIt> placeitsIterator = PlaceIts.iterator();
+    		while(placeitsIterator.hasNext()){
+    			PlaceIt element = placeitsIterator.next();
+    			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
+    					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
+    					element.getLocation().longitude + "###" + element.getColor()+"\n"; 
+    			out.write(str.getBytes());
+    		}
+    		out.close();
+    	} catch (FileNotFoundException e) {
+    		e.printStackTrace();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
     }
     protected void onPause(){
     	super.onPause();
