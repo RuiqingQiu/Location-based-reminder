@@ -9,9 +9,9 @@
         android:id="@+id/pulled"
         android:layout_width="145dp"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/expired"
-        android:layout_alignBottom="@+id/expired"
-        android:layout_toLeftOf="@+id/expired"
+        android:layout_alignBaseline="@+id/test"
+        android:layout_alignBottom="@+id/test"
+        android:layout_toLeftOf="@+id/test"
         android:onClick="goToPulledList"
         android:text="@string/pulled" />
 
@@ -55,20 +55,20 @@
     </EditText>
 
     <Button
-        android:id="@+id/expired"
+        android:id="@+id/test"
         android:layout_width="145dp"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/map"
         android:layout_below="@+id/btn_show"
-        android:text="@string/expired" />
+        android:text="@string/test" />
 
     <Button
         android:id="@+id/retrack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/btn_show"
-        android:layout_alignLeft="@+id/expired"
-        android:layout_alignRight="@+id/expired"
+        android:layout_alignLeft="@+id/test"
+        android:layout_alignRight="@+id/test"
         android:text="@string/retrack" />
 
     <Button

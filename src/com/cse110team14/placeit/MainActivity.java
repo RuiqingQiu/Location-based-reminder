@@ -95,6 +95,7 @@ CancelableCallback
 	Button active;
 	Button pulled;
 	Button create;
+	Button test;
 	EditText etPlace;
 	final Context context = this;
     @Override
@@ -112,7 +113,7 @@ CancelableCallback
         active = (Button)findViewById(R.id.active);
         pulled = (Button)findViewById(R.id.pulled);
         create = (Button)findViewById(R.id.create);
-      
+        test = (Button)findViewById(R.id.test);
         map.setMyLocationEnabled(true);
         map.setInfoWindowAdapter(new PlaceItsInfoWindow());
 
@@ -123,6 +124,18 @@ CancelableCallback
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
  
+        test.setOnClickListener(new OnClickListener(){
+        	public void onClick(View v){
+        		PlaceIts.clear();
+        		PlaceIts.add(new PlaceIt("1", "1","red",new LatLng(18,9),"11/12/2013","Feb 9, 2014 4:57:52 PM"));
+        		PlaceIts.add(new PlaceIt("2", "2","blue",new LatLng(18,10),"11/13/2013","Feb 10, 2014 4:57:52 PM"));
+        		PlaceIts.add(new PlaceIt("3", "3","blue",new LatLng(18,11),"11/14/2013","Feb 11, 2014 4:57:52 PM"));
+        		PlaceIts.add(new PlaceIt("4", "4","green",new LatLng(18,12),"11/15/2013","Feb 12, 2014 4:57:52 PM"));
+        		PlaceIts.add(new PlaceIt("5", "5","green",new LatLng(19,9),"11/16/2013","Feb 13, 2014 4:57:52 PM"));
+        		PlaceIts.add(new PlaceIt("6", "6","orange",new LatLng(19,10),"11/17/2013","Feb 14, 2014 4:57:52 PM"));
+        		PlaceIts.add(new PlaceIt("7", "7","orance",new LatLng(19,11),"11/18/2013","Feb 15, 2014 4:57:52 PM"));
+        	}
+        });
         // Setting click event listener for the find button
         mBtnFind.setOnClickListener(new OnClickListener() {
             @Override
@@ -502,6 +515,8 @@ CancelableCallback
      */
     public void ShowMarkerWhenAppOpen(){
     	Iterator<PlaceIt> itr = PlaceIts.iterator();
+    	map.clear();
+    	mMarkers.clear();
     	while(itr.hasNext()){
         	   PlaceIt tmp = itr.next();
         	   Marker m = map.addMarker(new MarkerOptions()
@@ -607,7 +622,7 @@ CancelableCallback
     	
     }
     /**
-     * Save the active list of the placeit
+     * Save the active list of the placeit, called in onStop method
      */
     public void saveActiveListPlaceIt(){
     	try {
@@ -629,11 +644,16 @@ CancelableCallback
     	}
 
     }
+    protected void onPause(){
+    	super.onPause();
+    	
+    }
     
     @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        ShowMarkerWhenAppOpen();
         
     }
     /**
