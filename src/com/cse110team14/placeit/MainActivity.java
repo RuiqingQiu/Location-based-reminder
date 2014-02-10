@@ -5,6 +5,7 @@
 package com.cse110team14.placeit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -621,6 +622,22 @@ CancelableCallback
     }
     
     /**
+     * A helper function for onCreateReadFile, it will get a string that encodes a placeit
+     * and put it into the list
+     * @param str
+     */
+    public void putPullDownReadFromFileToLists(String str){
+       String []splited = str.split("###");
+ 	   String placeItTitle = splited[0];
+ 	   String description = splited[1];
+ 	   String dateToBeReminded = splited[2];
+ 	   String postDate = splited[3];
+ 	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
+ 	   String color = splited[6];
+       pullDown.add(new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate));
+    }
+    
+    /**
      * Method to build a alert dialog for error condition, mainly used in user entries for
      * Placeit information
      * @param title
@@ -644,6 +661,7 @@ CancelableCallback
     protected void onStop() {
         super.onStop();
     	saveActiveListPlaceIt();
+    	savePulldownListPlaceIt();
     	
     }
     /**

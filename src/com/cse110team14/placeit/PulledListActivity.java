@@ -32,7 +32,7 @@ public class PulledListActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		sorted = new ArrayList<PlaceIt>();
-		List<PlaceIt> pulled = MainActivity.getPullDownList();
+		List<PlaceIt> pulled = MainActivity.pullDown;
 		for (Iterator<PlaceIt> i = pulled.iterator(); i.hasNext();)
 			sorted.add(i.next());
 
