@@ -32,8 +32,8 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 		sorted = new ArrayList<PlaceIt>();
 		// piIterator = MainActivity.PlaceIts.iterator();
-
-		for (Iterator<PlaceIt> i = MainActivity.PlaceIts.iterator(); i
+		List<PlaceIt> active = MainActivity.getActiveList();
+		for (Iterator<PlaceIt> i = active.iterator(); i
 				.hasNext();)
 			sorted.add(i.next());
 

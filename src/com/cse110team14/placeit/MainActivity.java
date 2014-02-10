@@ -81,7 +81,7 @@ CancelableCallback
      * This code is returned in Activity.onActivityResult
      */
 	private GoogleMap map;
-	private static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
+	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
 	private static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
 	
 	private List<Marker> mMarkers = new ArrayList<Marker>();
@@ -195,6 +195,116 @@ CancelableCallback
     			 }
     		 }
         });
+        create.setOnClickListener(new OnClickListener()
+        {
+			@Override
+			public void onClick(View v) 
+			{
+				AlertDialog.Builder alert1 = new AlertDialog.Builder(context);
+		        
+		        alert1.setTitle("Placeit information");
+
+		        // Get the layout inflater
+		        LayoutInflater inflater = getLayoutInflater();
+		        // Set an EditText view to get user input 
+		        
+		        // Inflate and set the layout for the dialog
+		        final View view = inflater.inflate(R.layout.create_placeits, null);
+		        final EditText title = (EditText)view.findViewById(R.id.title);
+		        final EditText description = (EditText)view.findViewById(R.id.description);
+		        final EditText location = (EditText)view.findViewById(R.id.location);
+		        final EditText date = (EditText)view.findViewById(R.id.date);
+		        final EditText color = (EditText)view.findViewById(R.id.color);
+		        // Pass null as the parent view because its going in the dialog layout
+		        alert1.setView(view);
+		        alert1.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
+		        	public void onClick(DialogInterface dialog, int whichButton) {
+		        		String placeItTitle = title.getText().toString();
+		        		if(placeItTitle.isEmpty()){
+			        	  AlertDialog.Builder temp = initializeAlert("No Title Entered", "Please enter a title :)");
+		     		      temp.show();
+		     		      return;
+		        		}
+		        		String placeItDescription = description.getText().toString();
+		        		if(placeItDescription.isEmpty()){
+			        	  AlertDialog.Builder temp = initializeAlert("No Description Entered", "Please enter a description :)");
+		     		      temp.show();
+		     		      return;
+		        		}
+		        		String [] splited = location.getText().toString().split("\\s*,\\s*");
+		        		LatLng position = new LatLng(Double.parseDouble(splited[0]), Double.parseDouble(splited[1]));
+		        		
+		        		String dateToBeReminded = date.getText().toString();	          
+		        		String currentDateTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+			          
+		        		//Check if the date is valid
+		        		if (checkDate(dateToBeReminded) == false){
+		        			AlertDialog.Builder temp = initializeAlert("Enteted Date is not valid", "Please enter a valid date :)");
+		        			temp.show();
+		        			return;
+		        		}
+			          
+		        		String markerColor = color.getText().toString();
+		        		if( markerColor.toLowerCase().equals("red") 
+		        			|| markerColor.toLowerCase().equals("blue")
+		        			|| markerColor.toLowerCase().equals("azure")
+		        			|| markerColor.toLowerCase().equals("cyan")
+					        || markerColor.toLowerCase().equals("green")
+					        || markerColor.toLowerCase().equals("megenta")
+					        || markerColor.toLowerCase().equals("orange")
+					        || markerColor.toLowerCase().equals("violet")
+					        || markerColor.toLowerCase().equals("rose")
+					        || markerColor.toLowerCase().equals("yellow")
+					   )
+			           {}  
+			           else{
+			        	  AlertDialog.Builder temp = initializeAlert("Entered Color is not valid", "Please enter a valid color");
+		     		      temp.show();
+		     		      return;
+			          }
+			          Marker m = map.addMarker(new MarkerOptions().title(placeItTitle).position(position));
+			          //All information entries are valid
+			          m.setSnippet(placeItDescription + "###"
+			        		  + dateToBeReminded +"###" + currentDateTime);
+			          
+			          if(markerColor.toLowerCase().equals("red"))
+			        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+			          else if(markerColor.toLowerCase().equals("blue"))
+			        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+		        	  else if(markerColor.toLowerCase().equals("azure"))
+		        		  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+		        	  else if(markerColor.toLowerCase().equals("cyan"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+			          else if(markerColor.toLowerCase().equals("green"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+			          else if(markerColor.toLowerCase().equals("magenta"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+			          else if(markerColor.toLowerCase().equals("orange"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+			          else if(markerColor.toLowerCase().equals("violet"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+			          else if(markerColor.toLowerCase().equals("rose"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+			          else if(markerColor.toLowerCase().equals("yellow"))
+			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+			          mMarkers.add(m);
+			          PlaceIts.add(new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime));
+			          marker = mMarkers.iterator();
+		        	}
+		        });//End of positive button
+		        alert1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						  public void onClick(DialogInterface dialog, int whichButton) {
+						  }
+			    });
+			        
+		        /* Rather than delete, we will set the marker to be invisible and 
+				 * it's never added to the list
+				 */
+				alert1.show();
+			}
+				
+        });//End of on create
+
         ShowMarkerWhenAppOpen();
         
     }
@@ -205,9 +315,7 @@ CancelableCallback
     @Override
     protected void onStart() {
         super.onStart();
-        
-        //ShowMarkerWhenAppOpen();
-        
+                
         /*
          * Function for user press on map for a long time, it will create a Marker
          * at where the user pressed on
@@ -543,10 +651,6 @@ CancelableCallback
 	
 	public void goToPulledList(View v){
 		startActivity(new Intent(MainActivity.this, PulledListActivity.class));
-	}
-	
-	public void goToCreate(View v){
-		startActivity(new Intent(MainActivity.this, CreatePlaceIts.class));
 	}
 	
 

@@ -32,7 +32,6 @@
         android:layout_alignBaseline="@+id/active"
         android:layout_alignBottom="@+id/active"
         android:layout_toLeftOf="@+id/active"
-        android:onClick="goToCreate"
         android:text="@string/create" />
     
     <fragment
@@ -46,7 +45,7 @@
         android:id="@+id/et_place"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/expired"
+        android:layout_above="@+id/active"
         android:layout_toLeftOf="@+id/pulled"
         android:ems="10"
         android:hint="@string/hint"
