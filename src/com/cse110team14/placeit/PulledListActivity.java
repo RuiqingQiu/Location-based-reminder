@@ -1,19 +1,92 @@
 package com.cse110team14.placeit;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 public class PulledListActivity extends Activity{
-	public void onCreate(Bundle savedInstanceState){
+
+	private Iterator<PlaceIt> piIterator;
+	private List<PlaceIt> sorted;
+
+	private PlaceIt clicked;
+	private int id;
+
+	public void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pulledlist);
-  
+
+		sorted = new ArrayList<PlaceIt>();
+		List<PlaceIt> pulled = MainActivity.getPullDownList();
+		for (Iterator<PlaceIt> i = pulled.iterator(); i.hasNext();)
+			sorted.add(i.next());
+
+		Collections.sort(sorted, new CustomComparator());
+
+		setContentView(R.layout.activity_pulledlist);
+
+		ListView listView = (ListView) findViewById(R.id.PulledListView);
+
+
+		List<HashMap<String, String>> activeList = new ArrayList<HashMap<String, String>>();
+		for (PlaceIt curr : sorted) {
+			HashMap<String, String> map = new HashMap<String, String>();
+			map.put("ItemTitle", "Title: " + curr.getTitle());
+			map.put("ItemText", "Description: " + curr.getDescription());
+			map.put("ItemDatePosted", "Post Date and time: " + curr.getDate());
+			activeList.add(map);
+		}
+
+		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
+				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
+						"ItemDatePosted" }, new int[] { R.id.ItemTitle,
+						R.id.ItemText, R.id.ItemDatePosted });
+		listView.setAdapter(adapter);
+
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View view, int arg2,
+					long id) {
+				// ListView listView = (ListView) arg0;
+
+				PulledListActivity.this.id = (int) id;
+				clicked = sorted.get((int) id);
+				new AlertDialog.Builder(PulledListActivity.this)
+						.setTitle("Title: " + clicked.getTitle())
+						.setItems(
+								new String[] {
+										"Description: "
+												+ clicked.getDescription(),
+										"Date to be Reminded: "
+												+ clicked.getDateReminded(),
+										"Post Date and time: "
+												+ clicked.getDate(),
+										"Location: ("
+												+ clicked.getLocation().latitude
+												+ ", "
+												+ clicked.getLocation().longitude
+												+ ")" }, null)
+						.setNegativeButton("OK", null).show();
+
+			}
+		});
 	}
-	  @Override
-	    public boolean onCreateOptionsMenu(Menu menu) {
-	        // Inflate the menu; this adds items to the action bar if it is present.
-	        getMenuInflater().inflate(R.menu.main, menu);
-	        return true;
-	    }
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
 }
