@@ -82,7 +82,7 @@ CancelableCallback
      */
 	private GoogleMap map;
 	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
-	private static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
+	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
 	
 	private List<Marker> mMarkers = new ArrayList<Marker>();
 	private Iterator<Marker> marker;
@@ -327,7 +327,7 @@ CancelableCallback
     @Override
     protected void onStart() {
         super.onStart();
-                
+        
         /*
          * Function for user press on map for a long time, it will create a Marker
          * at where the user pressed on
@@ -604,6 +604,7 @@ CancelableCallback
     protected void onStop() {
         super.onStop();
     	saveActiveListPlaceIt();
+    	
     }
     /**
      * Save the active list of the placeit
@@ -633,8 +634,8 @@ CancelableCallback
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        
     }
-
     /**
      * Method name: setUpMapIfNeeded
      * Description: This method will be called when the map start up, it will check if

@@ -25,6 +25,8 @@ import android.widget.Toast;
 public class ActiveListActivity<activeListView> extends Activity {
 	private Iterator<PlaceIt> piIterator;
 	private List<PlaceIt> sorted;
+	
+	List<HashMap<String, String>> activeList;
 
 	private PlaceIt clicked;
 	private int id;
@@ -57,15 +59,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 		 */
 		// for (PlaceIt pi : sorted)
 
-		List<HashMap<String, String>> activeList = new ArrayList<HashMap<String, String>>();
-		for (PlaceIt curr : sorted) {
-			HashMap<String, String> map = new HashMap<String, String>();
-			// curr = piIterator.next();
-			map.put("ItemTitle", "Title: " + curr.getTitle());
-			map.put("ItemText", "Description: " + curr.getDescription());
-			map.put("ItemDatePosted", "Post Date and time: " + curr.getDate());
-			activeList.add(map);
-		}
+		refresh();
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
 				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
@@ -115,9 +109,9 @@ public class ActiveListActivity<activeListView> extends Activity {
 										
 										//TODO impl move to pulledlist action
 										List<PlaceIt> pulled = MainActivity.getActiveList();
-										pulled.add(clicked);
+										MainActivity.pullDown.add(clicked);
 										sorted.remove(clicked);
-										active.remove(clicked);
+										MainActivity.PlaceIts.remove(clicked);
 										
 										Toast.makeText(
 												ActiveListActivity.this,
@@ -125,6 +119,8 @@ public class ActiveListActivity<activeListView> extends Activity {
 														+ clicked.getTitle()
 														+ "\" now moved to Pulled-Down list",
 												Toast.LENGTH_LONG).show();
+										finish();
+										startActivity(getIntent());
 									}
 								})
 						.setNeutralButton("OK", new OnClickListener() {
@@ -150,6 +146,18 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 			}
 		});
+	}
+	
+	public void refresh(){
+		activeList = new ArrayList<HashMap<String, String>>();
+		for (PlaceIt curr : sorted) {
+			HashMap<String, String> map = new HashMap<String, String>();
+			// curr = piIterator.next();
+			map.put("ItemTitle", "Title: " + curr.getTitle());
+			map.put("ItemText", "Description: " + curr.getDescription());
+			map.put("ItemDatePosted", "Post Date and time: " + curr.getDate());
+			activeList.add(map);
+		}
 	}
 
 	@Override
