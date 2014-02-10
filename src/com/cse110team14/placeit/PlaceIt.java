@@ -29,6 +29,9 @@ public class PlaceIt implements Serializable {
 		this.placeitType = 1;
 		this.color = color;
 	}
+	public int getPlaceItType(){
+		return placeitType;
+	}
 
 	public String getTitle() {
 		return title;

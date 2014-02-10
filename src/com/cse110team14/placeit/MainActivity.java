@@ -61,6 +61,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -90,6 +91,8 @@ CancelableCallback
 	private Iterator<Marker> marker;
 	private String activeListFile = "saved_placeits.dat";
 	private String pulldownListFile = "pulldown_placeits.dat";
+	private Handler hand = new Handler();
+	private int range = 100; //if within 100 meters of placeit, will send notification to user
 	
 	AlertDialog.Builder alert;
 	Location myCurrentLocation;
@@ -107,6 +110,7 @@ CancelableCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
+        
 
         
         // Getting reference to the find button
@@ -125,6 +129,8 @@ CancelableCallback
         Log.e("hello",""+PlaceIts.size());
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
+        
+        hand.postDelayed(run, 1000);
  
         test.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
@@ -334,6 +340,31 @@ CancelableCallback
 
         ShowMarkerWhenAppOpen();
         
+    }
+    Runnable run = new Runnable() {
+        @Override
+        public void run() {
+            checkIfNearPlaceIt();
+        }
+    };
+    public void checkIfNearPlaceIt(){
+    	//for testing in simulator
+    	//Location location = new Location("");
+    	//location.setLatitude(36.971385);
+    	//location.setLongitude(-122.004271);
+    	for (PlaceIt pi : PlaceIts){
+    		if (pi.getPlaceItType() == 1){
+    			//change place it type to pulled down
+    			Location placeItLocation = new Location("");
+    			placeItLocation.setLatitude(pi.getLocation().latitude);
+    			placeItLocation.setLongitude(pi.getLocation().longitude);
+    			if (myCurrentLocation.distanceTo(placeItLocation) < range){
+    				//send notification to user here
+    				Log.e(null, "YAY IT WORKS!");
+    			}
+    		}
+    	}
+    	hand.postDelayed(run, 1000);
     }
 
     /*
