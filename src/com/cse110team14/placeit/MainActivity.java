@@ -202,7 +202,7 @@ CancelableCallback
 			{
 				AlertDialog.Builder alert1 = new AlertDialog.Builder(context);
 		        
-		        alert1.setTitle("Placeit information");
+		        alert1.setTitle("Create A PlaceIt");
 
 		        // Get the layout inflater
 		        LayoutInflater inflater = getLayoutInflater();
@@ -232,6 +232,18 @@ CancelableCallback
 		     		      return;
 		        		}
 		        		String [] splited = location.getText().toString().split("\\s*,\\s*");
+		        		double latitude = Double.parseDouble(splited[0]);
+		        		double longtitude = Double.parseDouble(splited[1]);
+		        		if(splited.length != 2){
+		        			AlertDialog.Builder temp = initializeAlert("Not a valid location", "Please enter a valid location :)");
+			     		    temp.show();
+			     		    return;
+		        		}
+		        		if(latitude > 90.0 || latitude< -90.0 || longtitude > 180 || longtitude < -180){
+		        			AlertDialog.Builder temp = initializeAlert("Not a valid location", "Please enter a valid location :)");
+		     		    	temp.show();
+		     		    	return;
+		        		}
 		        		LatLng position = new LatLng(Double.parseDouble(splited[0]), Double.parseDouble(splited[1]));
 		        		
 		        		String dateToBeReminded = date.getText().toString();	          
@@ -591,6 +603,12 @@ CancelableCallback
     @Override
     protected void onStop() {
         super.onStop();
+    	saveActiveListPlaceIt();
+    }
+    /**
+     * Save the active list of the placeit
+     */
+    public void saveActiveListPlaceIt(){
     	try {
     		FileOutputStream out = openFileOutput("saved_placeits.dat", Context.MODE_PRIVATE);
     		//write place its to file
