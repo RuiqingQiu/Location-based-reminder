@@ -130,7 +130,7 @@ CancelableCallback
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
         
-        hand.postDelayed(run, 1000);
+        //hand.postDelayed(run, 1000);
  
         test.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
@@ -181,6 +181,7 @@ CancelableCallback
                 
             }
         });
+        
         
         retrackBtn.setOnClickListener(new OnClickListener(){
         	 @Override
@@ -323,6 +324,8 @@ CancelableCallback
 			          mMarkers.add(m);
 			          PlaceIts.add(new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime));
 			          marker = mMarkers.iterator();
+			          map.moveCamera(CameraUpdateFactory.newLatLngZoom(position,17));
+		              map.animateCamera(CameraUpdateFactory.zoomIn());
 		        	}
 		        });//End of positive button
 		        alert1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -335,12 +338,14 @@ CancelableCallback
 				 */
 				alert1.show();
 			}
+			
 				
         });//End of on create
 
         ShowMarkerWhenAppOpen();
         
     }
+    /* THIS CODE DOESN'T WORK WHEN I ADDED PLACEIT 
     Runnable run = new Runnable() {
         @Override
         public void run() {
@@ -365,8 +370,9 @@ CancelableCallback
     		}
     	}
     	hand.postDelayed(run, 1000);
-    }
-
+    }*/
+    
+    
     /*
      * Called when the Activity becomes visible.
      */
@@ -618,15 +624,16 @@ CancelableCallback
         	BufferedReader reader = new BufferedReader(isr);
         	String readString = reader.readLine () ;
         	while (readString != null){
-        	   Log.e("hello", readString);
+        	   Log.e("pulldown", readString);
         	   String []splited = readString.split("###");
         	   /*for (int i = 0; i < splited.length; i++){
         		   Log.e("hello", splited[i]);
         	   }*/
-        	   Log.e("hello", "Another one");
-        	   putPlaceItsReadFromFileToLists(readString);
+        	   Log.e("pulldown", "Another one");
+        	   putPullDownReadFromFileToLists(readString);
         	   readString = reader.readLine();
             }
+        	
         } catch (FileNotFoundException e) {
         	e.printStackTrace();
         } catch (IOException e) {
@@ -725,9 +732,9 @@ CancelableCallback
     	try {
     		FileOutputStream out = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
     		//write place its to file
-    		Iterator<PlaceIt> placeitsIterator = PlaceIts.iterator();
-    		while(placeitsIterator.hasNext()){
-    			PlaceIt element = placeitsIterator.next();
+    		Iterator<PlaceIt> pulldownIterator = pullDown.iterator();
+    		while(pulldownIterator.hasNext()){
+    			PlaceIt element = pulldownIterator.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
     					element.getLocation().longitude + "###" + element.getColor()+"\n"; 
@@ -911,6 +918,7 @@ CancelableCallback
 	class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
  
         JSONObject jObject;
+        LatLng location;
  
         // Invoked by execute() method of this object
         @Override
@@ -975,6 +983,7 @@ CancelableCallback
                 // Locate the first location
                 if(i==0)
                     map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+  
             }
         }
     }//End of class
