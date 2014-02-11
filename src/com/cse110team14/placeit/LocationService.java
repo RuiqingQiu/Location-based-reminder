@@ -1,4 +1,8 @@
 package com.cse110team14.placeit;
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -8,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -115,6 +121,23 @@ public class LocationService extends Service implements LocationListener,
  public void onLocationChanged(Location location) {
   double latitude = location.getLatitude();
   double longitude = location.getLongitude();
+  Location myCurrentLocation = new Location("");
+  myCurrentLocation.setLatitude(latitude);
+  myCurrentLocation.setLongitude(longitude);
+  for (PlaceIt pi : MainActivity.PlaceIts){
+		if (pi.getPlaceItType() == 1){
+			//change place it type to pulled down
+			Location placeItLocation = new Location("");
+			placeItLocation.setLatitude(pi.getLocation().latitude);
+			placeItLocation.setLongitude(pi.getLocation().longitude);
+			if (myCurrentLocation.distanceTo(placeItLocation) < 100){
+				//send notification to user here
+				Log.e(null,"" + myCurrentLocation.distanceTo(placeItLocation));
+				Log.e(null, "YAY IT WORKS!");
+				createNotification(null,pi);
+			}
+		}
+	}
 
   Log.i("info", "Latitude :: " + latitude);
   Log.i("info", "Longitude :: " + longitude);
@@ -146,4 +169,27 @@ public class LocationService extends Service implements LocationListener,
   mLocationClient.removeLocationUpdates(this);
   super.onDestroy();
  }
+ 
+ @SuppressLint("NewApi")
+	public void createNotification(View view, PlaceIt p) {
+        // Prepare intent which is triggered if the
+        // notification is selected
+        Intent intent = new Intent(this, PulledListActivity.class);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        long []vibrate = {300,300};
+        // Build notification
+        // Actions are just fake
+        Notification noti = new Notification.Builder(this)
+            .setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
+            .setContentText("Description: " + p.getDescription())
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentIntent(pIntent).build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // hide the notification after its selected
+        noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        notificationManager.notify(0, noti);
+
+      }
 }

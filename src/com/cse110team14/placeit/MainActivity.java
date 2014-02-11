@@ -77,9 +77,7 @@ import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
 
 public class MainActivity extends Activity implements
-CancelableCallback,
-GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener
+CancelableCallback
 {
 	
 	// Global constants
@@ -100,8 +98,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	private int range = 100; //if within 100 meters of placeit, will send notification to user
 	
 	AlertDialog.Builder alert;
-	Location myCurrentLocation;
-	LocationClient myLocationClient;
 	Button mBtnFind;
 	Button retrackBtn;
 	Button active;
@@ -115,7 +111,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
-        myLocationClient = new LocationClient(this,this,this);
         
         // Getting reference to the find button
         mBtnFind = (Button) findViewById(R.id.btn_show);
@@ -134,7 +129,9 @@ GooglePlayServicesClient.OnConnectionFailedListener
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
         
-        //hand.postDelayed(run, 1000);
+        
+        //Start the service for checking location onCreate
+        startService(new Intent(this, LocationService.class));
  
         test.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
@@ -352,40 +349,14 @@ GooglePlayServicesClient.OnConnectionFailedListener
         ShowMarkerWhenAppOpen();
         
     }
-    /* THIS CODE DOESN'T WORK WHEN I ADDED PLACEIT 
-    Runnable run = new Runnable() {
-        @Override
-        public void run() {
-            checkIfNearPlaceIt();
-        }
-    };
-    public void checkIfNearPlaceIt(){
-    	//for testing in simulator
-    	//Location location = new Location("");
-    	//location.setLatitude(36.971385);
-    	//location.setLongitude(-122.004271);
-    	myCurrentLocation = myLocationClient.getLastLocation();
-    	for (PlaceIt pi : PlaceIts){
-    		if (pi.getPlaceItType() == 1){
-    			//change place it type to pulled down
-    			Location placeItLocation = new Location("");
-    			placeItLocation.setLatitude(pi.getLocation().latitude);
-    			placeItLocation.setLongitude(pi.getLocation().longitude);
-    			if (myCurrentLocation.distanceTo(placeItLocation) < range){
-    				//send notification to user here
-    				Log.e(null, "YAY IT WORKS!");
-    			}
-    		}
-    	}
-    	hand.postDelayed(run, 1000);
-    }*/
     
+   
     
     @SuppressLint("NewApi")
 	public void createNotification(View view, PlaceIt p) {
         // Prepare intent which is triggered if the
         // notification is selected
-        Intent intent = new Intent(this, ActiveListActivity.class);
+        Intent intent = new Intent(this, PulledListActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         // Build notification
@@ -408,9 +379,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
     @Override
     protected void onStart() {
         super.onStart();
-        myLocationClient.connect();
-    	startService(new Intent(this, LocationService.class));
-
         
         /*
          * Function for user press on map for a long time, it will create a Marker
@@ -730,7 +698,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
     @Override
     protected void onStop() {
         super.onStop();
-        myLocationClient.disconnect();
     	saveActiveListPlaceIt();
     	savePulldownListPlaceIt();
     	
@@ -782,7 +749,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
     }
     protected void onPause(){
     	super.onPause();
-    	
+    	startService(new Intent(this, LocationService.class));
     }
     
     @Override
@@ -1022,22 +989,4 @@ GooglePlayServicesClient.OnConnectionFailedListener
     }//End of class
 	/* END OF HELPER FUNCTIONS AND CLASSES FOR GETTING LOCATION DATA FROM GOOGLE */
 
-	@Override
-	public void onConnectionFailed(ConnectionResult arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onConnected(Bundle arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onDisconnected() {
-		// TODO Auto-generated method stub
-		
-	}
-  
 }
