@@ -52,6 +52,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -143,6 +146,9 @@ GooglePlayServicesClient.OnConnectionFailedListener
         		PlaceIts.add(new PlaceIt("5", "5","green",new LatLng(19,9),"11/16/2013","Feb 13, 2014 4:57:52 PM"));
         		PlaceIts.add(new PlaceIt("6", "6","orange",new LatLng(19,10),"11/17/2013","Feb 14, 2014 4:57:52 PM"));
         		PlaceIts.add(new PlaceIt("7", "7","orance",new LatLng(19,11),"11/18/2013","Feb 15, 2014 4:57:52 PM"));
+        		createNotification(null, PlaceIts.get(0));
+        		
+        		
         	}
         });
         // Setting click event listener for the find button
@@ -375,6 +381,27 @@ GooglePlayServicesClient.OnConnectionFailedListener
     }*/
     
     
+    @SuppressLint("NewApi")
+	public void createNotification(View view, PlaceIt p) {
+        // Prepare intent which is triggered if the
+        // notification is selected
+        Intent intent = new Intent(this, ActiveListActivity.class);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        // Build notification
+        // Actions are just fake
+        Notification noti = new Notification.Builder(this)
+            .setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
+            .setContentText("Description: " + p.getDescription())
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentIntent(pIntent).build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // hide the notification after its selected
+        noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        notificationManager.notify(0, noti);
+
+      }
     /*
      * Called when the Activity becomes visible.
      */
@@ -382,6 +409,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     protected void onStart() {
         super.onStart();
         myLocationClient.connect();
+    	startService(new Intent(this, LocationService.class));
+
         
         /*
          * Function for user press on map for a long time, it will create a Marker
@@ -408,7 +437,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				//First case for the marker, if it's already a placeit
 				if(mMarkers.contains(m))
 				{
-				
+					return;
 				}
 				
 				alert = new AlertDialog.Builder(context);
