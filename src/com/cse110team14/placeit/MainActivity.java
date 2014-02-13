@@ -356,7 +356,7 @@ CancelableCallback
 	public void createNotification(View view, PlaceIt p) {
         // Prepare intent which is triggered if the
         // notification is selected
-        Intent intent = new Intent(this, PulledListActivity.class);
+        Intent intent = new Intent(this, ActiveListActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         // Build notification
