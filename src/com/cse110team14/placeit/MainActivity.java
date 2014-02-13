@@ -62,6 +62,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -356,15 +358,18 @@ CancelableCallback
 	public void createNotification(View view, PlaceIt p) {
         // Prepare intent which is triggered if the
         // notification is selected
-        Intent intent = new Intent(this, PulledListActivity.class);
+    	Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClass(getApplicationContext(), PulledListActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         // Build notification
         // Actions are just fake
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification noti = new Notification.Builder(this)
             .setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
             .setContentText("Description: " + p.getDescription())
             .setSmallIcon(R.drawable.ic_launcher)
+            .setSound(alarmSound)
             .setContentIntent(pIntent).build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // hide the notification after its selected
