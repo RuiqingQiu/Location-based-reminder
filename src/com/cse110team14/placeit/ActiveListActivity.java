@@ -133,6 +133,26 @@ public class ActiveListActivity<activeListView> extends Activity {
 												+ "\" completed.",
 										Toast.LENGTH_LONG).show();
 							}
+						})
+						.setNegativeButton("Discard",
+								new OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+								sorted.remove(clicked);
+								MainActivity.PlaceIts.remove(clicked);
+
+								Toast.makeText(
+										ActiveListActivity.this,
+										"Item \""
+												+ clicked.getTitle()
+												+ "\" is now discarded.",
+										Toast.LENGTH_LONG).show();
+								finish();
+								startActivity(getIntent());
+							}
 						}).create();
 
 				dialog.show();

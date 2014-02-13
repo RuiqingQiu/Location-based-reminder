@@ -80,7 +80,7 @@ public class PulledListActivity extends Activity {
 												+ ", "
 												+ clicked.getLocation().longitude
 												+ ")" }, null)
-						.setPositiveButton("Move To Active",
+						.setPositiveButton("Repost",
 								new OnClickListener() {
 
 									@Override
