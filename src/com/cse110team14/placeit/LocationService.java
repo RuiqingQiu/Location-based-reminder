@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -39,10 +41,10 @@ public class LocationService extends Service implements LocationListener,
  @Override
  public void onCreate() {
   mLocationRequest = LocationRequest.create();
-  mLocationRequest.setInterval(1);
+  mLocationRequest.setInterval(5);
   //mLocationRequest.setInterval(CommonUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
   mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-  mLocationRequest.setFastestInterval(1);
+  mLocationRequest.setFastestInterval(5);
   //mLocationRequest.setFastestInterval(CommonUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
   mLocationClient = new LocationClient(getApplicationContext(), this,this);
   mLocationClient.connect();
@@ -125,19 +127,20 @@ public class LocationService extends Service implements LocationListener,
   myCurrentLocation.setLatitude(latitude);
   myCurrentLocation.setLongitude(longitude);
   for (PlaceIt pi : MainActivity.PlaceIts){
-		if (pi.getPlaceItType() == 1){
-			//change place it type to pulled down
-			Location placeItLocation = new Location("");
-			placeItLocation.setLatitude(pi.getLocation().latitude);
-			placeItLocation.setLongitude(pi.getLocation().longitude);
-			if (myCurrentLocation.distanceTo(placeItLocation) < 100){
-				//send notification to user here
-				Log.e(null,"" + myCurrentLocation.distanceTo(placeItLocation));
-				Log.e(null, "YAY IT WORKS!");
-				createNotification(null,pi);
-			}
+		//change place it type to pulled down
+		Location placeItLocation = new Location("");
+		placeItLocation.setLatitude(pi.getLocation().latitude);
+		placeItLocation.setLongitude(pi.getLocation().longitude);
+		if (myCurrentLocation.distanceTo(placeItLocation) < 100){
+			//send notification to user here
+			Log.e(null,"" + myCurrentLocation.distanceTo(placeItLocation));
+			Log.e(null, "YAY IT WORKS!");
+			//Create the notification and move the placeit to pulldown
+			createNotification(null,pi);
+			MainActivity.PlaceIts.remove(pi);
+			MainActivity.pullDown.add(pi);
 		}
-	}
+  }
 
   Log.i("info", "Latitude :: " + latitude);
   Log.i("info", "Longitude :: " + longitude);
@@ -174,15 +177,20 @@ public class LocationService extends Service implements LocationListener,
 	public void createNotification(View view, PlaceIt p) {
         // Prepare intent which is triggered if the
         // notification is selected
-        Intent intent = new Intent(this, PulledListActivity.class);
+	    Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClass(getApplicationContext(), ActiveListActivity.class);
+        
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        long []vibrate = {300,300};
+        long []vibrate = {500,500,500,500,500,500,500,500,500};
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         // Build notification
         // Actions are just fake
         Notification noti = new Notification.Builder(this)
             .setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
             .setContentText("Description: " + p.getDescription())
+            .setSound(alarmSound)
+            .setVibrate(vibrate)
             .setSmallIcon(R.drawable.ic_launcher)
             .setContentIntent(pIntent).build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
