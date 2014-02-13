@@ -11,6 +11,9 @@ public class CustomComparator implements Comparator<PlaceIt> {
 	public int extractBackslashes(PlaceIt aplaceit){
 		String date = aplaceit.getDateReminded();
 		date = date.replace("/", "");
+		String temp1 = date.substring(4);
+		String temp2 = date.substring(0,4);
+		date = temp1+temp2;
 		return Integer.parseInt(date);
 	}
 }
