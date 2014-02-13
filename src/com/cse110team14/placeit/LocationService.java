@@ -1,4 +1,5 @@
 package com.cse110team14.placeit;
+import com.cse110team14.*;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -178,7 +179,8 @@ public class LocationService extends Service implements LocationListener,
         // Prepare intent which is triggered if the
         // notification is selected
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClass(getApplicationContext(), PulledListActivity.class);
+        intent.setClass(getApplicationContext(), 
+        		MainActivity.class);
         
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 

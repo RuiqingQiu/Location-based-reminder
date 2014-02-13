@@ -3,6 +3,8 @@
  * Hello world
  */
 package com.cse110team14.placeit;
+
+import com.cse110team14.placeit.PulledListActivity;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -359,8 +361,9 @@ CancelableCallback
         // Prepare intent which is triggered if the
         // notification is selected
     	Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClass(getApplicationContext(), PulledListActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        intent.setClass(getApplicationContext(), 
+        		MainActivity.class);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent,0);
 
         // Build notification
         // Actions are just fake
