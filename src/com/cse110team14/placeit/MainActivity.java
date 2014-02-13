@@ -360,16 +360,9 @@ CancelableCallback
 	public void createNotification(View view, PlaceIt p) {
         // Prepare intent which is triggered if the
         // notification is selected
-<<<<<<< HEAD
 
     	Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-=======
-    	Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClass(getApplicationContext(), 
-        		MainActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent,0);
->>>>>>> 7a3f5b596ac8e19023bfd9303645ad2e869bb556
 
         // Build notification
         // Actions are just fake

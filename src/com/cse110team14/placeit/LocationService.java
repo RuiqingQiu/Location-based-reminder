@@ -178,14 +178,10 @@ public class LocationService extends Service implements LocationListener,
 	public void createNotification(View view, PlaceIt p) {
         // Prepare intent which is triggered if the
         // notification is selected
-<<<<<<< HEAD
-	    Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClass(getApplicationContext(), ActiveListActivity.class);
-=======
+
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClass(getApplicationContext(), 
         		MainActivity.class);
->>>>>>> 7a3f5b596ac8e19023bfd9303645ad2e869bb556
         
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
