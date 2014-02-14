@@ -1,4 +1,7 @@
 package com.cse110team14.placeit;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cse110team14.*;
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -31,6 +34,7 @@ public class LocationService extends Service implements LocationListener,
 
  private LocationRequest mLocationRequest;  
  private LocationClient mLocationClient;  
+ private int notifyID = 1;
 
  public LocationService() {
 
@@ -127,7 +131,9 @@ public class LocationService extends Service implements LocationListener,
   Location myCurrentLocation = new Location("");
   myCurrentLocation.setLatitude(latitude);
   myCurrentLocation.setLongitude(longitude);
-  for (PlaceIt pi : MainActivity.PlaceIts){
+  List<PlaceIt> tmp = new ArrayList<PlaceIt>();
+  tmp.addAll( MainActivity.PlaceIts);
+  for (PlaceIt pi : tmp){
 		//change place it type to pulled down
 		Location placeItLocation = new Location("");
 		placeItLocation.setLatitude(pi.getLocation().latitude);
@@ -178,7 +184,6 @@ public class LocationService extends Service implements LocationListener,
 	public void createNotification(View view, PlaceIt p) {
         // Prepare intent which is triggered if the
         // notification is selected
-
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClass(getApplicationContext(), 
         		MainActivity.class);
@@ -195,12 +200,13 @@ public class LocationService extends Service implements LocationListener,
             .setSound(alarmSound)
             .setVibrate(vibrate)
             .setSmallIcon(R.drawable.ic_launcher)
+            .setNumber(notifyID++)
             .setContentIntent(pIntent).build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // hide the notification after its selected
         noti.flags |= Notification.FLAG_AUTO_CANCEL;
 
-        notificationManager.notify(0, noti);
+        notificationManager.notify(notifyID, noti);
 
       }
 }
