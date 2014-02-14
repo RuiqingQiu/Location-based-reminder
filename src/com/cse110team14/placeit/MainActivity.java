@@ -267,19 +267,15 @@ CancelableCallback
 		     		      return;
 		        		}
 		        		String [] splited = location.getText().toString().split("\\s*,\\s*");
-		        		double latitude = Double.parseDouble(splited[0]);
-		        		double longtitude = Double.parseDouble(splited[1]);
-		        		if(splited.length != 2){
+		        		if (location.toString().isEmpty() ||
+		        				splited.length != 2 ||
+		        				Double.parseDouble(splited[0]) > 90.0 || 
+		        				Double.parseDouble(splited[0]) < -90.0 || 
+		        				Double.parseDouble(splited[1]) > 180 || 
+		        				Double.parseDouble(splited[1]) < -180){
 		        			AlertDialog.Builder temp = initializeAlert("Not a valid location", "Please enter a valid location :)");
 			     		    temp.show();
 			     		    return;
-		        		}
-		        		
-		        		
-		        		if(latitude > 90.0 || latitude< -90.0 || longtitude > 180 || longtitude < -180){
-		        			AlertDialog.Builder temp = initializeAlert("Not a valid location", "Please enter a valid location :)");
-		     		    	temp.show();
-		     		    	return;
 		        		}
 		        		LatLng position = new LatLng(Double.parseDouble(splited[0]), Double.parseDouble(splited[1]));
 		        		int placeItType = 1;
