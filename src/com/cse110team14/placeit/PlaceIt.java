@@ -7,6 +7,7 @@ import java.util.Date;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.location.Location;
+import android.util.Log;
 
 
 public class PlaceIt implements Serializable {
@@ -55,14 +56,33 @@ public class PlaceIt implements Serializable {
 	public String getDate() {
 		return postDate;
 	}
+	
+	
 	public Calendar getDateRemindedToCalendar(){
 		String [] splited = dateToBeReminded.split("/");
-		int month = Integer.parseInt(splited[0]);
+		int month = Integer.parseInt(splited[0]) - 1;
 		int day = Integer.parseInt(splited[1]);
 		int year = Integer.parseInt(splited[2]);
-		Calendar c = Calendar.getInstance();
-		c.set(year, month, day);
-		return c;
+		String [] tmp = postDate.split(" ");
+		if(tmp[4].compareTo("PM") == 0)
+		{
+			int colon = tmp[3].indexOf(':');
+			int hourOfDay = Integer.parseInt(tmp[3].substring(0,colon)) + 12;
+			int minute = Integer.parseInt(tmp[3].substring(colon+1, colon+3));
+			Log.e("hello", "hour: " + hourOfDay + "minute: " + minute);
+			Calendar c = Calendar.getInstance();
+			c.set(year, month, day, hourOfDay, minute);
+			return c;
+		}
+		else{
+			int colon = tmp[3].indexOf(':');
+			int hourOfDay = Integer.parseInt(tmp[3].substring(0,colon));
+			int minute = Integer.parseInt(tmp[3].substring(colon+1, colon+3));
+			Log.e("hello", "hour: " + hourOfDay + "minute: " + minute);
+			Calendar c = Calendar.getInstance();
+			c.set(year, month, day, hourOfDay, minute);
+			return c;
+		}
 	}
 
 	public String getColor() {
