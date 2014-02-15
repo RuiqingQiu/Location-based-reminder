@@ -1,5 +1,6 @@
 package com.cse110team14.placeit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.cse110team14.*;
@@ -35,6 +36,8 @@ public class LocationService extends Service implements LocationListener,
  private LocationRequest mLocationRequest;  
  private LocationClient mLocationClient;  
  private int notifyID = 1;
+ private int range = 804;
+ private long oneWeekInMillSec =  604800000;
 
  public LocationService() {
 
@@ -133,12 +136,14 @@ public class LocationService extends Service implements LocationListener,
   myCurrentLocation.setLongitude(longitude);
   List<PlaceIt> tmp = new ArrayList<PlaceIt>();
   tmp.addAll( MainActivity.PlaceIts);
+  
+  //This part is for checking if the placeit in the active list is within range
   for (PlaceIt pi : tmp){
 		//change place it type to pulled down
 		Location placeItLocation = new Location("");
 		placeItLocation.setLatitude(pi.getLocation().latitude);
 		placeItLocation.setLongitude(pi.getLocation().longitude);
-		if (myCurrentLocation.distanceTo(placeItLocation) < 100){
+		if (myCurrentLocation.distanceTo(placeItLocation) < range){
 			//send notification to user here
 			Log.e(null,"" + myCurrentLocation.distanceTo(placeItLocation));
 			Log.e(null, "YAY IT WORKS!");
@@ -147,6 +152,95 @@ public class LocationService extends Service implements LocationListener,
 			MainActivity.PlaceIts.remove(pi);
 			MainActivity.pullDown.add(pi);
 		}
+  }
+  
+  //This part is for checking if the placeit in the pulldown lists need to be put back
+  tmp.addAll(MainActivity.pullDown);
+  for(PlaceIt pi : tmp){
+	  Calendar c1, c2;
+	  long previous, current;
+	  switch (pi.getPlaceItType()){
+		  //Default type, one time only not need to check
+		  case 1:
+			  break;
+		  //Minutely
+		  case 2:
+			  c1 = pi.getDateRemindedToCalendar();
+			  previous = c1.getTimeInMillis();
+			  Log.e("hello", "previous: "+previous);
+			  Log.e("hello", "previous: "+c1.toString());
+			  c2 = Calendar.getInstance();
+			  current = c2.getTimeInMillis();
+			  Log.e("hello", ""+"current: " + current);
+			  Log.e("hello", "current: "+c2.toString());
+			  Log.e("hello", ""+(current - previous));
+
+			  //Put back to active
+			  Log.e("hello", "current - previous: "+(current - previous));
+			  
+			  Log.e("hello", "Placeit length: " + MainActivity.PlaceIts.size());
+			  Log.e("hello", "pulldown length: " + MainActivity.pullDown.size());
+			  if((current - previous) > 60000)
+			  {
+				  pi.setPlaceItType(2);
+				  MainActivity.PlaceIts.add(pi);
+				  MainActivity.pullDown.remove(pi);
+			  }
+			  break;
+	  //One week
+		  case 3:
+			  c1 = pi.getDateRemindedToCalendar();
+			  previous = c1.getTimeInMillis();
+			  c2 = Calendar.getInstance();
+			  current = c2.getTimeInMillis();
+			  //Put back to active
+			  if((current - previous) > oneWeekInMillSec)
+			  {
+				  MainActivity.PlaceIts.add(pi);
+				  MainActivity.pullDown.remove(pi);
+			  }
+			  break;
+			  
+		//Two week
+	  case 4:
+		  c1 = pi.getDateRemindedToCalendar();
+		  previous = c1.getTimeInMillis();
+		  c2 = Calendar.getInstance();
+		  current = c2.getTimeInMillis();
+		  //Put back to active
+		  if((current - previous) > 2*oneWeekInMillSec)
+		  {
+			  MainActivity.PlaceIts.add(pi);
+			  MainActivity.pullDown.remove(pi);
+		  }
+		  break;
+		//Three week
+	  case 5:
+		  c1 = pi.getDateRemindedToCalendar();
+		  previous = c1.getTimeInMillis();
+		  c2 = Calendar.getInstance();
+		  current = c2.getTimeInMillis();
+		  //Put back to active
+		  if((current - previous) > 3*oneWeekInMillSec)
+		  {
+			  MainActivity.PlaceIts.add(pi);
+			  MainActivity.pullDown.remove(pi);
+		  }
+		  break;
+		//One Month
+	  case 6:
+		  c1 = pi.getDateRemindedToCalendar();
+		  previous = c1.getTimeInMillis();
+		  c2 = Calendar.getInstance();
+		  current = c2.getTimeInMillis();
+		  //Put back to active
+		  if((current - previous) > 4*oneWeekInMillSec)
+		  {
+			  MainActivity.PlaceIts.add(pi);
+			  MainActivity.pullDown.remove(pi);
+		  }
+		  break;
+	  }
   }
 
   Log.i("info", "Latitude :: " + latitude);
@@ -186,7 +280,7 @@ public class LocationService extends Service implements LocationListener,
         // notification is selected
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClass(getApplicationContext(), 
-        		MainActivity.class);
+        		PulledListActivity.class);
         
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 

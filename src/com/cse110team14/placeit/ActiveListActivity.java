@@ -48,17 +48,6 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 		ListView listView = (ListView) findViewById(R.id.ActiveListView);
 
-		// piIterator = MainActivity.PlaceIts.iterator();
-
-		/*
-		 * List<HashMap<String, String>> activeList = new
-		 * ArrayList<HashMap<String, String>>(); while (piIterator.hasNext()) {
-		 * HashMap<String, String> map = new HashMap<String, String>(); curr =
-		 * piIterator.next(); map.put("ItemTitle", curr.getTitle());
-		 * map.put("ItemText", curr.getDescription()); activeList.add(map); }
-		 */
-		// for (PlaceIt pi : sorted)
-
 		refresh();
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
@@ -75,16 +64,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 				ActiveListActivity.this.id = (int) id;
 				clicked = sorted.get((int) id);
-				/*
-				 * Toast.makeText( ActiveListActivity.this, "Title: " +
-				 * clicked.getTitle() + "\n\nDescription: " +
-				 * clicked.getDescription() + "\n\nDate to be Reminded: " +
-				 * clicked.getDateReminded() + "\n\nPost Date and time: " +
-				 * clicked.getDate() + "\n\nLocation: (" +
-				 * clicked.getLocation().latitude + ", " +
-				 * clicked.getLocation().longitude + ")",
-				 * Toast.LENGTH_LONG).show();
-				 */
+
 				Dialog dialog = new AlertDialog.Builder(ActiveListActivity.this)
 						.setTitle("Title: " + clicked.getTitle())
 						.setItems(

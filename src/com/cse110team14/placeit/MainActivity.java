@@ -100,8 +100,7 @@ CancelableCallback
 	private Iterator<Marker> marker;
 	private String activeListFile = "saved_placeits.dat";
 	private String pulldownListFile = "pulldown_placeits.dat";
-	private Handler hand = new Handler();
-	private int range = 100; //if within 100 meters of placeit, will send notification to user
+	//private Handler hand = new Handler();
 	
 	AlertDialog.Builder alert;
 	Button mBtnFind;
@@ -150,8 +149,7 @@ CancelableCallback
         		PlaceIts.add(new PlaceIt("6", "6","orange",new LatLng(19,10),"11/17/2013","Feb 14, 2014 4:57:52 PM"));
         		PlaceIts.add(new PlaceIt("7", "7","orance",new LatLng(19,11),"11/18/2013","Feb 15, 2014 4:57:52 PM"));
         		createNotification(null, PlaceIts.get(0));
-        		
-        		
+        		Log.e("hello", PlaceIts.get(0).getDateRemindedToCalendar().toString());
         	}
         });
         // Setting click event listener for the find button
@@ -554,6 +552,7 @@ CancelableCallback
 			          
 			          mMarkers.add(m);
 			          PlaceIt tmp = new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime);
+			          //Set the type of the placeit
 			          tmp.setPlaceItType(placeItType);
 			          Log.e("hello", "the type is" + tmp.getPlaceItType());
 			          PlaceIts.add(tmp);
@@ -665,12 +664,6 @@ CancelableCallback
         	BufferedReader reader = new BufferedReader(isr);
         	String readString = reader.readLine () ;
         	while (readString != null){
-        	   Log.e("hello", readString);
-        	   String []splited = readString.split("###");
-        	   /*for (int i = 0; i < splited.length; i++){
-        		   Log.e("hello", splited[i]);
-        	   }*/
-        	   Log.e("hello", "Another one");
         	   putPlaceItsReadFromFileToLists(readString);
         	   readString = reader.readLine();
             }
@@ -841,13 +834,6 @@ CancelableCallback
     
     @Override
 	public void onFinish() {
-
-    	//Log.e("test", "finish");
-   	 	/*if (marker.hasNext()) {
-	   		 Marker current = marker.next();
-	   		 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, this);
-	   		 current.showInfoWindow();
-	   	 }*/
 	}
 
 	public void goToActiveList(View v){
@@ -861,7 +847,6 @@ CancelableCallback
 
 	@Override
 	public void onCancel() {
-		// TODO Auto-generated method stub
 		
 	}
 	
