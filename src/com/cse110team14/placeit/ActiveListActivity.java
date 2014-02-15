@@ -25,7 +25,7 @@ import android.widget.Toast;
 public class ActiveListActivity<activeListView> extends Activity {
 	private Iterator<PlaceIt> piIterator;
 	private List<PlaceIt> sorted;
-	
+
 	List<HashMap<String, String>> activeList;
 
 	private PlaceIt clicked;
@@ -52,8 +52,8 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
 				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
-						"ItemDatePosted" }, new int[] { R.id.ItemTitle,
-						R.id.ItemText, R.id.ItemDatePosted });
+						"ItemDateToRemind" }, new int[] { R.id.ItemTitle,
+						R.id.ItemText, R.id.ItemDateToRemind });
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -86,12 +86,13 @@ public class ActiveListActivity<activeListView> extends Activity {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										
-										//List<PlaceIt> pulled = MainActivity.getActiveList();
+
+										// List<PlaceIt> pulled =
+										// MainActivity.getActiveList();
 										MainActivity.pullDown.add(clicked);
 										sorted.remove(clicked);
 										MainActivity.PlaceIts.remove(clicked);
-										
+
 										Toast.makeText(
 												ActiveListActivity.this,
 												"Item \""
@@ -109,13 +110,12 @@ public class ActiveListActivity<activeListView> extends Activity {
 									int which) {
 								Toast.makeText(
 										ActiveListActivity.this,
-										"Reminding item \"" + clicked.getTitle()
+										"Reminding item \""
+												+ clicked.getTitle()
 												+ "\" completed.",
 										Toast.LENGTH_LONG).show();
 							}
-						})
-						.setNegativeButton("Discard",
-								new OnClickListener() {
+						}).setNegativeButton("Discard", new OnClickListener() {
 
 							@Override
 							public void onClick(DialogInterface dialog,
@@ -126,8 +126,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 								Toast.makeText(
 										ActiveListActivity.this,
-										"Item \""
-												+ clicked.getTitle()
+										"Item \"" + clicked.getTitle()
 												+ "\" is now discarded.",
 										Toast.LENGTH_LONG).show();
 								finish();
@@ -146,15 +145,16 @@ public class ActiveListActivity<activeListView> extends Activity {
 			}
 		});
 	}
-	
-	public void refresh(){
+
+	public void refresh() {
 		activeList = new ArrayList<HashMap<String, String>>();
 		for (PlaceIt curr : sorted) {
 			HashMap<String, String> map = new HashMap<String, String>();
 			// curr = piIterator.next();
 			map.put("ItemTitle", "Title: " + curr.getTitle());
 			map.put("ItemText", "Description: " + curr.getDescription());
-			map.put("ItemDatePosted", "Post Date and time: " + curr.getDate());
+			map.put("ItemDateToRemind",
+					"Date and time to Remind: " + curr.getDateReminded());
 			activeList.add(map);
 		}
 	}

@@ -47,14 +47,14 @@ public class PulledListActivity extends Activity {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("ItemTitle", "Title: " + curr.getTitle());
 			map.put("ItemText", "Description: " + curr.getDescription());
-			map.put("ItemDatePosted", "Post Date and time: " + curr.getDate());
+			map.put("ItemDateToRemind", "Date and time to Remind: " + curr.getDateReminded());
 			activeList.add(map);
 		}
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
 				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
-						"ItemDatePosted" }, new int[] { R.id.ItemTitle,
-						R.id.ItemText, R.id.ItemDatePosted });
+						"ItemDateToRemind" }, new int[] { R.id.ItemTitle,
+						R.id.ItemText, R.id.ItemDateToRemind });
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

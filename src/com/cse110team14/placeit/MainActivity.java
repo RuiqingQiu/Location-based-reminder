@@ -1218,4 +1218,9 @@ public class MainActivity extends Activity implements CancelableCallback {
 	}// End of class
 	/* END OF HELPER FUNCTIONS AND CLASSES FOR GETTING LOCATION DATA FROM GOOGLE */
 
+//	public void ClickPulledDown()
+//	{
+//		//pulled.callOnClick();
+//		pulled.performClick();
+//	}
 }
