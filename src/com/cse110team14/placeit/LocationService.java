@@ -140,6 +140,7 @@ public class LocationService extends Service implements LocationListener,
 			createNotification(null,pi);
 			MainActivity.PlaceIts.remove(pi);
 			MainActivity.pullDown.add(pi);
+			break;
 		}
   }
 
