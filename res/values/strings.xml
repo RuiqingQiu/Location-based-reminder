@@ -16,5 +16,6 @@
     <string name="hint">Enter Place</string>
     <string name="retrack">Retrack</string>
     <string name="date">Date to be Reminded (MM/DD/YYYY):</string>
+    <string name="none">None</string>
     <string name="color">Color: (blue, red, azure, cyan, green, magenta, orange, \nviolet, rose, yellow)</string>
 </resources>

@@ -4,15 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <ImageView
-        android:layout_width="600dp"
-        android:layout_height="64dp"
-        android:layout_weight="0.00"
-        android:background="#FFFFBB33"
-        android:contentDescription="@string/app_name"
-        android:scaleType="center"
-        android:src="@drawable/ic_launcher" />
-
     <EditText
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -21,8 +12,12 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginTop="16dp"
+        android:ems="10"
         android:hint="@string/title"
-        android:inputType="text" />
+        android:inputType="text" >
+
+        <requestFocus />
+    </EditText>
 
     <EditText
         android:id="@+id/description"
@@ -35,6 +30,7 @@
         android:fontFamily="sans-serif"
         android:hint="@string/description"
         android:inputType="text" />
+
     <EditText
         android:id="@+id/location"
         android:layout_width="match_parent"
@@ -48,18 +44,6 @@
         android:inputType="text" />
 
     <EditText
-        android:id="@+id/date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="4dp"
-        android:fontFamily="sans-serif"
-        android:hint="@string/date"
-        android:inputType="date" />
-
-    <EditText
         android:id="@+id/color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,41 +51,71 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginTop="4dp"
+        android:ems="10"
         android:fontFamily="sans-serif"
         android:hint="@string/color"
         android:inputType="text" />
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="Repost Schedule"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <RadioButton
-            android:id="@+id/weekly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="48dp"
-            android:text="Weekly" />
-
-        <RadioButton
-            android:id="@+id/daily"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="48dp"
-            android:layout_toRightOf="@+id/weekly"
-            android:text="Daily" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
         <RadioButton
             android:id="@+id/minutely"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="48dp"
-            android:layout_toRightOf="@+id/daily"
-            android:text="Minutely" />
+            android:layout_marginLeft="16dp"
+            android:text="Minute" />
 
-    </RelativeLayout>
-   
+        <RadioButton
+            android:id="@+id/weekly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:text="One Week" />
+
+        <RadioButton
+            android:id="@+id/twoweekly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:text="Two Weeks" />
+
+        <RadioButton
+            android:id="@+id/threeweekly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:text="Three Week" />
+
+        <RadioButton
+            android:id="@+id/monthly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="0dp"
+            android:text="Month" />
+    </RadioGroup>
+
+    <RadioButton
+        android:id="@+id/none"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="None" />
+
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="386dp" />
+
 </LinearLayout>

@@ -75,7 +75,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
@@ -243,12 +245,15 @@ CancelableCallback
 		        final EditText title = (EditText)view.findViewById(R.id.title);
 		        final EditText description = (EditText)view.findViewById(R.id.description);
 		        final EditText location = (EditText)view.findViewById(R.id.location);
-		        final EditText date = (EditText)view.findViewById(R.id.date);
 		        final EditText color = (EditText)view.findViewById(R.id.color);
+		        final RadioGroup rg = (RadioGroup)view.findViewById(R.id.radioGroup);
+		        final DatePicker date = (DatePicker)view.findViewById(R.id.datePicker);
 		        // Pass null as the parent view because its going in the dialog layout
 		        alert1.setView(view);
 		        alert1.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
-		        	public void onClick(DialogInterface dialog, int whichButton) {
+		        	@SuppressLint("DefaultLocale")
+					public void onClick(DialogInterface dialog, int whichButton) {
+		        		
 		        		String placeItTitle = title.getText().toString();
 		        		if(placeItTitle.isEmpty()){
 			        	  AlertDialog.Builder temp = initializeAlert("No Title Entered", "Please enter a title :)");
@@ -262,21 +267,39 @@ CancelableCallback
 		     		      return;
 		        		}
 		        		String [] splited = location.getText().toString().split("\\s*,\\s*");
-		        		double latitude = Double.parseDouble(splited[0]);
-		        		double longtitude = Double.parseDouble(splited[1]);
-		        		if(splited.length != 2){
+		        		if (location.toString().isEmpty() ||
+		        				splited.length != 2 ||
+		        				Double.parseDouble(splited[0]) > 90.0 || 
+		        				Double.parseDouble(splited[0]) < -90.0 || 
+		        				Double.parseDouble(splited[1]) > 180 || 
+		        				Double.parseDouble(splited[1]) < -180){
 		        			AlertDialog.Builder temp = initializeAlert("Not a valid location", "Please enter a valid location :)");
 			     		    temp.show();
 			     		    return;
 		        		}
-		        		if(latitude > 90.0 || latitude< -90.0 || longtitude > 180 || longtitude < -180){
-		        			AlertDialog.Builder temp = initializeAlert("Not a valid location", "Please enter a valid location :)");
-		     		    	temp.show();
-		     		    	return;
-		        		}
 		        		LatLng position = new LatLng(Double.parseDouble(splited[0]), Double.parseDouble(splited[1]));
+		        		int placeItType = 1;
+		        		/* Get the selected radio button id */
+		        		switch (rg.getCheckedRadioButtonId()){
+		        			case R.id.minutely:
+		        				placeItType = 2;
+		        				break;
+		        			case R.id.weekly:
+		        				placeItType = 3;
+		        				break;
+		        			case R.id.twoweekly:
+		        				placeItType = 4;
+		        				break;
+		        			case R.id.threeweekly:
+		        				placeItType = 5;
+		        				break;
+		        			case R.id.monthly:
+		        				placeItType = 6;
+		        				break;
+		        		}
 		        		
-		        		String dateToBeReminded = date.getText().toString();	          
+		        		
+		        		String dateToBeReminded = (date.getMonth()+1) + "/" + date.getDayOfMonth() + "/" + date.getYear();	          
 		        		String currentDateTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 			          
 		        		//Check if the date is valid
@@ -330,7 +353,9 @@ CancelableCallback
 			          else if(markerColor.toLowerCase().equals("yellow"))
 			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
 			          mMarkers.add(m);
-			          PlaceIts.add(new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime));
+			          PlaceIt tmp = new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime);
+			          tmp.setPlaceItType(placeItType);
+			          PlaceIts.add(tmp);
 			          marker = mMarkers.iterator();
 			          map.moveCamera(CameraUpdateFactory.newLatLngZoom(position,17));
 		              map.animateCamera(CameraUpdateFactory.zoomIn());
@@ -425,15 +450,20 @@ CancelableCallback
 		        // Set an EditText view to get user input 
 		        
 		        // Inflate and set the layout for the dialog
-		        final View v = inflater.inflate(R.layout.placeitsinfo, null);
+		        final View v = inflater.inflate(R.layout.create_placeits, null);
 		        final EditText title = (EditText)v.findViewById(R.id.title);
 		        final EditText description = (EditText)v.findViewById(R.id.description);
-		        final EditText date = (EditText)v.findViewById(R.id.date);
+		        final EditText location = (EditText)v.findViewById(R.id.location);
+		        location.setText("" + m.getPosition().latitude + ", " + m.getPosition().latitude, TextView.BufferType.EDITABLE);
+		        //final EditText date = (EditText)v.findViewById(R.id.date);
+		        final DatePicker date = (DatePicker)v.findViewById(R.id.datePicker);
+		        final RadioGroup rg = (RadioGroup)v.findViewById(R.id.radioGroup);
 		        final EditText color = (EditText)v.findViewById(R.id.color);
 		        // Pass null as the parent view because its going in the dialog layout
 		        alert.setView(v);
 		        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		        public void onClick(DialogInterface dialog, int whichButton) {
+		        @SuppressLint("DefaultLocale")
+				public void onClick(DialogInterface dialog, int whichButton) {
 			          String placeItTitle = title.getText().toString();
 			          if(placeItTitle.isEmpty()){
 			        	  AlertDialog.Builder temp = initializeAlert("No Title Entered", "Please enter a title :)");
@@ -446,12 +476,34 @@ CancelableCallback
 		     		      temp.show();
 		     		      return;
 			          }
-			          String dateToBeReminded = date.getText().toString();	          
+			          
+			          /* Getting the placeit type */
+			          int placeItType = 1;
+		        		/* Get the selected radio button id */
+		        		switch (rg.getCheckedRadioButtonId()){
+		        			case R.id.minutely:
+		        				placeItType = 2;
+		        				break;
+		        			case R.id.weekly:
+		        				placeItType = 3;
+		        				break;
+		        			case R.id.twoweekly:
+		        				placeItType = 4;
+		        				break;
+		        			case R.id.threeweekly:
+		        				placeItType = 5;
+		        				break;
+		        			case R.id.monthly:
+		        				placeItType = 6;
+		        				break;
+		        		}
+			          
+			          String dateToBeReminded = (date.getMonth() + 1) + "/" + date.getDayOfMonth() + "/" + date.getYear();         
 			          String currentDateTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 			          
 			          //Check if the date is valid
 			          if (checkDate(dateToBeReminded) == false){
-			        	  AlertDialog.Builder temp = initializeAlert("Enteted Date is not valid", "Please enter a valid date :)");
+			        	  AlertDialog.Builder temp = initializeAlert("Entered Date is not valid", "Please enter a valid date :)");
 		     		      temp.show();
 		     		      return;
 			          }
@@ -501,7 +553,10 @@ CancelableCallback
 			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
 			          
 			          mMarkers.add(m);
-			          PlaceIts.add(new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime));
+			          PlaceIt tmp = new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime);
+			          tmp.setPlaceItType(placeItType);
+			          Log.e("hello", "the type is" + tmp.getPlaceItType());
+			          PlaceIts.add(tmp);
 			          marker = mMarkers.iterator();
 			          
 		          }
