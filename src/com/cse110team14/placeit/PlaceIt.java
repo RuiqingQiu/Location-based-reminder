@@ -53,6 +53,9 @@ public class PlaceIt implements Serializable {
 		return location;
 	}
 
+	public void setDatePosted(){
+		postDate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+	}
 	public String getDate() {
 		return postDate;
 	}

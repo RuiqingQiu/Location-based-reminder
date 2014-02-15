@@ -35,7 +35,9 @@ public class LocationService extends Service implements LocationListener,
 
  private LocationRequest mLocationRequest;  
  private LocationClient mLocationClient;  
+ //Give each notification an ID
  private int notifyID = 1;
+ //Half a mile in meter
  private int range = 804;
  private long oneWeekInMillSec =  604800000;
 
@@ -49,10 +51,10 @@ public class LocationService extends Service implements LocationListener,
  @Override
  public void onCreate() {
   mLocationRequest = LocationRequest.create();
-  mLocationRequest.setInterval(5);
+  mLocationRequest.setInterval(10);
   //mLocationRequest.setInterval(CommonUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
   mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-  mLocationRequest.setFastestInterval(5);
+  mLocationRequest.setFastestInterval(10);
   //mLocationRequest.setFastestInterval(CommonUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
   mLocationClient = new LocationClient(getApplicationContext(), this,this);
   mLocationClient.connect();
@@ -135,7 +137,7 @@ public class LocationService extends Service implements LocationListener,
   myCurrentLocation.setLatitude(latitude);
   myCurrentLocation.setLongitude(longitude);
   List<PlaceIt> tmp = new ArrayList<PlaceIt>();
-  tmp.addAll( MainActivity.PlaceIts);
+  tmp.addAll(MainActivity.PlaceIts);
   
   //This part is for checking if the placeit in the active list is within range
   for (PlaceIt pi : tmp){
@@ -180,11 +182,12 @@ public class LocationService extends Service implements LocationListener,
 			  
 			  Log.e("hello", "Placeit length: " + MainActivity.PlaceIts.size());
 			  Log.e("hello", "pulldown length: " + MainActivity.pullDown.size());
-			  if((current - previous) > 60000)
+			  if((current - previous) > 10000)
 			  {
-				  pi.setPlaceItType(2);
-				  MainActivity.PlaceIts.add(pi);
 				  MainActivity.pullDown.remove(pi);
+				  pi.setPlaceItType(2);
+				  pi.setDatePosted();
+				  MainActivity.PlaceIts.add(pi);				  
 			  }
 			  break;
 	  //One week
