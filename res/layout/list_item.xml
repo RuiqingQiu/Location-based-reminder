@@ -21,7 +21,7 @@
     </TextView>
 
     <TextView
-        android:id="@+id/ItemDatePosted"
+        android:id="@+id/ItemDateToRemind"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
     </TextView>
