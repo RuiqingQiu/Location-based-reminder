@@ -52,8 +52,8 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
 				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
-						"ItemDateToRemind" }, new int[] { R.id.ItemTitle,
-						R.id.ItemText, R.id.ItemDateToRemind });
+						"ItemDateToRemind","ItemPostTime" }, new int[] { R.id.ItemTitle,
+						R.id.ItemText, R.id.ItemDateToRemind, R.id.ItemPostTime });
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -229,6 +229,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 			map.put("ItemText", "Description: " + curr.getDescription());
 			map.put("ItemDateToRemind",
 					"Date and time to Remind: " + curr.getDateReminded());
+			map.put("ItemPostTime", "Post Time" + curr.getDate());
 			activeList.add(map);
 		}
 	}
