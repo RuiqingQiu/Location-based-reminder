@@ -681,10 +681,6 @@ CancelableCallback
         	String readString = reader.readLine () ;
         	while (readString != null){
         	   Log.e("pulldown", readString);
-        	   String []splited = readString.split("###");
-        	   /*for (int i = 0; i < splited.length; i++){
-        		   Log.e("hello", splited[i]);
-        	   }*/
         	   Log.e("pulldown", "Another one");
         	   putPullDownReadFromFileToLists(readString);
         	   readString = reader.readLine();
@@ -712,7 +708,10 @@ CancelableCallback
  	   String postDate = splited[3];
  	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
  	   String color = splited[6];
-       PlaceIts.add(new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate));
+ 	   int type = Integer.parseInt(splited[7]);
+	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
+	   tmp.setPlaceItType(type);
+       PlaceIts.add(tmp);
     }
     
     /**
@@ -728,7 +727,10 @@ CancelableCallback
  	   String postDate = splited[3];
  	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
  	   String color = splited[6];
-       pullDown.add(new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate));
+ 	   int type = Integer.parseInt(splited[7]);
+ 	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
+ 	   tmp.setPlaceItType(type);
+       pullDown.add(tmp);
     }
     
     /**
@@ -770,7 +772,7 @@ CancelableCallback
     			PlaceIt element = placeitsIterator.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+"\n"; 
+    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + "\n"; 
     			out.write(str.getBytes());
     		}
     		out.close();
@@ -793,7 +795,7 @@ CancelableCallback
     			PlaceIt element = pulldownIterator.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+"\n"; 
+    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + "\n"; 
     			out.write(str.getBytes());
     		}
     		out.close();

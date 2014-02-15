@@ -169,23 +169,15 @@ public class LocationService extends Service implements LocationListener,
 		  case 2:
 			  c1 = pi.getDateRemindedToCalendar();
 			  previous = c1.getTimeInMillis();
-			  Log.e("hello", "previous: "+previous);
-			  Log.e("hello", "previous: "+c1.toString());
 			  c2 = Calendar.getInstance();
 			  current = c2.getTimeInMillis();
-			  Log.e("hello", ""+"current: " + current);
-			  Log.e("hello", "current: "+c2.toString());
-			  Log.e("hello", ""+(current - previous));
-
 			  //Put back to active
 			  Log.e("hello", "current - previous: "+(current - previous));
-			  
-			  Log.e("hello", "Placeit length: " + MainActivity.PlaceIts.size());
-			  Log.e("hello", "pulldown length: " + MainActivity.pullDown.size());
-			  if((current - previous) > 10000)
+			  if((current - previous) > 60000)
 			  {
 				  MainActivity.pullDown.remove(pi);
 				  pi.setPlaceItType(2);
+				  //Update the post time for the placeit
 				  pi.setDatePosted();
 				  MainActivity.PlaceIts.add(pi);				  
 			  }
@@ -197,10 +189,14 @@ public class LocationService extends Service implements LocationListener,
 			  c2 = Calendar.getInstance();
 			  current = c2.getTimeInMillis();
 			  //Put back to active
+			  Log.e("hello", "current - previous: "+(current - previous));
 			  if((current - previous) > oneWeekInMillSec)
 			  {
-				  MainActivity.PlaceIts.add(pi);
 				  MainActivity.pullDown.remove(pi);
+				  pi.setPlaceItType(3);
+				  //Update the post time for the placeit
+				  pi.setDatePosted();
+				  MainActivity.PlaceIts.add(pi);		
 			  }
 			  break;
 			  
@@ -213,8 +209,11 @@ public class LocationService extends Service implements LocationListener,
 		  //Put back to active
 		  if((current - previous) > 2*oneWeekInMillSec)
 		  {
-			  MainActivity.PlaceIts.add(pi);
 			  MainActivity.pullDown.remove(pi);
+			  pi.setPlaceItType(4);
+			  //Update the post time for the placeit
+			  pi.setDatePosted();
+			  MainActivity.PlaceIts.add(pi);		
 		  }
 		  break;
 		//Three week
@@ -226,8 +225,11 @@ public class LocationService extends Service implements LocationListener,
 		  //Put back to active
 		  if((current - previous) > 3*oneWeekInMillSec)
 		  {
-			  MainActivity.PlaceIts.add(pi);
 			  MainActivity.pullDown.remove(pi);
+			  pi.setPlaceItType(5);
+			  //Update the post time for the placeit
+			  pi.setDatePosted();
+			  MainActivity.PlaceIts.add(pi);		
 		  }
 		  break;
 		//One Month
@@ -239,8 +241,11 @@ public class LocationService extends Service implements LocationListener,
 		  //Put back to active
 		  if((current - previous) > 4*oneWeekInMillSec)
 		  {
-			  MainActivity.PlaceIts.add(pi);
 			  MainActivity.pullDown.remove(pi);
+			  pi.setPlaceItType(6);
+			  //Update the post time for the placeit
+			  pi.setDatePosted();
+			  MainActivity.PlaceIts.add(pi);		
 		  }
 		  break;
 	  }

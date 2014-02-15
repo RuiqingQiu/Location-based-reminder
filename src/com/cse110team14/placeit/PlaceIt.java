@@ -72,7 +72,7 @@ public class PlaceIt implements Serializable {
 			int colon = tmp[3].indexOf(':');
 			int hourOfDay = Integer.parseInt(tmp[3].substring(0,colon)) + 12;
 			int minute = Integer.parseInt(tmp[3].substring(colon+1, colon+3));
-			Log.e("hello", "hour: " + hourOfDay + "minute: " + minute);
+			//Log.e("hello", "hour: " + hourOfDay + "minute: " + minute);
 			Calendar c = Calendar.getInstance();
 			c.set(year, month, day, hourOfDay, minute);
 			return c;
