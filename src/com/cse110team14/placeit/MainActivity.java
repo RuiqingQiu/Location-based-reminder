@@ -100,6 +100,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	private GoogleMap map;
 	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
 	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
+
+	public static Boolean notificationSent = false;
 	
 	//For location update in mainActivity
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000; 
@@ -143,6 +145,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	if (notificationSent == true){
+    		notificationSent = false;
+    		Intent intent = new Intent(MainActivity.this, PulledListActivity.class);
+    		startActivity(intent);
+    	}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();

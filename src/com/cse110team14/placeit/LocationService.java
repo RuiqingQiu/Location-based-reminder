@@ -288,7 +288,7 @@ public class LocationService extends Service implements LocationListener,
         // notification is selected
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClass(getApplicationContext(), 
-        		PulledListActivity.class);
+        		MainActivity.class);
         
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -309,6 +309,6 @@ public class LocationService extends Service implements LocationListener,
         noti.flags |= Notification.FLAG_AUTO_CANCEL;
 
         notificationManager.notify(notifyID, noti);
-
+        MainActivity.notificationSent = true;
       }
 }
