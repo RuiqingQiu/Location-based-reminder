@@ -94,17 +94,6 @@ public class PulledListActivity extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog,
 							int which) {
-
-						MainActivity.PlaceIts.add(clicked);
-						sorted.remove(clicked);
-						MainActivity.pullDown.remove(clicked);
-
-/*										Toast.makeText(
-								PulledListActivity.this,
-								"Item \""
-										+ clicked.getTitle()
-										+ "\" is now moved to Active list.",
-								Toast.LENGTH_LONG).show();*/
 						Dialog repostDialog = createRepostDialog();
 						repostDialog.show();
 						//finish();

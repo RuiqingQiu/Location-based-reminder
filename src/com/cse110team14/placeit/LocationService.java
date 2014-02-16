@@ -51,10 +51,10 @@ public class LocationService extends Service implements LocationListener,
  @Override
  public void onCreate() {
   mLocationRequest = LocationRequest.create();
-  mLocationRequest.setInterval(10);
+  mLocationRequest.setInterval(5);
   //mLocationRequest.setInterval(CommonUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
   mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-  mLocationRequest.setFastestInterval(10);
+  mLocationRequest.setFastestInterval(5);
   //mLocationRequest.setFastestInterval(CommonUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
   mLocationClient = new LocationClient(getApplicationContext(), this,this);
   mLocationClient.connect();
