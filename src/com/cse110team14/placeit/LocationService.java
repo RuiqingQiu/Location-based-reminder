@@ -191,7 +191,7 @@ public class LocationService extends Service implements LocationListener,
 						c1 = pi.getDateRemindedToCalendar();
 						previous = c1.getTimeInMillis();
 						current = System.currentTimeMillis();
-						if ((current - previous) > 10000) {
+						if ((current - previous) > 45 *60000) {
 							createNotification(null, pi);
 							MainActivity.PlaceIts.remove(pi);
 							MainActivity.pullDown.add(pi);
