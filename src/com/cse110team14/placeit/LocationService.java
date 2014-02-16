@@ -240,6 +240,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setPlaceItType(3);
 					// Update the post time for the placeit
 					pi.setDatePosted();
+					Calendar c = Calendar.getInstance();
+					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.PlaceIts.add(pi);
 				}
 				break;
@@ -256,6 +259,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setPlaceItType(4);
 					// Update the post time for the placeit
 					pi.setDatePosted();
+					Calendar c = Calendar.getInstance();
+					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.PlaceIts.add(pi);
 				}
 				break;
@@ -271,6 +277,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setPlaceItType(5);
 					// Update the post time for the placeit
 					pi.setDatePosted();
+					Calendar c = Calendar.getInstance();
+					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.PlaceIts.add(pi);
 				}
 				break;
@@ -286,6 +295,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setPlaceItType(6);
 					// Update the post time for the placeit
 					pi.setDatePosted();
+					Calendar c = Calendar.getInstance();
+					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.PlaceIts.add(pi);
 				}
 				break;
