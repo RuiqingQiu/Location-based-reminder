@@ -145,7 +145,7 @@ public class LocationService extends Service implements LocationListener,
 	  // Check if the place's reminded date is today
 	  Calendar c = Calendar.getInstance();
 	  int day = pi.getDateRemindedToCalendar().get(Calendar.DAY_OF_MONTH);
-	  int month = pi.getDateRemindedToCalendar().get(Calendar.MONTH) + 1;
+	  int month = pi.getDateRemindedToCalendar().get(Calendar.MONTH);
 	  int year = pi.getDateRemindedToCalendar().get(Calendar.YEAR);
 	  if (day == (c.get(Calendar.DAY_OF_MONTH))
 		  && month == (c.get(Calendar.MONTH))
@@ -321,6 +321,7 @@ public class LocationService extends Service implements LocationListener,
  
  @SuppressLint("NewApi")
 	public void createNotification(View view, PlaceIt p) {
+	    if (MainActivity.notificationSent == false) pCount = 1;
         // Prepare intent which is triggered if the
         // notification is selected
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -343,6 +344,7 @@ public class LocationService extends Service implements LocationListener,
             .setContentIntent(pIntent).build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         pCount++;
+        MainActivity.notificationSent = true;
         // hide the notification after its selected
         noti.flags |= Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(notifyID, noti);
