@@ -56,13 +56,15 @@
 
         <activity
             android:name="com.cse110team14.placeit.ActiveListActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTask" >
         </activity>
 
         <!-- pulled activity -->
         <activity
             android:name="com.cse110team14.placeit.PulledListActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTask" >
         </activity>
 
         <!-- Create PlaceIts activity -->
