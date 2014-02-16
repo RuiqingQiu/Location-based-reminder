@@ -32,7 +32,15 @@ public class ActiveListActivity<activeListView> extends Activity {
 	private int id;
 
 	/**
+	 * Called when the activity is first created. This method create the list
+	 * view, and show the list view items and bind it to the click listener.
 	 * 
+	 * @param savedInstanceState
+	 *            - If the activity is being re-initialized after previously
+	 *            being shut down then this Bundle contains the data it most
+	 *            recently supplied in onSaveInstanceState(Bundle).
+	 * 
+	 * @return void
 	 */
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -54,15 +62,15 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
 				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
-						"ItemDateToRemind","ItemPostTime" }, new int[] { R.id.ItemTitle,
-						R.id.ItemText, R.id.ItemDateToRemind, R.id.ItemPostTime });
+						"ItemDateToRemind", "ItemPostTime" }, new int[] {
+						R.id.ItemTitle, R.id.ItemText, R.id.ItemDateToRemind,
+						R.id.ItemPostTime });
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view, int arg2,
 					long id) {
-				// ListView listView = (ListView) arg0;
 
 				ActiveListActivity.this.id = (int) id;
 				clicked = sorted.get((int) id);
@@ -73,90 +81,107 @@ public class ActiveListActivity<activeListView> extends Activity {
 		});
 	}
 
-	public Dialog createDetailsDialog(){
+	/**
+	 * This method create the dialog showing the details of a place-it, and the
+	 * related buttons for repost and other options.
+	 * 
+	 * @param none
+	 * 
+	 * @return the dialog showing actions and details of a place-it
+	 */
+	public Dialog createDetailsDialog() {
 		Dialog dia = new AlertDialog.Builder(ActiveListActivity.this)
-		.setTitle("Title: " + clicked.getTitle())
-		.setItems(
-				new String[] {
-						"Description: "
-								+ clicked.getDescription(),
-						"Date to be Reminded: "
-								+ clicked.getDateReminded(),
-						"Post Date and time: "
-								+ clicked.getDate(),
-						"Location: ("
-								+ clicked.getLocation().latitude
-								+ ", "
-								+ clicked.getLocation().longitude
-								+ ")" }, null)
-		.setPositiveButton("Move To Pulled-Down",
-				new OnClickListener() {
+				.setTitle("Title: " + clicked.getTitle())
+				.setItems(
+						new String[] {
+								"Description: " + clicked.getDescription(),
+								"Date to be Reminded: "
+										+ clicked.getDateReminded(),
+								"Post Date and time: " + clicked.getDate(),
+								"Location: (" + clicked.getLocation().latitude
+										+ ", "
+										+ clicked.getLocation().longitude + ")" },
+						null)
+				.setPositiveButton("Move To Pulled-Down",
+						new OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+								MainActivity.pullDown.add(clicked);
+								sorted.remove(clicked);
+								MainActivity.PlaceIts.remove(clicked);
+
+								Toast.makeText(
+										ActiveListActivity.this,
+										"Item \""
+												+ clicked.getTitle()
+												+ "\" is now moved to Pulled-Down list",
+										Toast.LENGTH_LONG).show();
+								finish();
+								startActivity(getIntent());
+							}
+						}).setNeutralButton("OK", new OnClickListener() {
 
 					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(
+								ActiveListActivity.this,
+								"Reminding item \"" + clicked.getTitle()
+										+ "\" completed.", Toast.LENGTH_LONG)
+								.show();
+					}
+				}).setNegativeButton("Discard", new OnClickListener() {
 
-						MainActivity.pullDown.add(clicked);
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
 						sorted.remove(clicked);
 						MainActivity.PlaceIts.remove(clicked);
 
 						Toast.makeText(
 								ActiveListActivity.this,
-								"Item \""
-										+ clicked.getTitle()
-										+ "\" is now moved to Pulled-Down list",
+								"Item \"" + clicked.getTitle()
+										+ "\" is now discarded.",
 								Toast.LENGTH_LONG).show();
 						finish();
 						startActivity(getIntent());
 					}
-				})
-		.setNeutralButton("OK", new OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog,
-					int which) {
-				Toast.makeText(
-						ActiveListActivity.this,
-						"Reminding item \""
-								+ clicked.getTitle()
-								+ "\" completed.",
-						Toast.LENGTH_LONG).show();
-			}
-		}).setNegativeButton("Discard", new OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog,
-					int which) {
-
-				sorted.remove(clicked);
-				MainActivity.PlaceIts.remove(clicked);
-
-				Toast.makeText(
-						ActiveListActivity.this,
-						"Item \"" + clicked.getTitle()
-								+ "\" is now discarded.",
-						Toast.LENGTH_LONG).show();
-				finish();
-				startActivity(getIntent());
-			}
-		}).create();
+				}).create();
 		return dia;
 	}
-	
+
+	/**
+	 * re-put list item onto the active list
+	 * 
+	 * @param none
+	 * 
+	 * @return void
+	 */
 	public void refresh() {
 		activeList = new ArrayList<HashMap<String, String>>();
 		for (PlaceIt curr : sorted) {
 			HashMap<String, String> map = new HashMap<String, String>();
-			// curr = piIterator.next();
+
 			map.put("ItemTitle", "Title: " + curr.getTitle());
 			map.put("ItemText", "Description: " + curr.getDescription());
 			map.put("ItemDateToRemind",
 					"Date and time to Remind: " + curr.getDateReminded());
 			map.put("ItemPostTime", "Post Time: " + curr.getDate());
+
 			activeList.add(map);
 		}
 	}
 
+	/**
+	 * Initialize the contents of the Activity's standard options menu
+	 * 
+	 * @param The
+	 *            options menu in which you place your items.
+	 * 
+	 * @return Initialize the contents of the Activity's standard options menu
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);

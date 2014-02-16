@@ -27,6 +27,17 @@ public class PulledListActivity extends Activity {
 	private PlaceIt clicked;
 	private int id;
 
+	/**
+	 * Called when the activity is first created. This method create the list
+	 * view, and show the list view items and bind it to the click listener.
+	 * 
+	 * @param savedInstanceState
+	 *            - If the activity is being re-initialized after previously
+	 *            being shut down then this Bundle contains the data it most
+	 *            recently supplied in onSaveInstanceState(Bundle).
+	 * 
+	 * @return void
+	 */
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -72,6 +83,15 @@ public class PulledListActivity extends Activity {
 		});
 	}
 
+	
+	/**
+	 * This method create the dialog showing the details of a place-it, and the 
+	 * related buttons for repost and other options.
+	 * 
+	 * @param none
+	 * 
+	 * @return the dialog showing actions and details of a place-it
+	 */
 	private Dialog createDetailsDialog(){
 		Dialog dia = new AlertDialog.Builder(PulledListActivity.this)
 		.setTitle("Title: " + clicked.getTitle())
@@ -137,6 +157,13 @@ public class PulledListActivity extends Activity {
 	return dia;
 	}
 	
+	/**
+	 * This method create the dialog showing the repost time options
+	 * 
+	 * @param none
+	 * 
+	 * @return the dialog showing actions and details of a place-it
+	 */
 	private Dialog createRepostDialog(){
 		Dialog dia = new AlertDialog.Builder(PulledListActivity.this)
 		.setTitle("When do you want to repost it?")
@@ -201,6 +228,13 @@ public class PulledListActivity extends Activity {
 		return dia;
 	}
 	
+	/**
+	 * Initialize the contents of the Activity's standard options menu
+	 * 
+	 * @param The options menu in which you place your items.
+	 * 
+	 * @return Initialize the contents of the Activity's standard options menu
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
