@@ -151,5 +151,8 @@ public class PlaceIt implements Serializable {
 	public String getDateReminded() {
 		return dateToBeReminded;
 	}
+	public void setDateReminded(String date){
+		dateToBeReminded = date;
+	}
 
 }
