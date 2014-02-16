@@ -36,6 +36,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
@@ -62,6 +64,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.location.Geocoder;
 import android.location.Location;
 import android.media.RingtoneManager;
@@ -83,7 +86,10 @@ import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
 
 public class MainActivity extends Activity implements
-CancelableCallback
+CancelableCallback,
+LocationListener,
+GooglePlayServicesClient.ConnectionCallbacks,
+GooglePlayServicesClient.OnConnectionFailedListener 
 {
 	
 	// Global constants
@@ -94,15 +100,37 @@ CancelableCallback
 	private GoogleMap map;
 	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
 	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
+
 	public static Boolean notificationSent = false;
+	
+	//For location update in mainActivity
+	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000; 
+	// Milliseconds per second 
+	private static final int MILLISECONDS_PER_SECOND = 1000; 
+	// Update frequency in seconds 
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 1; 
+	// Update frequency in milliseconds 
+	private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS; 
+	// The fastest update frequency, in seconds 
+	private static final int FASTEST_INTERVAL_IN_SECONDS = 1; 
+	// A fast frequency ceiling in milliseconds 
+	private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS; 
+	
+	// Define an object that holds accuracy and frequency parameters 
+	LocationRequest mLocationRequest; 
+	boolean mUpdatesRequested; 
+	private SharedPreferences.Editor mEditor; 
+	private SharedPreferences mPrefs; 
+	private LocationClient mLocationClient; 
 	 
 	//Initilize the mMarkers list
 	private List<Marker> mMarkers = new ArrayList<Marker>();
 	private Iterator<Marker> marker;
 	private String activeListFile = "saved_placeits.dat";
 	private String pulldownListFile = "pulldown_placeits.dat";
-	//private Handler hand = new Handler();
 	
+	
+		
 	AlertDialog.Builder alert;
 	Button mBtnFind;
 	Button retrackBtn;
@@ -112,6 +140,9 @@ CancelableCallback
 	Button test;
 	EditText etPlace;
 	final Context context = this;
+	
+	
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	if (notificationSent == true){
@@ -381,6 +412,29 @@ CancelableCallback
 
         ShowMarkerWhenAppOpen();
         
+        // Create the LocationRequest object 
+     	mLocationRequest = LocationRequest.create(); 
+     	// Use high accuracy
+     	mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); 
+     	// Set the update interval to 5 seconds 
+     	mLocationRequest.setInterval(UPDATE_INTERVAL); 
+     	// Set the fastest update interval to 1 second 
+     	mLocationRequest.setFastestInterval(FASTEST_INTERVAL); 
+     				 
+     	// Open the shared preferences 
+     	mPrefs = getSharedPreferences("SharedPreferences",Context.MODE_PRIVATE); 
+     	// Get a SharedPreferences editor 
+     	mEditor = mPrefs.edit(); 
+     				 
+     	// Start with updates turned on 
+     	mUpdatesRequested = true; 
+     				 
+     	/* 
+     	 * Create a new location client, using the enclosing class to 
+     	 * handle callbacks. 
+     	 */ 
+     	 mLocationClient = new LocationClient(this, this, this); 
+        
     }
     
    
@@ -416,7 +470,7 @@ CancelableCallback
     @Override
     protected void onStart() {
         super.onStart();
-        
+        mLocationClient.connect(); 
         /*
          * Function for user press on map for a long time, it will create a Marker
          * at where the user pressed on
@@ -813,6 +867,9 @@ CancelableCallback
     }
     protected void onPause(){
     	super.onPause();
+		// Save the current setting for updates 
+		mEditor.putBoolean("KEY_UPDATES_ON", mUpdatesRequested); 
+		mEditor.commit(); 
     	startService(new Intent(this, LocationService.class));
     }
     
@@ -821,6 +878,19 @@ CancelableCallback
         super.onResume();
         setUpMapIfNeeded();
         ShowMarkerWhenAppOpen();
+        /* 
+		 * Get any previous setting for location updates 
+		 * Gets "false" if an error occurs 
+		 */ 
+		 if (mPrefs.contains("KEY_UPDATES_ON")) { 
+			 mUpdatesRequested = 
+			 mPrefs.getBoolean("KEY_UPDATES_ON", false); 
+			 
+		 // Otherwise, turn off location updates 
+		 } else { 
+			 mEditor.putBoolean("KEY_UPDATES_ON", false); 
+			 mEditor.commit(); 
+		 }
         
     }
     /**
@@ -857,6 +927,13 @@ CancelableCallback
 	public void onCancel() {
 		
 	}
+	// Define the callback method that receives location updates 
+    @Override 
+    public void onLocationChanged(Location location) { 
+	  // Report to the UI that the location was updated 
+	  map.animateCamera(CameraUpdateFactory.newLatLngZoom(new 
+			LatLng(location.getLatitude(),location.getLongitude()), 18)); 
+    }
 	
 	/* A CLASS FOR CUSTOM PLACEITS INFO WINDOW ON THE MAP */
 	class PlaceItsInfoWindow implements InfoWindowAdapter{
@@ -1044,5 +1121,54 @@ CancelableCallback
         }
     }//End of class
 	/* END OF HELPER FUNCTIONS AND CLASSES FOR GETTING LOCATION DATA FROM GOOGLE */
+
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+		 /* 
+		 * Google Play services can resolve some errors it detects. 
+		 * If the error has a resolution, try sending an Intent to 
+		 * start a Google Play services activity that can resolve 
+		 * error. 
+		 */ 
+		 if (connectionResult.hasResolution()) { 
+			 try { 
+				 // Start an Activity that tries to resolve the error 
+				 connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST); 
+				 /* 
+				 * Thrown if Google Play services canceled the original 
+				 * PendingIntent 
+				 */ 
+			 } catch (IntentSender.SendIntentException e) { 
+				 // Log the error 
+				 e.printStackTrace(); 
+			 } 
+		 	} else { 
+			 /* 
+			 * If no resolution is available, display a dialog to the 
+			 * user with the error. 
+			 */ 
+			 Toast.makeText(this, "FAILURE!", Toast.LENGTH_LONG).show(); 
+		 	}
+	}
+
+
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		// Display the connection status 
+		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show(); 
+		// If already requested, start periodic updates 
+		if (mUpdatesRequested) { 
+			mLocationClient.requestLocationUpdates(mLocationRequest, this); 
+		}
+	}
+
+
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

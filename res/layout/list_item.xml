@@ -26,4 +26,10 @@
         android:layout_height="wrap_content" >
     </TextView>
 
+    <TextView
+        android:id="@+id/ItemPostTime"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+    </TextView>
+
 </LinearLayout>
