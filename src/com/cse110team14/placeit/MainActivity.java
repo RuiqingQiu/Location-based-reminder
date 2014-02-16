@@ -519,7 +519,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 		        final EditText color = (EditText)v.findViewById(R.id.color);
 		        // Pass null as the parent view because its going in the dialog layout
 		        alert.setView(v);
-		        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		        alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
 		        @SuppressLint("DefaultLocale")
 				public void onClick(DialogInterface dialog, int whichButton) {
 			          String placeItTitle = title.getText().toString();
@@ -769,8 +769,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
  	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
  	   String color = splited[6];
  	   int type = Integer.parseInt(splited[7]);
+ 	   int sneezeType = Integer.parseInt(splited[8]);
 	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
 	   tmp.setPlaceItType(type);
+	   tmp.setSneezeType(sneezeType);
        PlaceIts.add(tmp);
     }
     
@@ -788,8 +790,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
  	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
  	   String color = splited[6];
  	   int type = Integer.parseInt(splited[7]);
+ 	   int sneezeType = Integer.parseInt(splited[8]);
  	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
  	   tmp.setPlaceItType(type);
+ 	   tmp.setSneezeType(sneezeType);
        pullDown.add(tmp);
     }
     
@@ -832,7 +836,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     			PlaceIt element = placeitsIterator.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + "\n"; 
+    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
+    					"###" + element.getSneezeType() + "\n"; 
     			out.write(str.getBytes());
     		}
     		out.close();
@@ -855,7 +860,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     			PlaceIt element = pulldownIterator.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + "\n"; 
+    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
+    					"###" + element.getSneezeType() + "\n"; 
     			out.write(str.getBytes());
     		}
     		out.close();
@@ -870,6 +876,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 		// Save the current setting for updates 
 		mEditor.putBoolean("KEY_UPDATES_ON", mUpdatesRequested); 
 		mEditor.commit(); 
+		//mLocationClient.disconnect();
     	startService(new Intent(this, LocationService.class));
     }
     
@@ -932,7 +939,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
     public void onLocationChanged(Location location) { 
 	  // Report to the UI that the location was updated 
 	  map.animateCamera(CameraUpdateFactory.newLatLngZoom(new 
-			LatLng(location.getLatitude(),location.getLongitude()), 18)); 
+			LatLng(location.getLatitude(),location.getLongitude()), 17)); 
     }
 	
 	/* A CLASS FOR CUSTOM PLACEITS INFO WINDOW ON THE MAP */

@@ -52,10 +52,10 @@ public class LocationService extends Service implements LocationListener,
  @Override
  public void onCreate() {
   mLocationRequest = LocationRequest.create();
-  mLocationRequest.setInterval(10);
+  mLocationRequest.setInterval(5);
   //mLocationRequest.setInterval(CommonUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
   mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-  mLocationRequest.setFastestInterval(10);
+  mLocationRequest.setFastestInterval(5);
   //mLocationRequest.setFastestInterval(CommonUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
   mLocationClient = new LocationClient(getApplicationContext(), this,this);
   mLocationClient.connect();
@@ -142,20 +142,56 @@ public class LocationService extends Service implements LocationListener,
   
   //This part is for checking if the placeit in the active list is within range
   for (PlaceIt pi : tmp){
+	  // Check if the place's reminded date is today
+	  Calendar c = Calendar.getInstance();
+	  int day = pi.getDateRemindedToCalendar().get(Calendar.DAY_OF_MONTH);
+	  int month = pi.getDateRemindedToCalendar().get(Calendar.MONTH) + 1;
+	  int year = pi.getDateRemindedToCalendar().get(Calendar.YEAR);
+	  if (day == (c.get(Calendar.DAY_OF_MONTH))
+		  && month == (c.get(Calendar.MONTH))
+		  && year == (c.get(Calendar.YEAR)))
+	  {
 		//change place it type to pulled down
 		Location placeItLocation = new Location("");
 		placeItLocation.setLatitude(pi.getLocation().latitude);
 		placeItLocation.setLongitude(pi.getLocation().longitude);
 		if (myCurrentLocation.distanceTo(placeItLocation) < range){
-			//send notification to user here
-			Log.e(null,"" + myCurrentLocation.distanceTo(placeItLocation));
-			Log.e(null, "YAY IT WORKS!");
-			//Create the notification and move the placeit to pulldown
-			createNotification(null,pi);
-			MainActivity.PlaceIts.remove(pi);
-			MainActivity.pullDown.add(pi);
+			Calendar c1;
+			long previous, current;
+			Log.e("hello", "type: " + pi.getSneezeType());
+			if(pi.getSneezeType() == 1){
+				//Create the notification and move the placeit to pulldown
+				createNotification(null,pi);
+				MainActivity.PlaceIts.remove(pi);
+				Log.e("hello", "add to pull down");
+				MainActivity.pullDown.add(pi);
+			}
+			else if(pi.getSneezeType() == 2){
+				c1 = pi.getDateRemindedToCalendar();
+				previous = c1.getTimeInMillis();
+				current = System.currentTimeMillis();
+				Log.e("hello", "previous: " + previous);
+				Log.e("hello", "current: " + current);
+				if((current - previous) > 10000){
+					createNotification(null,pi);
+					MainActivity.PlaceIts.remove(pi);
+					MainActivity.pullDown.add(pi);
+				}
+			}
+			else{
+				c1 = pi.getDateRemindedToCalendar();
+				previous = c1.getTimeInMillis();
+				current = System.currentTimeMillis();
+				if((current - previous) > 10000){
+					createNotification(null,pi);
+					MainActivity.PlaceIts.remove(pi);
+					MainActivity.pullDown.add(pi);
+				}
+			}
 		}
+	  }
   }
+  
   
   //This part is for checking if the placeit in the pulldown lists need to be put back
   tmp.addAll(MainActivity.pullDown);
