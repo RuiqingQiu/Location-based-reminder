@@ -769,8 +769,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
  	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
  	   String color = splited[6];
  	   int type = Integer.parseInt(splited[7]);
+ 	   int sneezeType = Integer.parseInt(splited[8]);
 	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
 	   tmp.setPlaceItType(type);
+	   tmp.setSneezeType(sneezeType);
        PlaceIts.add(tmp);
     }
     
@@ -788,8 +790,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
  	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
  	   String color = splited[6];
  	   int type = Integer.parseInt(splited[7]);
+ 	   int sneezeType = Integer.parseInt(splited[8]);
  	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
  	   tmp.setPlaceItType(type);
+ 	   tmp.setSneezeType(sneezeType);
        pullDown.add(tmp);
     }
     
@@ -832,7 +836,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     			PlaceIt element = placeitsIterator.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + "\n"; 
+    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
+    					"###" + element.getSneezeType() + "\n"; 
     			out.write(str.getBytes());
     		}
     		out.close();
@@ -855,7 +860,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     			PlaceIt element = pulldownIterator.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + "\n"; 
+    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
+    					"###" + element.getSneezeType() + "\n"; 
     			out.write(str.getBytes());
     		}
     		out.close();
@@ -870,6 +876,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 		// Save the current setting for updates 
 		mEditor.putBoolean("KEY_UPDATES_ON", mUpdatesRequested); 
 		mEditor.commit(); 
+		//mLocationClient.disconnect();
     	startService(new Intent(this, LocationService.class));
     }
     

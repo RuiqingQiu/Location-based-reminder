@@ -43,6 +43,15 @@ public class PlaceIt implements Serializable {
 		this.sneezeType = 1;
 	}
 	
+	
+	public void setSneezeType(int type){
+		sneezeType = type;
+	}
+	
+	public int getSneezeType(){
+		return this.sneezeType;
+	}
+	
 	/**
 	 * Set method for placeit type
 	 * @param type
