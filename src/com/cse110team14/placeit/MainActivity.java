@@ -176,6 +176,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
         //Start the service for checking location onCreate
         startService(new Intent(this, LocationService.class));
  
+        /* This is comment out due to testing propuse 
         test.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		PlaceIts.clear();
@@ -189,7 +190,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
         		createNotification(null, PlaceIts.get(0));
         		Log.e("hello", PlaceIts.get(0).getDateRemindedToCalendar().toString());
         	}
-        });
+        });*/
+        
         // Setting click event listener for the find button
         mBtnFind.setOnClickListener(new OnClickListener() {
             @Override
@@ -228,7 +230,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
             }
         });
         
-        
+        //Set up the retrack button for keeping track of all retrack button
         retrackBtn.setOnClickListener(new OnClickListener(){
         	 @Override
     		 public void onClick(View v) {
@@ -263,6 +265,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     			 }
     		 }
         });
+        
+        //Initialize the create button 
         create.setOnClickListener(new OnClickListener()
         {
 			@Override
@@ -411,6 +415,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				
         });//End of on create
 
+        //Show markers in the placeit list when app is open
         ShowMarkerWhenAppOpen();
         
         // Create the LocationRequest object 
@@ -444,6 +449,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
         }
    
     }
+    
+    /**
+     * A Private helper method that is called when the gps is disabled
+     */
     private void showGPSDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
@@ -466,7 +475,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
         alert.show();
     }
    
-    
+    /*
     @SuppressLint("NewApi")
 	public void createNotification(View view, PlaceIt p) {
         // Prepare intent which is triggered if the
@@ -491,7 +500,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
 
         notificationManager.notify(0, noti);
 
-      }
+      }*/
+    
     /*
      * Called when the Activity becomes visible.
      */
@@ -516,6 +526,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
             	map.addMarker(position);
 	        }
         });
+        /*
+         * Method for user clicked on the info window, it will ask for entering informations
+         * Only appear if it's not a PlaceIt yet
+         */
         map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
 
 			@Override
@@ -674,9 +688,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
         });
     }
     
+    //Return the ActiveList
     public static List<PlaceIt> getActiveList(){
     	return PlaceIts;
     }
+    //Return the pullDown List
     public static List<PlaceIt> getPullDownList(){
     	return pullDown;
     }
@@ -899,6 +915,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
     		e.printStackTrace();
     	}
     }
+    
+    /**
+     * Called when app is on pause, it will start the location service
+     */
     protected void onPause(){
     	super.onPause();
 		// Save the current setting for updates 
@@ -908,6 +928,9 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	startService(new Intent(this, LocationService.class));
     }
     
+    /**
+     * Called when app is resumed, it will check if map need to be set up and update all the markers
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -949,10 +972,18 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	public void onFinish() {
 	}
 
+    /**
+     * Method for going to ActiveListActivity
+     * @param v
+     */
 	public void goToActiveList(View v){
 		startActivity(new Intent(MainActivity.this, ActiveListActivity.class));
 	}
 	
+	/**
+	 * Method for going to pulledListActivity
+	 * @param v
+	 */
 	public void goToPulledList(View v){
 		startActivity(new Intent(MainActivity.this, PulledListActivity.class));
 	}
@@ -1185,9 +1216,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 			 Toast.makeText(this, "FAILURE!", Toast.LENGTH_LONG).show(); 
 		 	}
 	}
-
-
-
+	
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		// Display the connection status 
@@ -1197,8 +1226,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
 			mLocationClient.requestLocationUpdates(mLocationRequest, this); 
 		}
 	}
-
-
 
 	@Override
 	public void onDisconnected() {
