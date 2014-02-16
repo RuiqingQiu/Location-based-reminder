@@ -35,7 +35,9 @@ public class LocationService extends Service implements LocationListener,
 
  private LocationRequest mLocationRequest;  
  private LocationClient mLocationClient;  
+ //Give each notification an ID
  private int notifyID = 1;
+ //Half a mile in meter
  private int range = 804;
  private long oneWeekInMillSec =  604800000;
 
@@ -49,10 +51,10 @@ public class LocationService extends Service implements LocationListener,
  @Override
  public void onCreate() {
   mLocationRequest = LocationRequest.create();
-  mLocationRequest.setInterval(5);
+  mLocationRequest.setInterval(10);
   //mLocationRequest.setInterval(CommonUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
   mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-  mLocationRequest.setFastestInterval(5);
+  mLocationRequest.setFastestInterval(10);
   //mLocationRequest.setFastestInterval(CommonUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
   mLocationClient = new LocationClient(getApplicationContext(), this,this);
   mLocationClient.connect();
@@ -135,7 +137,7 @@ public class LocationService extends Service implements LocationListener,
   myCurrentLocation.setLatitude(latitude);
   myCurrentLocation.setLongitude(longitude);
   List<PlaceIt> tmp = new ArrayList<PlaceIt>();
-  tmp.addAll( MainActivity.PlaceIts);
+  tmp.addAll(MainActivity.PlaceIts);
   
   //This part is for checking if the placeit in the active list is within range
   for (PlaceIt pi : tmp){
@@ -167,24 +169,17 @@ public class LocationService extends Service implements LocationListener,
 		  case 2:
 			  c1 = pi.getDateRemindedToCalendar();
 			  previous = c1.getTimeInMillis();
-			  Log.e("hello", "previous: "+previous);
-			  Log.e("hello", "previous: "+c1.toString());
 			  c2 = Calendar.getInstance();
 			  current = c2.getTimeInMillis();
-			  Log.e("hello", ""+"current: " + current);
-			  Log.e("hello", "current: "+c2.toString());
-			  Log.e("hello", ""+(current - previous));
-
 			  //Put back to active
 			  Log.e("hello", "current - previous: "+(current - previous));
-			  
-			  Log.e("hello", "Placeit length: " + MainActivity.PlaceIts.size());
-			  Log.e("hello", "pulldown length: " + MainActivity.pullDown.size());
 			  if((current - previous) > 60000)
 			  {
-				  pi.setPlaceItType(2);
-				  MainActivity.PlaceIts.add(pi);
 				  MainActivity.pullDown.remove(pi);
+				  pi.setPlaceItType(2);
+				  //Update the post time for the placeit
+				  pi.setDatePosted();
+				  MainActivity.PlaceIts.add(pi);				  
 			  }
 			  break;
 	  //One week
@@ -194,10 +189,14 @@ public class LocationService extends Service implements LocationListener,
 			  c2 = Calendar.getInstance();
 			  current = c2.getTimeInMillis();
 			  //Put back to active
+			  Log.e("hello", "current - previous: "+(current - previous));
 			  if((current - previous) > oneWeekInMillSec)
 			  {
-				  MainActivity.PlaceIts.add(pi);
 				  MainActivity.pullDown.remove(pi);
+				  pi.setPlaceItType(3);
+				  //Update the post time for the placeit
+				  pi.setDatePosted();
+				  MainActivity.PlaceIts.add(pi);		
 			  }
 			  break;
 			  
@@ -210,8 +209,11 @@ public class LocationService extends Service implements LocationListener,
 		  //Put back to active
 		  if((current - previous) > 2*oneWeekInMillSec)
 		  {
-			  MainActivity.PlaceIts.add(pi);
 			  MainActivity.pullDown.remove(pi);
+			  pi.setPlaceItType(4);
+			  //Update the post time for the placeit
+			  pi.setDatePosted();
+			  MainActivity.PlaceIts.add(pi);		
 		  }
 		  break;
 		//Three week
@@ -223,8 +225,11 @@ public class LocationService extends Service implements LocationListener,
 		  //Put back to active
 		  if((current - previous) > 3*oneWeekInMillSec)
 		  {
-			  MainActivity.PlaceIts.add(pi);
 			  MainActivity.pullDown.remove(pi);
+			  pi.setPlaceItType(5);
+			  //Update the post time for the placeit
+			  pi.setDatePosted();
+			  MainActivity.PlaceIts.add(pi);		
 		  }
 		  break;
 		//One Month
@@ -236,8 +241,11 @@ public class LocationService extends Service implements LocationListener,
 		  //Put back to active
 		  if((current - previous) > 4*oneWeekInMillSec)
 		  {
-			  MainActivity.PlaceIts.add(pi);
 			  MainActivity.pullDown.remove(pi);
+			  pi.setPlaceItType(6);
+			  //Update the post time for the placeit
+			  pi.setDatePosted();
+			  MainActivity.PlaceIts.add(pi);		
 		  }
 		  break;
 	  }
