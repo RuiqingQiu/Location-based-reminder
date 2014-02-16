@@ -37,6 +37,7 @@ public class LocationService extends Service implements LocationListener,
  private LocationClient mLocationClient;  
  //Give each notification an ID
  private int notifyID = 1;
+ private int pCount = 1;
  //Half a mile in meter
  private int range = 804;
  private long oneWeekInMillSec =  604800000;
@@ -302,13 +303,12 @@ public class LocationService extends Service implements LocationListener,
             .setSound(alarmSound)
             .setVibrate(vibrate)
             .setSmallIcon(R.drawable.ic_launcher)
-            .setNumber(notifyID++)
+            .setNumber(pCount)
             .setContentIntent(pIntent).build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        pCount++;
         // hide the notification after its selected
         noti.flags |= Notification.FLAG_AUTO_CANCEL;
-
         notificationManager.notify(notifyID, noti);
-        MainActivity.notificationSent = true;
       }
 }
