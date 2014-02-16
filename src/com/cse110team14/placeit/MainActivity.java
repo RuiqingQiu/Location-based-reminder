@@ -938,8 +938,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     @Override 
     public void onLocationChanged(Location location) { 
 	  // Report to the UI that the location was updated 
-	  /*map.animateCamera(CameraUpdateFactory.newLatLngZoom(new 
-			LatLng(location.getLatitude(),location.getLongitude()), 18)); */
+	  map.animateCamera(CameraUpdateFactory.newLatLngZoom(new 
+			LatLng(location.getLatitude(),location.getLongitude()), 17)); 
     }
 	
 	/* A CLASS FOR CUSTOM PLACEITS INFO WINDOW ON THE MAP */
