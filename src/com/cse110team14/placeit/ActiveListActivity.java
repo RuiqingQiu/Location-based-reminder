@@ -229,7 +229,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 			map.put("ItemText", "Description: " + curr.getDescription());
 			map.put("ItemDateToRemind",
 					"Date and time to Remind: " + curr.getDateReminded());
-			map.put("ItemPostTime", "Post Time" + curr.getDate());
+			map.put("ItemPostTime", "Post Time: " + curr.getDate());
 			activeList.add(map);
 		}
 	}

@@ -48,7 +48,7 @@ public class PulledListActivity extends Activity {
 			map.put("ItemTitle", "Title: " + curr.getTitle());
 			map.put("ItemText", "Description: " + curr.getDescription());
 			map.put("ItemDateToRemind", "Date and time to Remind: " + curr.getDateReminded());
-			map.put("ItemPostTime", "Post Time" + curr.getDate());
+			map.put("ItemPostTime", "Post Time: " + curr.getDate());
 			activeList.add(map);
 		}
 
