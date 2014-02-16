@@ -67,6 +67,7 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -108,11 +109,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	// Milliseconds per second 
 	private static final int MILLISECONDS_PER_SECOND = 1000; 
 	// Update frequency in seconds 
-	public static final int UPDATE_INTERVAL_IN_SECONDS = 1; 
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 10; 
 	// Update frequency in milliseconds 
 	private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS; 
 	// The fastest update frequency, in seconds 
-	private static final int FASTEST_INTERVAL_IN_SECONDS = 1; 
+	private static final int FASTEST_INTERVAL_IN_SECONDS = 10; 
 	// A fast frequency ceiling in milliseconds 
 	private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS; 
 	
@@ -130,7 +131,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	private String pulldownListFile = "pulldown_placeits.dat";
 	
 	
-		
+	//Variables for all Widgets in MainActivity
 	AlertDialog.Builder alert;
 	Button mBtnFind;
 	Button retrackBtn;
@@ -142,7 +143,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	final Context context = this;
 	
 	
-	
+	//Call during the activity is created
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	if (notificationSent == true){
@@ -434,9 +435,36 @@ GooglePlayServicesClient.OnConnectionFailedListener
      	 * handle callbacks. 
      	 */ 
      	 mLocationClient = new LocationClient(this, this, this); 
-        
+     	LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            Toast.makeText(this, "GPS is Enabled in your devide", Toast.LENGTH_SHORT).show();
+        }else{
+            showGPSDisabledAlertToUser();
+        }
+   
     }
-    
+    private void showGPSDisabledAlertToUser(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+        .setCancelable(false)
+        .setPositiveButton("Goto Settings Page To Enable GPS",
+                new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                Intent callGPSSettingIntent = new Intent(
+                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(callGPSSettingIntent);
+            }
+        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
    
     
     @SuppressLint("NewApi")
@@ -470,7 +498,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
     @Override
     protected void onStart() {
         super.onStart();
-        mLocationClient.connect(); 
+        mLocationClient.connect();
         /*
          * Function for user press on map for a long time, it will create a Marker
          * at where the user pressed on
