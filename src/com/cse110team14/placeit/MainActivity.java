@@ -94,6 +94,7 @@ CancelableCallback
 	private GoogleMap map;
 	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
 	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
+	public static Boolean notificationSent = false;
 	 
 	//Initilize the mMarkers list
 	private List<Marker> mMarkers = new ArrayList<Marker>();
@@ -113,6 +114,11 @@ CancelableCallback
 	final Context context = this;
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	if (notificationSent == true){
+    		notificationSent = false;
+    		Intent intent = new Intent(MainActivity.this, PulledListActivity.class);
+    		startActivity(intent);
+    	}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
