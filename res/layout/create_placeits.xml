@@ -74,7 +74,7 @@
             android:id="@+id/minutely"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="0dp"
             android:text="Minute" />
 
         <RadioButton
@@ -82,21 +82,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
-            android:text="One Week" />
+            android:text="1 Week" />
 
         <RadioButton
             android:id="@+id/twoweekly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
-            android:text="Two Weeks" />
+            android:text="2 Weeks" />
 
         <RadioButton
             android:id="@+id/threeweekly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
-            android:text="Three Week" />
+            android:text="3 Week" />
 
         <RadioButton
             android:id="@+id/monthly"
@@ -104,14 +104,14 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="0dp"
             android:text="Month" />
-    </RadioGroup>
 
-    <RadioButton
-        android:id="@+id/none"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:text="None" />
+        <RadioButton
+            android:id="@+id/none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:text="None" />
+    </RadioGroup>
 
     <DatePicker
         android:id="@+id/datePicker"

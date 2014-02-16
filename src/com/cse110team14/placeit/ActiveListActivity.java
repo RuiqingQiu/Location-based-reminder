@@ -25,7 +25,7 @@ import android.widget.Toast;
 public class ActiveListActivity<activeListView> extends Activity {
 	private Iterator<PlaceIt> piIterator;
 	private List<PlaceIt> sorted;
-	
+
 	List<HashMap<String, String>> activeList;
 
 	private PlaceIt clicked;
@@ -48,23 +48,12 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 		ListView listView = (ListView) findViewById(R.id.ActiveListView);
 
-		// piIterator = MainActivity.PlaceIts.iterator();
-
-		/*
-		 * List<HashMap<String, String>> activeList = new
-		 * ArrayList<HashMap<String, String>>(); while (piIterator.hasNext()) {
-		 * HashMap<String, String> map = new HashMap<String, String>(); curr =
-		 * piIterator.next(); map.put("ItemTitle", curr.getTitle());
-		 * map.put("ItemText", curr.getDescription()); activeList.add(map); }
-		 */
-		// for (PlaceIt pi : sorted)
-
 		refresh();
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
 				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
-						"ItemDatePosted" }, new int[] { R.id.ItemTitle,
-						R.id.ItemText, R.id.ItemDatePosted });
+						"ItemDateToRemind","ItemPostTime" }, new int[] { R.id.ItemTitle,
+						R.id.ItemText, R.id.ItemDateToRemind, R.id.ItemPostTime });
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -75,16 +64,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 				ActiveListActivity.this.id = (int) id;
 				clicked = sorted.get((int) id);
-				/*
-				 * Toast.makeText( ActiveListActivity.this, "Title: " +
-				 * clicked.getTitle() + "\n\nDescription: " +
-				 * clicked.getDescription() + "\n\nDate to be Reminded: " +
-				 * clicked.getDateReminded() + "\n\nPost Date and time: " +
-				 * clicked.getDate() + "\n\nLocation: (" +
-				 * clicked.getLocation().latitude + ", " +
-				 * clicked.getLocation().longitude + ")",
-				 * Toast.LENGTH_LONG).show();
-				 */
+/*
 				Dialog dialog = new AlertDialog.Builder(ActiveListActivity.this)
 						.setTitle("Title: " + clicked.getTitle())
 						.setItems(
@@ -106,12 +86,13 @@ public class ActiveListActivity<activeListView> extends Activity {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										
-										//List<PlaceIt> pulled = MainActivity.getActiveList();
+
+										// List<PlaceIt> pulled =
+										// MainActivity.getActiveList();
 										MainActivity.pullDown.add(clicked);
 										sorted.remove(clicked);
 										MainActivity.PlaceIts.remove(clicked);
-										
+
 										Toast.makeText(
 												ActiveListActivity.this,
 												"Item \""
@@ -129,13 +110,12 @@ public class ActiveListActivity<activeListView> extends Activity {
 									int which) {
 								Toast.makeText(
 										ActiveListActivity.this,
-										"Reminding item \"" + clicked.getTitle()
+										"Reminding item \""
+												+ clicked.getTitle()
 												+ "\" completed.",
 										Toast.LENGTH_LONG).show();
 							}
-						})
-						.setNegativeButton("Discard",
-								new OnClickListener() {
+						}).setNegativeButton("Discard", new OnClickListener() {
 
 							@Override
 							public void onClick(DialogInterface dialog,
@@ -146,8 +126,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 								Toast.makeText(
 										ActiveListActivity.this,
-										"Item \""
-												+ clicked.getTitle()
+										"Item \"" + clicked.getTitle()
 												+ "\" is now discarded.",
 										Toast.LENGTH_LONG).show();
 								finish();
@@ -155,7 +134,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 							}
 						}).create();
 
-				dialog.show();
+				dialog.show();*/
 
 				// Toast.makeText(
 				// ActiveListActivity.this,"ID：" + id + ":" + clicked.getTitle()
@@ -163,18 +142,94 @@ public class ActiveListActivity<activeListView> extends Activity {
 				// + listView.getItemAtPosition(arg2).toString(),
 				// Toast.LENGTH_LONG).show();
 
+				Dialog detailsDialog = createDetailsDialog();
+				detailsDialog.show();
 			}
 		});
 	}
+
+	public Dialog createDetailsDialog(){
+		Dialog dia = new AlertDialog.Builder(ActiveListActivity.this)
+		.setTitle("Title: " + clicked.getTitle())
+		.setItems(
+				new String[] {
+						"Description: "
+								+ clicked.getDescription(),
+						"Date to be Reminded: "
+								+ clicked.getDateReminded(),
+						"Post Date and time: "
+								+ clicked.getDate(),
+						"Location: ("
+								+ clicked.getLocation().latitude
+								+ ", "
+								+ clicked.getLocation().longitude
+								+ ")" }, null)
+		.setPositiveButton("Move To Pulled-Down",
+				new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+
+						// List<PlaceIt> pulled =
+						// MainActivity.getActiveList();
+						MainActivity.pullDown.add(clicked);
+						sorted.remove(clicked);
+						MainActivity.PlaceIts.remove(clicked);
+
+						Toast.makeText(
+								ActiveListActivity.this,
+								"Item \""
+										+ clicked.getTitle()
+										+ "\" is now moved to Pulled-Down list",
+								Toast.LENGTH_LONG).show();
+						finish();
+						startActivity(getIntent());
+					}
+				})
+		.setNeutralButton("OK", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog,
+					int which) {
+				Toast.makeText(
+						ActiveListActivity.this,
+						"Reminding item \""
+								+ clicked.getTitle()
+								+ "\" completed.",
+						Toast.LENGTH_LONG).show();
+			}
+		}).setNegativeButton("Discard", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog,
+					int which) {
+
+				sorted.remove(clicked);
+				MainActivity.PlaceIts.remove(clicked);
+
+				Toast.makeText(
+						ActiveListActivity.this,
+						"Item \"" + clicked.getTitle()
+								+ "\" is now discarded.",
+						Toast.LENGTH_LONG).show();
+				finish();
+				startActivity(getIntent());
+			}
+		}).create();
+		return dia;
+	}
 	
-	public void refresh(){
+	public void refresh() {
 		activeList = new ArrayList<HashMap<String, String>>();
 		for (PlaceIt curr : sorted) {
 			HashMap<String, String> map = new HashMap<String, String>();
 			// curr = piIterator.next();
 			map.put("ItemTitle", "Title: " + curr.getTitle());
 			map.put("ItemText", "Description: " + curr.getDescription());
-			map.put("ItemDatePosted", "Post Date and time: " + curr.getDate());
+			map.put("ItemDateToRemind",
+					"Date and time to Remind: " + curr.getDateReminded());
+			map.put("ItemPostTime", "Post Time: " + curr.getDate());
 			activeList.add(map);
 		}
 	}

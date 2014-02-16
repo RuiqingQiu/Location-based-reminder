@@ -47,14 +47,15 @@ public class PulledListActivity extends Activity {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("ItemTitle", "Title: " + curr.getTitle());
 			map.put("ItemText", "Description: " + curr.getDescription());
-			map.put("ItemDatePosted", "Post Date and time: " + curr.getDate());
+			map.put("ItemDateToRemind", "Date and time to Remind: " + curr.getDateReminded());
+			map.put("ItemPostTime", "Post Time: " + curr.getDate());
 			activeList.add(map);
 		}
 
 		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
 				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
-						"ItemDatePosted" }, new int[] { R.id.ItemTitle,
-						R.id.ItemText, R.id.ItemDatePosted });
+						"ItemDateToRemind","ItemPostTime" }, new int[] { R.id.ItemTitle,
+						R.id.ItemText, R.id.ItemDateToRemind, R.id.ItemPostTime });
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -65,80 +66,141 @@ public class PulledListActivity extends Activity {
 
 				PulledListActivity.this.id = (int) id;
 				clicked = sorted.get((int) id);
-				Dialog dialog = new AlertDialog.Builder(PulledListActivity.this)
-						.setTitle("Title: " + clicked.getTitle())
-						.setItems(
-								new String[] {
-										"Description: "
-												+ clicked.getDescription(),
-										"Date to be Reminded: "
-												+ clicked.getDateReminded(),
-										"Post Date and time: "
-												+ clicked.getDate(),
-										"Location: ("
-												+ clicked.getLocation().latitude
-												+ ", "
-												+ clicked.getLocation().longitude
-												+ ")" }, null)
-						.setPositiveButton("Repost",
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-
-										MainActivity.PlaceIts.add(clicked);
-										sorted.remove(clicked);
-										MainActivity.pullDown.remove(clicked);
-
-										Toast.makeText(
-												PulledListActivity.this,
-												"Item \""
-														+ clicked.getTitle()
-														+ "\" is now moved to Active list.",
-												Toast.LENGTH_LONG).show();
-										finish();
-										startActivity(getIntent());
-									}
-								})
-						.setNegativeButton("Discard",
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-
-										sorted.remove(clicked);
-										MainActivity.pullDown.remove(clicked);
-
-										Toast.makeText(
-												PulledListActivity.this,
-												"Item \""
-														+ clicked.getTitle()
-														+ "\" is now discarded.",
-												Toast.LENGTH_LONG).show();
-										finish();
-										startActivity(getIntent());
-									}
-								})
-						.setNeutralButton("OK", new OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Toast.makeText(
-										PulledListActivity.this,
-										"Pulled-Down item \"" + clicked.getTitle()
-												+ "\" has been shown.",
-										Toast.LENGTH_LONG).show();
-							}
-						}).create();
-
-				dialog.show();
+				Dialog detailDetailsdialog = createDetailsDialog();
+				detailDetailsdialog.show();
 			}
 		});
 	}
 
+	private Dialog createDetailsDialog(){
+		Dialog dia = new AlertDialog.Builder(PulledListActivity.this)
+		.setTitle("Title: " + clicked.getTitle())
+		.setItems(
+				new String[] {
+						"Description: "
+								+ clicked.getDescription(),
+						"Date to be Reminded: "
+								+ clicked.getDateReminded(),
+						"Post Date and time: "
+								+ clicked.getDate(),
+						"Location: ("
+								+ clicked.getLocation().latitude
+								+ ", "
+								+ clicked.getLocation().longitude
+								+ ")" }, null)
+		.setPositiveButton("Repost",
+				new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+
+						MainActivity.PlaceIts.add(clicked);
+						sorted.remove(clicked);
+						MainActivity.pullDown.remove(clicked);
+
+/*										Toast.makeText(
+								PulledListActivity.this,
+								"Item \""
+										+ clicked.getTitle()
+										+ "\" is now moved to Active list.",
+								Toast.LENGTH_LONG).show();*/
+						Dialog repostDialog = createRepostDialog();
+						repostDialog.show();
+						//finish();
+						//startActivity(getIntent());
+						
+						
+					}
+				})
+		.setNegativeButton("Discard",
+				new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+
+						sorted.remove(clicked);
+						MainActivity.pullDown.remove(clicked);
+
+						Toast.makeText(
+								PulledListActivity.this,
+								"Item \""
+										+ clicked.getTitle()
+										+ "\" is now discarded.",
+								Toast.LENGTH_LONG).show();
+						finish();
+						startActivity(getIntent());
+					}
+				})
+		.setNeutralButton("OK", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog,
+					int which) {
+				Toast.makeText(
+						PulledListActivity.this,
+						"Pulled-Down item \"" + clicked.getTitle()
+								+ "\" has been shown.",
+						Toast.LENGTH_LONG).show();
+			}
+		}).create();
+	return dia;
+	}
+	
+	private Dialog createRepostDialog(){
+		Dialog dia = new AlertDialog.Builder(PulledListActivity.this)
+		.setTitle("When do you want to repost it?")
+		.setPositiveButton("Now",
+				new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+
+						MainActivity.PlaceIts.add(clicked);
+						sorted.remove(clicked);
+						MainActivity.pullDown.remove(clicked);
+
+						Toast.makeText(
+								PulledListActivity.this,
+								"Item is now active",
+								Toast.LENGTH_LONG).show();
+						finish();
+						startActivity(getIntent());
+					}
+				})
+		.setNegativeButton("45 min later",
+				new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+
+						// TODO activate 45 minutes later
+
+						Toast.makeText(
+								PulledListActivity.this,
+								"Item will be active 45 minutes later.",
+								Toast.LENGTH_LONG).show();
+						finish();
+						startActivity(getIntent());
+					}
+				})
+		.setNeutralButton("10s later", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog,
+					int which) {
+				
+				//TODO activate 10 seconds later
+				
+				Toast.makeText(
+						PulledListActivity.this,
+						"Item will be active 10 seconds later.",
+						Toast.LENGTH_LONG).show();
+			}
+		}).create();
+		return dia;
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
