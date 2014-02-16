@@ -141,6 +141,15 @@ public class LocationService extends Service implements LocationListener,
   
   //This part is for checking if the placeit in the active list is within range
   for (PlaceIt pi : tmp){
+	  // Check if the place's reminded date is today
+	  Calendar c = Calendar.getInstance();
+	  int day = pi.getDateRemindedToCalendar().get(Calendar.DAY_OF_MONTH);
+	  int month = pi.getDateRemindedToCalendar().get(Calendar.MONTH) + 1;
+	  int year = pi.getDateRemindedToCalendar().get(Calendar.YEAR);
+	  if (day == (c.get(Calendar.DAY_OF_MONTH))
+		  && month == (c.get(Calendar.MONTH))
+		  && year == (c.get(Calendar.YEAR)))
+	  {
 		//change place it type to pulled down
 		Location placeItLocation = new Location("");
 		placeItLocation.setLatitude(pi.getLocation().latitude);
@@ -179,6 +188,7 @@ public class LocationService extends Service implements LocationListener,
 				}
 			}
 		}
+	  }
   }
   
   
