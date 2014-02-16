@@ -94,17 +94,6 @@ public class PulledListActivity extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog,
 							int which) {
-
-						MainActivity.PlaceIts.add(clicked);
-						sorted.remove(clicked);
-						MainActivity.pullDown.remove(clicked);
-
-/*										Toast.makeText(
-								PulledListActivity.this,
-								"Item \""
-										+ clicked.getTitle()
-										+ "\" is now moved to Active list.",
-								Toast.LENGTH_LONG).show();*/
 						Dialog repostDialog = createRepostDialog();
 						repostDialog.show();
 						//finish();
@@ -156,10 +145,11 @@ public class PulledListActivity extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog,
 							int which) {
-
-						MainActivity.PlaceIts.add(clicked);
+						
 						sorted.remove(clicked);
 						MainActivity.pullDown.remove(clicked);
+						clicked.setDatePosted();
+						MainActivity.PlaceIts.add(clicked);
 
 						Toast.makeText(
 								PulledListActivity.this,
@@ -175,7 +165,12 @@ public class PulledListActivity extends Activity {
 					public void onClick(DialogInterface dialog,
 							int which) {
 
-						// TODO activate 45 minutes later
+						//activate 45 minutes later
+						sorted.remove(clicked);
+						MainActivity.pullDown.remove(clicked);
+						clicked.setSneezeType(3);
+						clicked.setDatePosted();
+						MainActivity.PlaceIts.add(clicked);
 
 						Toast.makeText(
 								PulledListActivity.this,
@@ -190,8 +185,13 @@ public class PulledListActivity extends Activity {
 			public void onClick(DialogInterface dialog,
 					int which) {
 				
-				//TODO activate 10 seconds later
-				
+				//activate 10 seconds later
+				sorted.remove(clicked);
+				MainActivity.pullDown.remove(clicked);
+				clicked.setSneezeType(2);
+				clicked.setDatePosted();
+				MainActivity.PlaceIts.add(clicked);
+							
 				Toast.makeText(
 						PulledListActivity.this,
 						"Item will be active 10 seconds later.",

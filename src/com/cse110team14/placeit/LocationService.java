@@ -133,6 +133,7 @@ public class LocationService extends Service implements LocationListener,
 		Log.i("info", "Location Client is Disconnected");
 	}
 
+
 	/*
 	 * Overrriden method of interface LocationListener called when location of
 	 * gps device is changed. Location Object is received as a parameter. This
@@ -266,6 +267,7 @@ public class LocationService extends Service implements LocationListener,
 				break;
 			}
 		}
+ 
 
 		Log.i("info", "Latitude :: " + latitude);
 		Log.i("info", "Longitude :: " + longitude);
