@@ -22,6 +22,12 @@ public class PlaceIt implements Serializable {
 	 */
 	private int placeitType;
 	private String color;
+	/*
+	 * Sneeze type: 1 for none (default)
+	 * 				2 for 10 seconds later
+	 * 				3 for 45 minutes later
+	 */
+	private int sneezeType;
 
 	public PlaceIt(String title, String description, String color,
 			LatLng location, String dateToBeReminded, String postDate) {
@@ -33,34 +39,67 @@ public class PlaceIt implements Serializable {
 		//Default to be 1, one time only placeit
 		this.placeitType = 1;
 		this.color = color;
+		//Default to be 1, none sneeze
+		this.sneezeType = 1;
 	}
+	
+	/**
+	 * Set method for placeit type
+	 * @param type
+	 */
 	public void setPlaceItType(int type){
 		this.placeitType = type;
 	}
+	
+	/**
+	 * Get method for placeit type
+	 * @return
+	 */
 	public int getPlaceItType(){
 		return placeitType;
 	}
-
+	/**
+	 * Get method for title
+	 * @return
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * Get method for description
+	 * @return
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * Get method for location
+	 * @return
+	 */
 	public LatLng getLocation() {
 		return location;
 	}
-
+	
+	/**
+	 * Set method for postDate
+	 */
 	public void setDatePosted(){
 		postDate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 	}
+	/**
+	 * Get the postDate
+	 * @return the string for postDate
+	 */
 	public String getDate() {
 		return postDate;
 	}
 	
-	
+	/**
+	 * Method that will transform the dateToBeReminded to be a Calendar Object
+	 * @return a Calendar object containing time and dates
+	 */
 	public Calendar getDateRemindedToCalendar(){
 		String [] splited = dateToBeReminded.split("/");
 		int month = Integer.parseInt(splited[0]) - 1;
@@ -88,10 +127,18 @@ public class PlaceIt implements Serializable {
 		}
 	}
 
+	/**
+	 * Get method for getting the color for the placeit
+	 * @return the string representation of the color
+	 */
 	public String getColor() {
 		return color;
 	}
 
+	/**
+	 * Get method for the dateToBeReminded
+	 * @return the string representation of the dateToBeReminded
+	 */
 	public String getDateReminded() {
 		return dateToBeReminded;
 	}

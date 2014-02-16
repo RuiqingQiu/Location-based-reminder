@@ -519,7 +519,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 		        final EditText color = (EditText)v.findViewById(R.id.color);
 		        // Pass null as the parent view because its going in the dialog layout
 		        alert.setView(v);
-		        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		        alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
 		        @SuppressLint("DefaultLocale")
 				public void onClick(DialogInterface dialog, int whichButton) {
 			          String placeItTitle = title.getText().toString();
