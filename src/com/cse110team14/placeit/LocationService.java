@@ -231,17 +231,19 @@ public class LocationService extends Service implements LocationListener,
 			case 3:
 				c1 = pi.getDateRemindedToCalendar();
 				previous = c1.getTimeInMillis();
+				Log.e("hello","PlaceIt length: " + MainActivity.PlaceIts.size());
+				Log.e("hello","PlaceIt length: " + MainActivity.pullDown.size());
 				c2 = Calendar.getInstance();
 				current = c2.getTimeInMillis();
 				// Put back to active
-				Log.e("hello", "current - previous: " + (current - previous));
+				Log.e("hello", "One week: current - previous: " + (current - previous));
 				if ((current - previous) > oneWeekInMillSec) {
 					MainActivity.pullDown.remove(pi);
 					pi.setPlaceItType(3);
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
-					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.PlaceIts.add(pi);
 				}
@@ -260,7 +262,7 @@ public class LocationService extends Service implements LocationListener,
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
-					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.PlaceIts.add(pi);
 				}
@@ -278,7 +280,7 @@ public class LocationService extends Service implements LocationListener,
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
-					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.PlaceIts.add(pi);
 				}
@@ -296,7 +298,7 @@ public class LocationService extends Service implements LocationListener,
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
-					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.PlaceIts.add(pi);
 				}
