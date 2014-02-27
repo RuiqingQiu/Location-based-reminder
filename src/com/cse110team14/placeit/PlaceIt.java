@@ -119,23 +119,27 @@ public class PlaceIt extends SimplePlaceIt {
 		String [] tmp = postDate.split(" ");
 		if(tmp[4].compareTo("PM") == 0)
 		{
-			int colon = tmp[3].indexOf(':');
-			int hourOfDay = Integer.parseInt(tmp[3].substring(0,colon)) + 12;
-			int minute = Integer.parseInt(tmp[3].substring(colon+1, colon+3));
-			//Log.e("hello", "hour: " + hourOfDay + "minute: " + minute);
-			Calendar c = Calendar.getInstance();
-			c.set(year, month, day, hourOfDay, minute);
+			Calendar c = constructDate(month, day, year, tmp, true);
 			return c;
 		}
 		else{
-			int colon = tmp[3].indexOf(':');
-			int hourOfDay = Integer.parseInt(tmp[3].substring(0,colon));
-			int minute = Integer.parseInt(tmp[3].substring(colon+1, colon+3));
-			Log.e("hello", "hour: " + hourOfDay + "minute: " + minute);
-			Calendar c = Calendar.getInstance();
-			c.set(year, month, day, hourOfDay, minute);
+			
+			Calendar c = constructDate(month,day,year,tmp,false);
 			return c;
 		}
+	}
+
+	private Calendar constructDate(int month, int day, int year, String[] tmp, boolean PM) {
+		int colon = tmp[3].indexOf(':');
+		int hourOfDay = 0;
+		if(PM)
+			hourOfDay = Integer.parseInt(tmp[3].substring(0,colon)) + 12;
+		else
+			hourOfDay = Integer.parseInt(tmp[3].substring(0,colon));
+		int minute = Integer.parseInt(tmp[3].substring(colon+1, colon+3));
+		Calendar c = Calendar.getInstance();
+		c.set(year, month, day, hourOfDay, minute);
+		return c;
 	}
 
 	/**
