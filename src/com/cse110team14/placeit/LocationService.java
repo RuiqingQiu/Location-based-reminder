@@ -95,20 +95,6 @@ public class LocationService extends Service implements LocationListener,
 		 * services activity that can resolve error.
 		 */
 		if (connectionResult.hasResolution()) {
-			/*
-			 * try { // Start an Activity that tries to resolve the error
-			 * connectionResult
-			 * .startResolutionForResult(ApplicationClass.getCurrentActivity(),
-			 * CommonUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST);
-			 */
-			/*
-			 * Thrown if Google Play services canceled the original
-			 * PendingIntent
-			 */
-			/*
-			 * } catch (IntentSender.SendIntentException e) { // Log the error
-			 * e.printStackTrace(); }
-			 */
 		} else {
 			// If no resolution is available, display a dialog to the user with
 			// the error.
