@@ -67,6 +67,7 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -100,17 +101,19 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	private GoogleMap map;
 	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
 	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
+
+	public static Boolean notificationSent = false;
 	
 	//For location update in mainActivity
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000; 
 	// Milliseconds per second 
 	private static final int MILLISECONDS_PER_SECOND = 1000; 
 	// Update frequency in seconds 
-	public static final int UPDATE_INTERVAL_IN_SECONDS = 1; 
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 30; 
 	// Update frequency in milliseconds 
 	private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS; 
 	// The fastest update frequency, in seconds 
-	private static final int FASTEST_INTERVAL_IN_SECONDS = 1; 
+	private static final int FASTEST_INTERVAL_IN_SECONDS = 30; 
 	// A fast frequency ceiling in milliseconds 
 	private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS; 
 	
@@ -128,7 +131,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	private String pulldownListFile = "pulldown_placeits.dat";
 	
 	
-		
+	//Variables for all Widgets in MainActivity
 	AlertDialog.Builder alert;
 	Button mBtnFind;
 	Button retrackBtn;
@@ -140,9 +143,14 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	final Context context = this;
 	
 	
-	
+	//Call during the activity is created
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	if (notificationSent == true){
+    		notificationSent = false;
+    		Intent intent = new Intent(MainActivity.this, PulledListActivity.class);
+    		startActivity(intent);
+    	}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpMapIfNeeded();
@@ -168,6 +176,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
         //Start the service for checking location onCreate
         startService(new Intent(this, LocationService.class));
  
+        /* This is comment out due to testing propuse 
         test.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		PlaceIts.clear();
@@ -181,7 +190,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
         		createNotification(null, PlaceIts.get(0));
         		Log.e("hello", PlaceIts.get(0).getDateRemindedToCalendar().toString());
         	}
-        });
+        });*/
+        
         // Setting click event listener for the find button
         mBtnFind.setOnClickListener(new OnClickListener() {
             @Override
@@ -220,7 +230,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
             }
         });
         
-        
+        //Set up the retrack button for keeping track of all retrack button
         retrackBtn.setOnClickListener(new OnClickListener(){
         	 @Override
     		 public void onClick(View v) {
@@ -255,6 +265,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     			 }
     		 }
         });
+        
+        //Initialize the create button 
         create.setOnClickListener(new OnClickListener()
         {
 			@Override
@@ -403,6 +415,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				
         });//End of on create
 
+        //Show markers in the placeit list when app is open
         ShowMarkerWhenAppOpen();
         
         // Create the LocationRequest object 
@@ -427,11 +440,42 @@ GooglePlayServicesClient.OnConnectionFailedListener
      	 * handle callbacks. 
      	 */ 
      	 mLocationClient = new LocationClient(this, this, this); 
-        
+     	LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            Toast.makeText(this, "GPS is Enabled in your devide", Toast.LENGTH_SHORT).show();
+        }else{
+            showGPSDisabledAlertToUser();
+        }
+   
     }
     
+    /**
+     * A Private helper method that is called when the gps is disabled
+     */
+    private void showGPSDisabledAlertToUser(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+        .setCancelable(false)
+        .setPositiveButton("Goto Settings Page To Enable GPS",
+                new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                Intent callGPSSettingIntent = new Intent(
+                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(callGPSSettingIntent);
+            }
+        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
    
-    
+    /*
     @SuppressLint("NewApi")
 	public void createNotification(View view, PlaceIt p) {
         // Prepare intent which is triggered if the
@@ -456,14 +500,15 @@ GooglePlayServicesClient.OnConnectionFailedListener
 
         notificationManager.notify(0, noti);
 
-      }
+      }*/
+    
     /*
      * Called when the Activity becomes visible.
      */
     @Override
     protected void onStart() {
         super.onStart();
-        mLocationClient.connect(); 
+        mLocationClient.connect();
         /*
          * Function for user press on map for a long time, it will create a Marker
          * at where the user pressed on
@@ -481,6 +526,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
             	map.addMarker(position);
 	        }
         });
+        /*
+         * Method for user clicked on the info window, it will ask for entering informations
+         * Only appear if it's not a PlaceIt yet
+         */
         map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
 
 			@Override
@@ -512,7 +561,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 		        final EditText color = (EditText)v.findViewById(R.id.color);
 		        // Pass null as the parent view because its going in the dialog layout
 		        alert.setView(v);
-		        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		        alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
 		        @SuppressLint("DefaultLocale")
 				public void onClick(DialogInterface dialog, int whichButton) {
 			          String placeItTitle = title.getText().toString();
@@ -639,9 +688,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
         });
     }
     
+    //Return the ActiveList
     public static List<PlaceIt> getActiveList(){
     	return PlaceIts;
     }
+    //Return the pullDown List
     public static List<PlaceIt> getPullDownList(){
     	return pullDown;
     }
@@ -762,8 +813,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
  	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
  	   String color = splited[6];
  	   int type = Integer.parseInt(splited[7]);
+ 	   int sneezeType = Integer.parseInt(splited[8]);
 	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
 	   tmp.setPlaceItType(type);
+	   tmp.setSneezeType(sneezeType);
        PlaceIts.add(tmp);
     }
     
@@ -781,8 +834,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
  	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
  	   String color = splited[6];
  	   int type = Integer.parseInt(splited[7]);
+ 	   int sneezeType = Integer.parseInt(splited[8]);
  	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
  	   tmp.setPlaceItType(type);
+ 	   tmp.setSneezeType(sneezeType);
        pullDown.add(tmp);
     }
     
@@ -825,7 +880,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     			PlaceIt element = placeitsIterator.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + "\n"; 
+    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
+    					"###" + element.getSneezeType() + "\n"; 
     			out.write(str.getBytes());
     		}
     		out.close();
@@ -848,7 +904,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
     			PlaceIt element = pulldownIterator.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + "\n"; 
+    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
+    					"###" + element.getSneezeType() + "\n"; 
     			out.write(str.getBytes());
     		}
     		out.close();
@@ -858,14 +915,22 @@ GooglePlayServicesClient.OnConnectionFailedListener
     		e.printStackTrace();
     	}
     }
+    
+    /**
+     * Called when app is on pause, it will start the location service
+     */
     protected void onPause(){
     	super.onPause();
 		// Save the current setting for updates 
 		mEditor.putBoolean("KEY_UPDATES_ON", mUpdatesRequested); 
 		mEditor.commit(); 
+		//mLocationClient.disconnect();
     	startService(new Intent(this, LocationService.class));
     }
     
+    /**
+     * Called when app is resumed, it will check if map need to be set up and update all the markers
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -907,10 +972,18 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	public void onFinish() {
 	}
 
+    /**
+     * Method for going to ActiveListActivity
+     * @param v
+     */
 	public void goToActiveList(View v){
 		startActivity(new Intent(MainActivity.this, ActiveListActivity.class));
 	}
 	
+	/**
+	 * Method for going to pulledListActivity
+	 * @param v
+	 */
 	public void goToPulledList(View v){
 		startActivity(new Intent(MainActivity.this, PulledListActivity.class));
 	}
@@ -925,7 +998,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
     public void onLocationChanged(Location location) { 
 	  // Report to the UI that the location was updated 
 	  map.animateCamera(CameraUpdateFactory.newLatLngZoom(new 
-			LatLng(location.getLatitude(),location.getLongitude()), 18)); 
+			LatLng(location.getLatitude(),location.getLongitude()), 17)); 
     }
 	
 	/* A CLASS FOR CUSTOM PLACEITS INFO WINDOW ON THE MAP */
@@ -1143,9 +1216,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 			 Toast.makeText(this, "FAILURE!", Toast.LENGTH_LONG).show(); 
 		 	}
 	}
-
-
-
+	
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		// Display the connection status 
@@ -1155,8 +1226,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
 			mLocationClient.requestLocationUpdates(mLocationRequest, this); 
 		}
 	}
-
-
 
 	@Override
 	public void onDisconnected() {

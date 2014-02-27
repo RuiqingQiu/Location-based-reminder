@@ -27,6 +27,17 @@ public class PulledListActivity extends Activity {
 	private PlaceIt clicked;
 	private int id;
 
+	/**
+	 * Called when the activity is first created. This method create the list
+	 * view, and show the list view items and bind it to the click listener.
+	 * 
+	 * @param savedInstanceState
+	 *            - If the activity is being re-initialized after previously
+	 *            being shut down then this Bundle contains the data it most
+	 *            recently supplied in onSaveInstanceState(Bundle).
+	 * 
+	 * @return void
+	 */
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -72,6 +83,15 @@ public class PulledListActivity extends Activity {
 		});
 	}
 
+	
+	/**
+	 * This method create the dialog showing the details of a place-it, and the 
+	 * related buttons for repost and other options.
+	 * 
+	 * @param none
+	 * 
+	 * @return the dialog showing actions and details of a place-it
+	 */
 	private Dialog createDetailsDialog(){
 		Dialog dia = new AlertDialog.Builder(PulledListActivity.this)
 		.setTitle("Title: " + clicked.getTitle())
@@ -94,17 +114,6 @@ public class PulledListActivity extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog,
 							int which) {
-
-						MainActivity.PlaceIts.add(clicked);
-						sorted.remove(clicked);
-						MainActivity.pullDown.remove(clicked);
-
-/*										Toast.makeText(
-								PulledListActivity.this,
-								"Item \""
-										+ clicked.getTitle()
-										+ "\" is now moved to Active list.",
-								Toast.LENGTH_LONG).show();*/
 						Dialog repostDialog = createRepostDialog();
 						repostDialog.show();
 						//finish();
@@ -148,6 +157,13 @@ public class PulledListActivity extends Activity {
 	return dia;
 	}
 	
+	/**
+	 * This method create the dialog showing the repost time options
+	 * 
+	 * @param none
+	 * 
+	 * @return the dialog showing actions and details of a place-it
+	 */
 	private Dialog createRepostDialog(){
 		Dialog dia = new AlertDialog.Builder(PulledListActivity.this)
 		.setTitle("When do you want to repost it?")
@@ -156,10 +172,11 @@ public class PulledListActivity extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog,
 							int which) {
-
-						MainActivity.PlaceIts.add(clicked);
+						
 						sorted.remove(clicked);
 						MainActivity.pullDown.remove(clicked);
+						clicked.setDatePosted();
+						MainActivity.PlaceIts.add(clicked);
 
 						Toast.makeText(
 								PulledListActivity.this,
@@ -175,7 +192,12 @@ public class PulledListActivity extends Activity {
 					public void onClick(DialogInterface dialog,
 							int which) {
 
-						// TODO activate 45 minutes later
+						//activate 45 minutes later
+						sorted.remove(clicked);
+						MainActivity.pullDown.remove(clicked);
+						clicked.setSneezeType(3);
+						clicked.setDatePosted();
+						MainActivity.PlaceIts.add(clicked);
 
 						Toast.makeText(
 								PulledListActivity.this,
@@ -190,8 +212,13 @@ public class PulledListActivity extends Activity {
 			public void onClick(DialogInterface dialog,
 					int which) {
 				
-				//TODO activate 10 seconds later
-				
+				//activate 10 seconds later
+				sorted.remove(clicked);
+				MainActivity.pullDown.remove(clicked);
+				clicked.setSneezeType(2);
+				clicked.setDatePosted();
+				MainActivity.PlaceIts.add(clicked);
+							
 				Toast.makeText(
 						PulledListActivity.this,
 						"Item will be active 10 seconds later.",
@@ -201,6 +228,13 @@ public class PulledListActivity extends Activity {
 		return dia;
 	}
 	
+	/**
+	 * Initialize the contents of the Activity's standard options menu
+	 * 
+	 * @param The options menu in which you place your items.
+	 * 
+	 * @return Initialize the contents of the Activity's standard options menu
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
