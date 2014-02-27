@@ -86,42 +86,7 @@ public class LocationService extends Service implements LocationListener,
 	 * connection to the Google Play Service are not able to connect
 	 */
 
-<<<<<<< HEAD
- @Override
- public void onDisconnected() {
-  Log.i("info", "Location Client is Disconnected");
- }
- /*
-  Overrriden method of interface LocationListener called when location of gps device is changed.
-  Location Object is received as a parameter.
-  This method is called when location of GPS device is changed
- */
- @Override
- public void onLocationChanged(Location location) {
-  double latitude = location.getLatitude();
-  double longitude = location.getLongitude();
-  Location myCurrentLocation = new Location("");
-  myCurrentLocation.setLatitude(latitude);
-  myCurrentLocation.setLongitude(longitude);
-  List<PlaceIt> tmp = new ArrayList<PlaceIt>();
-  tmp.addAll(MainActivity.PlaceIts);
-  
-  //This part is for checking if the placeit in the active list is within range
-  for (PlaceIt pi : tmp){
-		//change place it type to pulled down
-		Location placeItLocation = new Location("");
-		placeItLocation.setLatitude(pi.getLocation().latitude);
-		placeItLocation.setLongitude(pi.getLocation().longitude);
-		if (myCurrentLocation.distanceTo(placeItLocation) < range){
-			//send notification to user here
-			Log.e(null,"" + myCurrentLocation.distanceTo(placeItLocation));
-			Log.e(null, "YAY IT WORKS!");
-			//Create the notification and move the placeit to pulldown
-			createNotification(null,pi);
-			MainActivity.PlaceIts.remove(pi);
-			MainActivity.pullDown.add(pi);
-			break;
-=======
+
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		/*
@@ -148,7 +113,6 @@ public class LocationService extends Service implements LocationListener,
 			// If no resolution is available, display a dialog to the user with
 			// the error.
 			Log.i("info", "No resolution is available");
->>>>>>> d7d5062005f6d106276e2a02657c72c72b60e02b
 		}
 	}
 
