@@ -1,4 +1,4 @@
-package com.cse110team14.placeit;
+package com.cse110team14.placeit.util;
 
 //Custom Comparator which will help to sort the list of active place-its by comparing the calendar dates
 

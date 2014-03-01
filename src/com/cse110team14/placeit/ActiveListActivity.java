@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.util.CustomComparator;
 
 import android.app.Activity;
 import android.app.AlertDialog;

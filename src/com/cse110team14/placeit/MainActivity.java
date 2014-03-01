@@ -28,11 +28,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import com.cse110team14.placeit.GeocodeJSONParser;
 import org.json.JSONObject;
 
 import com.cse110team14.placeit.R;
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.util.GeocodeJSONParser;
 import com.cse110team14.placeit.view.PlaceItsInfoWindow;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -908,59 +908,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
     @Override
     protected void onStop() {
         super.onStop();
-//    	saveActiveListPlaceIt();
-//    	savePulldownListPlaceIt();
         saveList(activeList, activeListFile);
         saveList(pullDown, pulldownListFile);
     	
     }
-//    /**
-//     * Save the active list of the placeit, called in onStop method
-//     */
-//    public void saveActiveListPlaceIt(){
-//    	try {
-//    		FileOutputStream out = openFileOutput(activeListFile, Context.MODE_PRIVATE);
-//    		//write place its to file
-//    		Iterator<PlaceIt> placeitsIterator = PlaceIts.iterator();
-//    		while(placeitsIterator.hasNext()){
-//    			PlaceIt element = placeitsIterator.next();
-//    			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
-//    					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-//    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
-//    					"###" + element.getSneezeType() + "\n"; 
-//    			out.write(str.getBytes());
-//    		}
-//    		out.close();
-//    	} catch (FileNotFoundException e) {
-//    		e.printStackTrace();
-//    	} catch (IOException e) {
-//    		e.printStackTrace();
-//    	}
-//    }
-//    
-//    /**
-//     * Save the pulldown list of the placeit, called in onStop method
-//     */
-//    public void savePulldownListPlaceIt(){
-//    	try {
-//    		FileOutputStream out = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
-//    		//write place its to file
-//    		Iterator<PlaceIt> pulldownIterator = pullDown.iterator();
-//    		while(pulldownIterator.hasNext()){
-//    			PlaceIt element = pulldownIterator.next();
-//    			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
-//    					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-//    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
-//    					"###" + element.getSneezeType() + "\n"; 
-//    			out.write(str.getBytes());
-//    		}
-//    		out.close();
-//    	} catch (FileNotFoundException e) {
-//    		e.printStackTrace();
-//    	} catch (IOException e) {
-//    		e.printStackTrace();
-//    	}
-//    }
     
     /**
      * Save specific list of placeits to corresponding file, called in onStop
