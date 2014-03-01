@@ -166,7 +166,9 @@ GooglePlayServicesClient.OnConnectionFailedListener
         map.setInfoWindowAdapter(new PlaceItsInfoWindow(getLayoutInflater().inflate(R.layout.placeits_info_window, null)));
         
         //When the app is opened, read in the file and populate the placeit list
-        onCreateReadFile();
+//        onCreateReadFile();
+        readFileToList(activeListFile, PlaceIts);
+        readFileToList(pulldownListFile, pullDown);
         Log.e("hello",""+PlaceIts.size());
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
@@ -754,77 +756,117 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	}	   
     	marker = mMarkers.iterator();
     }
+
+	public void readFileToList(String file, List<PlaceIt> list) {
+		list.clear();
+		try {
+			FileInputStream in = openFileInput(file);
+			InputStreamReader isr = new InputStreamReader(in);
+			BufferedReader reader = new BufferedReader(isr);
+			String readString = reader.readLine();
+			while (readString != null) {
+				// putPullDownReadFromFileToLists(readString);
+				readStringToList(readString, list);
+				readString = reader.readLine();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
     
-    /**
-     * This method will called when the app is in onCreate, it will read in the placeits
-     * saved file and put them into the list
-     */
-    public void onCreateReadFile(){
-    	PlaceIts.clear();
-    	try {
-        	FileInputStream in = openFileInput(activeListFile);
-        	InputStreamReader isr = new InputStreamReader ( in ) ;
-        	BufferedReader reader = new BufferedReader(isr);
-        	String readString = reader.readLine () ;
-        	while (readString != null){
-        	   putPlaceItsReadFromFileToLists(readString);
-        	   readString = reader.readLine();
-            }
-        } catch (FileNotFoundException e) {
-        	e.printStackTrace();
-        } catch (IOException e) {
-        	e.printStackTrace();
-        }
-    	
-    	pullDown.clear();
-    	try {
-        	FileInputStream in = openFileInput(pulldownListFile);
-        	InputStreamReader isr = new InputStreamReader ( in ) ;
-        	BufferedReader reader = new BufferedReader(isr);
-        	String readString = reader.readLine () ;
-        	while (readString != null){
-        	   Log.e("pulldown", readString);
-        	   Log.e("pulldown", "Another one");
-        	   putPullDownReadFromFileToLists(readString);
-        	   readString = reader.readLine();
-            }
-        	
-        } catch (FileNotFoundException e) {
-        	e.printStackTrace();
-        } catch (IOException e) {
-        	e.printStackTrace();
-        }
-    	
-    	
-    }
+//    /**
+//     * This method will called when the app is in onCreate, it will read in the placeits
+//     * saved file and put them into the list
+//     */
+//    public void onCreateReadFile(){
+//    	PlaceIts.clear();
+//    	try {
+//        	FileInputStream in = openFileInput(activeListFile);
+//        	InputStreamReader isr = new InputStreamReader ( in ) ;
+//        	BufferedReader reader = new BufferedReader(isr);
+//        	String readString = reader.readLine () ;
+//        	while (readString != null){
+////        	   putPlaceItsReadFromFileToLists(readString);
+//        	   readStringToList(readString, PlaceIts);
+//        	   readString = reader.readLine();
+//            }
+//        } catch (FileNotFoundException e) {
+//        	e.printStackTrace();
+//        } catch (IOException e) {
+//        	e.printStackTrace();
+//        }
+//    	
+//    	pullDown.clear();
+//    	try {
+//        	FileInputStream in = openFileInput(pulldownListFile);
+//        	InputStreamReader isr = new InputStreamReader ( in ) ;
+//        	BufferedReader reader = new BufferedReader(isr);
+//        	String readString = reader.readLine () ;
+//        	while (readString != null){
+//        	   Log.e("pulldown", readString);
+//        	   Log.e("pulldown", "Another one");
+////        	   putPullDownReadFromFileToLists(readString);
+//        	   readStringToList(readString, pullDown);
+//        	   readString = reader.readLine();
+//            }
+//        	
+//        } catch (FileNotFoundException e) {
+//        	e.printStackTrace();
+//        } catch (IOException e) {
+//        	e.printStackTrace();
+//        }
+//    }
+    
+//    /**
+//     * A helper function for onCreateReadFile, it will get a string that encodes a placeit
+//     * and put it into the list
+//     * @param str
+//     */
+//    public void putPlaceItsReadFromFileToLists(String str){
+//       String []splited = str.split("###");
+// 	   String placeItTitle = splited[0];
+// 	   String description = splited[1];
+// 	   String dateToBeReminded = splited[2];
+// 	   String postDate = splited[3];
+// 	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
+// 	   String color = splited[6];
+// 	   int type = Integer.parseInt(splited[7]);
+// 	   int sneezeType = Integer.parseInt(splited[8]);
+//	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
+//	   tmp.setPlaceItType(type);
+//	   tmp.setSneezeType(sneezeType);
+//       PlaceIts.add(tmp);
+//    }
+//    
+//    /**
+//     * A helper function for onCreateReadFile, it will get a string that encodes a placeit
+//     * and put it into the list
+//     * @param str
+//     */
+//    public void putPullDownReadFromFileToLists(String str){
+//       String []splited = str.split("###");
+// 	   String placeItTitle = splited[0];
+// 	   String description = splited[1];
+// 	   String dateToBeReminded = splited[2];
+// 	   String postDate = splited[3];
+// 	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
+// 	   String color = splited[6];
+// 	   int type = Integer.parseInt(splited[7]);
+// 	   int sneezeType = Integer.parseInt(splited[8]);
+// 	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
+// 	   tmp.setPlaceItType(type);
+// 	   tmp.setSneezeType(sneezeType);
+//       pullDown.add(tmp);
+//    }
     
     /**
      * A helper function for onCreateReadFile, it will get a string that encodes a placeit
      * and put it into the list
      * @param str
      */
-    public void putPlaceItsReadFromFileToLists(String str){
-       String []splited = str.split("###");
- 	   String placeItTitle = splited[0];
- 	   String description = splited[1];
- 	   String dateToBeReminded = splited[2];
- 	   String postDate = splited[3];
- 	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
- 	   String color = splited[6];
- 	   int type = Integer.parseInt(splited[7]);
- 	   int sneezeType = Integer.parseInt(splited[8]);
-	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
-	   tmp.setPlaceItType(type);
-	   tmp.setSneezeType(sneezeType);
-       PlaceIts.add(tmp);
-    }
-    
-    /**
-     * A helper function for onCreateReadFile, it will get a string that encodes a placeit
-     * and put it into the list
-     * @param str
-     */
-    public void putPullDownReadFromFileToLists(String str){
+    public void readStringToList(String str, List<PlaceIt> list){
        String []splited = str.split("###");
  	   String placeItTitle = splited[0];
  	   String description = splited[1];
@@ -837,8 +879,9 @@ GooglePlayServicesClient.OnConnectionFailedListener
  	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
  	   tmp.setPlaceItType(type);
  	   tmp.setSneezeType(sneezeType);
-       pullDown.add(tmp);
+       list.add(tmp);
     }
+    
     
     /**
      * Method to build a alert dialog for error condition, mainly used in user entries for
@@ -863,20 +906,71 @@ GooglePlayServicesClient.OnConnectionFailedListener
     @Override
     protected void onStop() {
         super.onStop();
-    	saveActiveListPlaceIt();
-    	savePulldownListPlaceIt();
+//    	saveActiveListPlaceIt();
+//    	savePulldownListPlaceIt();
+        saveList(PlaceIts, activeListFile);
+        saveList(pullDown, pulldownListFile);
     	
     }
+//    /**
+//     * Save the active list of the placeit, called in onStop method
+//     */
+//    public void saveActiveListPlaceIt(){
+//    	try {
+//    		FileOutputStream out = openFileOutput(activeListFile, Context.MODE_PRIVATE);
+//    		//write place its to file
+//    		Iterator<PlaceIt> placeitsIterator = PlaceIts.iterator();
+//    		while(placeitsIterator.hasNext()){
+//    			PlaceIt element = placeitsIterator.next();
+//    			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
+//    					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
+//    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
+//    					"###" + element.getSneezeType() + "\n"; 
+//    			out.write(str.getBytes());
+//    		}
+//    		out.close();
+//    	} catch (FileNotFoundException e) {
+//    		e.printStackTrace();
+//    	} catch (IOException e) {
+//    		e.printStackTrace();
+//    	}
+//    }
+//    
+//    /**
+//     * Save the pulldown list of the placeit, called in onStop method
+//     */
+//    public void savePulldownListPlaceIt(){
+//    	try {
+//    		FileOutputStream out = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
+//    		//write place its to file
+//    		Iterator<PlaceIt> pulldownIterator = pullDown.iterator();
+//    		while(pulldownIterator.hasNext()){
+//    			PlaceIt element = pulldownIterator.next();
+//    			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
+//    					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
+//    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
+//    					"###" + element.getSneezeType() + "\n"; 
+//    			out.write(str.getBytes());
+//    		}
+//    		out.close();
+//    	} catch (FileNotFoundException e) {
+//    		e.printStackTrace();
+//    	} catch (IOException e) {
+//    		e.printStackTrace();
+//    	}
+//    }
+    
     /**
-     * Save the active list of the placeit, called in onStop method
+     * Save specific list of placeits to corresponding file, called in onStop
+     *  method
      */
-    public void saveActiveListPlaceIt(){
+    public void saveList(List<PlaceIt> list, String file){
     	try {
-    		FileOutputStream out = openFileOutput(activeListFile, Context.MODE_PRIVATE);
+    		FileOutputStream out = openFileOutput(file, Context.MODE_PRIVATE);
     		//write place its to file
-    		Iterator<PlaceIt> placeitsIterator = PlaceIts.iterator();
-    		while(placeitsIterator.hasNext()){
-    			PlaceIt element = placeitsIterator.next();
+    		Iterator<PlaceIt> itr = list.iterator();
+    		while(itr.hasNext()){
+    			PlaceIt element = itr.next();
     			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
     					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
     					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
@@ -891,29 +985,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	}
     }
     
-    /**
-     * Save the pulldown list of the placeit, called in onStop method
-     */
-    public void savePulldownListPlaceIt(){
-    	try {
-    		FileOutputStream out = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
-    		//write place its to file
-    		Iterator<PlaceIt> pulldownIterator = pullDown.iterator();
-    		while(pulldownIterator.hasNext()){
-    			PlaceIt element = pulldownIterator.next();
-    			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
-    					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
-    					"###" + element.getSneezeType() + "\n"; 
-    			out.write(str.getBytes());
-    		}
-    		out.close();
-    	} catch (FileNotFoundException e) {
-    		e.printStackTrace();
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
     
     /**
      * Called when app is on pause, it will start the location service
