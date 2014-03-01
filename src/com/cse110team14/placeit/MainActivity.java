@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import com.cse110team14.placeit.R;
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.util.DownloadTask;
 import com.cse110team14.placeit.util.GeocodeJSONParser;
 import com.cse110team14.placeit.view.PlaceItsInfoWindow;
 import com.google.android.gms.common.ConnectionResult;
@@ -100,7 +101,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
      * Define a request code to send to Google Play services
      * This code is returned in Activity.onActivityResult
      */
-	private GoogleMap map;
+	public static GoogleMap map;
 	public static List<PlaceIt> activeList = new ArrayList<PlaceIt>();
 	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
 
@@ -168,7 +169,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
         map.setInfoWindowAdapter(new PlaceItsInfoWindow(getLayoutInflater().inflate(R.layout.placeits_info_window, null)));
         
         //When the app is opened, read in the file and populate the placeit list
-//        onCreateReadFile();
         readFileToList(activeListFile, activeList);
         readFileToList(pulldownListFile, pullDown);
         Log.e("hello",""+activeList.size());
@@ -179,21 +179,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
         //Start the service for checking location onCreate
         startService(new Intent(this, LocationService.class));
  
-        /* This is comment out due to testing propuse 
-        test.setOnClickListener(new OnClickListener(){
-        	public void onClick(View v){
-        		PlaceIts.clear();
-        		PlaceIts.add(new PlaceIt("1", "1","red",new LatLng(18,9),"11/12/2013","Feb 9, 2014 4:57:52 PM"));
-        		PlaceIts.add(new PlaceIt("2", "2","blue",new LatLng(18,10),"11/13/2013","Feb 10, 2014 4:57:52 PM"));
-        		PlaceIts.add(new PlaceIt("3", "3","blue",new LatLng(18,11),"11/14/2013","Feb 11, 2014 4:57:52 PM"));
-        		PlaceIts.add(new PlaceIt("4", "4","green",new LatLng(18,12),"11/15/2013","Feb 12, 2014 4:57:52 PM"));
-        		PlaceIts.add(new PlaceIt("5", "5","green",new LatLng(19,9),"11/16/2013","Feb 13, 2014 4:57:52 PM"));
-        		PlaceIts.add(new PlaceIt("6", "6","orange",new LatLng(19,10),"11/17/2013","Feb 14, 2014 4:57:52 PM"));
-        		PlaceIts.add(new PlaceIt("7", "7","orance",new LatLng(19,11),"11/18/2013","Feb 15, 2014 4:57:52 PM"));
-        		createNotification(null, PlaceIts.get(0));
-        		Log.e("hello", PlaceIts.get(0).getDateRemindedToCalendar().toString());
-        	}
-        });*/
         
         // Setting click event listener for the find button
         mBtnFind.setOnClickListener(new OnClickListener() {
@@ -477,33 +462,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
-   
-    /*
-    @SuppressLint("NewApi")
-	public void createNotification(View view, PlaceIt p) {
-        // Prepare intent which is triggered if the
-        // notification is selected
-
-    	Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        // Build notification
-        // Actions are just fake
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Notification noti = new Notification.Builder(this)
-            .setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
-            .setContentText("Description: " + p.getDescription())
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setContentIntent(pIntent)
-            .setSound(alarmSound)
-            .build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // hide the notification after its selected
-        noti.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        notificationManager.notify(0, noti);
-
-      }*/
     
     /*
      * Called when the Activity becomes visible.
@@ -778,90 +736,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
 		}
 	}
     
-//    /**
-//     * This method will called when the app is in onCreate, it will read in the placeits
-//     * saved file and put them into the list
-//     */
-//    public void onCreateReadFile(){
-//    	PlaceIts.clear();
-//    	try {
-//        	FileInputStream in = openFileInput(activeListFile);
-//        	InputStreamReader isr = new InputStreamReader ( in ) ;
-//        	BufferedReader reader = new BufferedReader(isr);
-//        	String readString = reader.readLine () ;
-//        	while (readString != null){
-////        	   putPlaceItsReadFromFileToLists(readString);
-//        	   readStringToList(readString, PlaceIts);
-//        	   readString = reader.readLine();
-//            }
-//        } catch (FileNotFoundException e) {
-//        	e.printStackTrace();
-//        } catch (IOException e) {
-//        	e.printStackTrace();
-//        }
-//    	
-//    	pullDown.clear();
-//    	try {
-//        	FileInputStream in = openFileInput(pulldownListFile);
-//        	InputStreamReader isr = new InputStreamReader ( in ) ;
-//        	BufferedReader reader = new BufferedReader(isr);
-//        	String readString = reader.readLine () ;
-//        	while (readString != null){
-//        	   Log.e("pulldown", readString);
-//        	   Log.e("pulldown", "Another one");
-////        	   putPullDownReadFromFileToLists(readString);
-//        	   readStringToList(readString, pullDown);
-//        	   readString = reader.readLine();
-//            }
-//        	
-//        } catch (FileNotFoundException e) {
-//        	e.printStackTrace();
-//        } catch (IOException e) {
-//        	e.printStackTrace();
-//        }
-//    }
-    
-//    /**
-//     * A helper function for onCreateReadFile, it will get a string that encodes a placeit
-//     * and put it into the list
-//     * @param str
-//     */
-//    public void putPlaceItsReadFromFileToLists(String str){
-//       String []splited = str.split("###");
-// 	   String placeItTitle = splited[0];
-// 	   String description = splited[1];
-// 	   String dateToBeReminded = splited[2];
-// 	   String postDate = splited[3];
-// 	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
-// 	   String color = splited[6];
-// 	   int type = Integer.parseInt(splited[7]);
-// 	   int sneezeType = Integer.parseInt(splited[8]);
-//	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
-//	   tmp.setPlaceItType(type);
-//	   tmp.setSneezeType(sneezeType);
-//       PlaceIts.add(tmp);
-//    }
-//    
-//    /**
-//     * A helper function for onCreateReadFile, it will get a string that encodes a placeit
-//     * and put it into the list
-//     * @param str
-//     */
-//    public void putPullDownReadFromFileToLists(String str){
-//       String []splited = str.split("###");
-// 	   String placeItTitle = splited[0];
-// 	   String description = splited[1];
-// 	   String dateToBeReminded = splited[2];
-// 	   String postDate = splited[3];
-// 	   LatLng location = new LatLng(Double.parseDouble(splited[4]), Double.parseDouble(splited[5]));
-// 	   String color = splited[6];
-// 	   int type = Integer.parseInt(splited[7]);
-// 	   int sneezeType = Integer.parseInt(splited[8]);
-// 	   PlaceIt tmp = new PlaceIt(placeItTitle, description, color, location, dateToBeReminded, postDate);
-// 	   tmp.setPlaceItType(type);
-// 	   tmp.setSneezeType(sneezeType);
-//       pullDown.add(tmp);
-//    }
     
     /**
      * A helper function for onCreateReadFile, it will get a string that encodes a placeit
@@ -1026,150 +900,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	
 	
 	
-	/* BEGIN OF HELPER FUNCTIONS AND CLASSES FOR GETTING LOCATION DATA FROM GOOGLE */
-	private String downloadUrl(String strUrl) throws IOException{
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try{
-            URL url = new URL(strUrl);
-            // Creating an http connection to communicate with url
-            urlConnection = (HttpURLConnection) url.openConnection();
- 
-            // Connecting to url
-            urlConnection.connect();
- 
-            // Reading data from url
-            iStream = urlConnection.getInputStream();
- 
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
- 
-            StringBuffer sb = new StringBuffer();
- 
-            String line = "";
-            while( ( line = br.readLine()) != null){
-                sb.append(line);
-            }
- 
-            data = sb.toString();
-            br.close();
- 
-        }catch(Exception e){
-            Log.d("Exception while downloading url", e.toString());
-        }finally{
-            iStream.close();
-            urlConnection.disconnect();
-        }
- 
-        return data;
-    }
-    /** A class, to download Places from Geocoding webservice */
-    @SuppressLint("NewApi")
-	private class DownloadTask extends AsyncTask<String, Integer, String>{
- 
-        String data = null;
- 
-        // Invoked by execute() method of this object
-        @Override
-        protected String doInBackground(String... url) {
-            try{
-                data = downloadUrl(url[0]);
-            }catch(Exception e){
-                Log.d("Background Task",e.toString());
-            }
-            return data;
-        }
- 
-        // Executed after the complete execution of doInBackground() method
-        @Override
-        protected void onPostExecute(String result){
- 
-            // Instantiating ParserTask which parses the json data from Geocoding webservice
-            // in a non-ui thread
-            ParserTask parserTask = new ParserTask();
- 
-            // Start parsing the places in JSON format
-            // Invokes the "doInBackground()" method of the class ParseTask
-            parserTask.execute(result);
-        }
-    }
- 
-    /** A class to parse the Geocoding Places in non-ui thread */
-    @SuppressLint("NewApi")
-	class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
- 
-        JSONObject jObject;
-        LatLng location;
- 
-        // Invoked by execute() method of this object
-        @Override
-        protected List<HashMap<String,String>> doInBackground(String... jsonData) {
- 
-            List<HashMap<String, String>> places = null;
-            GeocodeJSONParser parser = new GeocodeJSONParser();
- 
-            try{
-                jObject = new JSONObject(jsonData[0]);
- 
-                /** Getting the parsed data as a an ArrayList */
-                places = parser.parse(jObject);
- 
-            }catch(Exception e){
-                Log.d("Exception",e.toString());
-            }
-            return places;
-        }
- 
-        // Executed after the complete execution of doInBackground() method
-        @Override
-        protected void onPostExecute(List<HashMap<String,String>> list){
- 
-            // Clears all the existing markers
-            //map.clear();
- 
-            for(int i=0;i<list.size();i++){
- 
-                // Creating a marker
-                MarkerOptions markerOptions = new MarkerOptions();
- 
-                // Getting a place from the places list
-                HashMap<String, String> hmPlace = list.get(i);
- 
-                // Getting latitude of the place
-                double lat = Double.parseDouble(hmPlace.get("lat"));
- 
-                // Getting longitude of the place
-                double lng = Double.parseDouble(hmPlace.get("lng"));
- 
-                // Getting name
-                String name = hmPlace.get("formatted_address");
- 
-                LatLng latLng = new LatLng(lat, lng);
- 
-                // Setting the position for the marker
-                markerOptions.position(latLng);
- 
-                // Setting the title for the marker
-                markerOptions.title(name + " (Click to enter Information)");
-                //markerOptions.snippet("Click here to Enter Information");
-                // Placing a marker on the touched position
-                Marker tmp = map.addMarker(markerOptions);
-                /*mMarkers.add(tmp);
-                marker=mMarkers.iterator();*/
-                tmp.showInfoWindow();
-                
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
-                map.animateCamera(CameraUpdateFactory.zoomIn());
-                
-                // Locate the first location
-                if(i==0)
-                    map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-  
-            }
-        }
-    }//End of class
-	/* END OF HELPER FUNCTIONS AND CLASSES FOR GETTING LOCATION DATA FROM GOOGLE */
-
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		 /* 
