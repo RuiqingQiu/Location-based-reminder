@@ -4,6 +4,8 @@ package com.cse110team14.placeit;
 
 import java.util.Comparator;
 
+import com.cse110team14.placeit.model.PlaceIt;
+
 public class CustomComparator implements Comparator<PlaceIt> {
 
 	/**

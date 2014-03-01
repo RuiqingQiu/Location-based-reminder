@@ -1,4 +1,4 @@
-package com.cse110team14.placeit;
+package com.cse110team14.placeit.model;
 
 import java.util.Calendar;
 

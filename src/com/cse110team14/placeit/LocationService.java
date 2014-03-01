@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.cse110team14.*;
+import com.cse110team14.placeit.model.PlaceIt;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -135,7 +137,7 @@ public class LocationService extends Service implements LocationListener,
 		myCurrentLocation.setLatitude(latitude);
 		myCurrentLocation.setLongitude(longitude);
 		List<PlaceIt> tmp = new ArrayList<PlaceIt>();
-		tmp.addAll(MainActivity.PlaceIts);
+		tmp.addAll(MainActivity.activeList);
 
 		// This part is for checking if the placeit in the active list is within
 		// range
@@ -160,7 +162,7 @@ public class LocationService extends Service implements LocationListener,
 						// Create the notification and move the placeit to
 						// pulldown
 						createNotification(null, pi);
-						MainActivity.PlaceIts.remove(pi);
+						MainActivity.activeList.remove(pi);
 						Log.e("hello", "add to pull down");
 						MainActivity.pullDown.add(pi);
 					} else if (pi.getSneezeType() == 2) {
@@ -171,7 +173,7 @@ public class LocationService extends Service implements LocationListener,
 						Log.e("hello", "current: " + current);
 						if ((current - previous) > 10000) {
 							createNotification(null, pi);
-							MainActivity.PlaceIts.remove(pi);
+							MainActivity.activeList.remove(pi);
 							MainActivity.pullDown.add(pi);
 						}
 					} else {
@@ -180,7 +182,7 @@ public class LocationService extends Service implements LocationListener,
 						current = System.currentTimeMillis();
 						if ((current - previous) > 45 *60000) {
 							createNotification(null, pi);
-							MainActivity.PlaceIts.remove(pi);
+							MainActivity.activeList.remove(pi);
 							MainActivity.pullDown.add(pi);
 						}
 					}
@@ -211,14 +213,14 @@ public class LocationService extends Service implements LocationListener,
 					pi.setPlaceItType(2);
 					// Update the post time for the placeit
 					pi.setDatePosted();
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 			// One week
 			case 3:
 				c1 = pi.getDateRemindedToCalendar();
 				previous = c1.getTimeInMillis();
-				Log.e("hello","PlaceIt length: " + MainActivity.PlaceIts.size());
+				Log.e("hello","PlaceIt length: " + MainActivity.activeList.size());
 				Log.e("hello","PlaceIt length: " + MainActivity.pullDown.size());
 				c2 = Calendar.getInstance();
 				current = c2.getTimeInMillis();
@@ -232,7 +234,7 @@ public class LocationService extends Service implements LocationListener,
 					Calendar c = Calendar.getInstance();
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 
@@ -251,7 +253,7 @@ public class LocationService extends Service implements LocationListener,
 					Calendar c = Calendar.getInstance();
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 			// Three week
@@ -269,7 +271,7 @@ public class LocationService extends Service implements LocationListener,
 					Calendar c = Calendar.getInstance();
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 			// One Month
@@ -287,7 +289,7 @@ public class LocationService extends Service implements LocationListener,
 					Calendar c = Calendar.getInstance();
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 			}

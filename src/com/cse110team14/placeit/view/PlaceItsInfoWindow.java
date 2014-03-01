@@ -1,8 +1,10 @@
-package com.cse110team14.placeit;
+package com.cse110team14.placeit.view;
 
 import android.view.View;
 import android.widget.TextView;
 
+import com.cse110team14.placeit.R;
+import com.cse110team14.placeit.R.id;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.model.Marker;
 
@@ -11,7 +13,7 @@ public class PlaceItsInfoWindow implements InfoWindowAdapter{
 
 	private final View myContentsView;
 	  
-	PlaceItsInfoWindow(View view){
+	public PlaceItsInfoWindow(View view){
 	   myContentsView = view;
 	}
 	@Override

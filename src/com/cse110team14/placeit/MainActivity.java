@@ -32,6 +32,8 @@ import com.cse110team14.placeit.GeocodeJSONParser;
 import org.json.JSONObject;
 
 import com.cse110team14.placeit.R;
+import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.view.PlaceItsInfoWindow;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -99,7 +101,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
      * This code is returned in Activity.onActivityResult
      */
 	private GoogleMap map;
-	public static List<PlaceIt> PlaceIts = new ArrayList<PlaceIt>();
+	public static List<PlaceIt> activeList = new ArrayList<PlaceIt>();
 	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
 
 	public static Boolean notificationSent = false;
@@ -167,9 +169,9 @@ GooglePlayServicesClient.OnConnectionFailedListener
         
         //When the app is opened, read in the file and populate the placeit list
 //        onCreateReadFile();
-        readFileToList(activeListFile, PlaceIts);
+        readFileToList(activeListFile, activeList);
         readFileToList(pulldownListFile, pullDown);
-        Log.e("hello",""+PlaceIts.size());
+        Log.e("hello",""+activeList.size());
         // Getting reference to EditText
         etPlace = (EditText) findViewById(R.id.et_place);
         
@@ -396,7 +398,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 			          mMarkers.add(m);
 			          PlaceIt tmp = new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime);
 			          tmp.setPlaceItType(placeItType);
-			          PlaceIts.add(tmp);
+			          activeList.add(tmp);
 			          marker = mMarkers.iterator();
 			          map.moveCamera(CameraUpdateFactory.newLatLngZoom(position,17));
 		              map.animateCamera(CameraUpdateFactory.zoomIn());
@@ -658,7 +660,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 			          //Set the type of the placeit
 			          tmp.setPlaceItType(placeItType);
 			          Log.e("hello", "the type is" + tmp.getPlaceItType());
-			          PlaceIts.add(tmp);
+			          activeList.add(tmp);
 			          marker = mMarkers.iterator();
 			          
 		          }
@@ -691,7 +693,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
     
     //Return the ActiveList
     public static List<PlaceIt> getActiveList(){
-    	return PlaceIts;
+    	return activeList;
     }
     //Return the pullDown List
     public static List<PlaceIt> getPullDownList(){
@@ -720,7 +722,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
      * repost all the markers on the map
      */
     public void ShowMarkerWhenAppOpen(){
-    	Iterator<PlaceIt> itr = PlaceIts.iterator();
+    	Iterator<PlaceIt> itr = activeList.iterator();
     	map.clear();
     	mMarkers.clear();
     	while(itr.hasNext()){
@@ -908,7 +910,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onStop();
 //    	saveActiveListPlaceIt();
 //    	savePulldownListPlaceIt();
-        saveList(PlaceIts, activeListFile);
+        saveList(activeList, activeListFile);
         saveList(pullDown, pulldownListFile);
     	
     }

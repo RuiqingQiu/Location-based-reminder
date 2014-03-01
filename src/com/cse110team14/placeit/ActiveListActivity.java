@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.cse110team14.placeit.model.PlaceIt;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,7 +28,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 	private Iterator<PlaceIt> piIterator;
 	private List<PlaceIt> sorted;
 
-	List<HashMap<String, String>> activeList;
+	List<HashMap<String, String>> activeListMap;
 
 	private PlaceIt clicked;
 	private int id;
@@ -60,7 +62,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 		refresh();
 
-		SimpleAdapter adapter = new SimpleAdapter(this, activeList,
+		SimpleAdapter adapter = new SimpleAdapter(this, activeListMap,
 				R.layout.list_item, new String[] { "ItemTitle", "ItemText",
 						"ItemDateToRemind", "ItemPostTime" }, new int[] {
 						R.id.ItemTitle, R.id.ItemText, R.id.ItemDateToRemind,
@@ -111,7 +113,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 								MainActivity.pullDown.add(clicked);
 								sorted.remove(clicked);
-								MainActivity.PlaceIts.remove(clicked);
+								MainActivity.activeList.remove(clicked);
 
 								Toast.makeText(
 										ActiveListActivity.this,
@@ -138,7 +140,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 
 						sorted.remove(clicked);
-						MainActivity.PlaceIts.remove(clicked);
+						MainActivity.activeList.remove(clicked);
 
 						Toast.makeText(
 								ActiveListActivity.this,
@@ -160,7 +162,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 	 * @return void
 	 */
 	public void refresh() {
-		activeList = new ArrayList<HashMap<String, String>>();
+		activeListMap = new ArrayList<HashMap<String, String>>();
 		for (PlaceIt curr : sorted) {
 			HashMap<String, String> map = new HashMap<String, String>();
 
@@ -170,7 +172,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 					"Date and time to Remind: " + curr.getDateReminded());
 			map.put("ItemPostTime", "Post Time: " + curr.getDate());
 
-			activeList.add(map);
+			activeListMap.add(map);
 		}
 	}
 
