@@ -31,9 +31,12 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.cse110team14.placeit.R;
+import com.cse110team14.placeit.controller.MapButtonController;
+import com.cse110team14.placeit.controller.MapOnClickController;
 import com.cse110team14.placeit.model.PlaceIt;
 import com.cse110team14.placeit.util.DownloadTask;
 import com.cse110team14.placeit.util.GeocodeJSONParser;
+import com.cse110team14.placeit.view.MapView;
 import com.cse110team14.placeit.view.PlaceItsInfoWindow;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -104,7 +107,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	public static GoogleMap map;
 	public static List<PlaceIt> activeList = new ArrayList<PlaceIt>();
 	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
-
+	
+	//This is for getting the view of the activity
+	public static MainActivity mainActivity;
+	public static CancelableCallback cancelableCallback;
 	public static Boolean notificationSent = false;
 	
 	//For location update in mainActivity
@@ -128,21 +134,14 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	private LocationClient mLocationClient; 
 	 
 	//Initilize the mMarkers list
-	private List<Marker> mMarkers = new ArrayList<Marker>();
-	private Iterator<Marker> marker;
+	public static List<Marker> mMarkers = new ArrayList<Marker>();
+	public static Iterator<Marker> marker;
 	private String activeListFile = "saved_placeits.dat";
 	private String pulldownListFile = "pulldown_placeits.dat";
 	
 	
 	//Variables for all Widgets in MainActivity
-	AlertDialog.Builder alert;
-	Button mBtnFind;
-	Button retrackBtn;
-	Button active;
-	Button pulled;
-	Button create;
-	Button test;
-	EditText etPlace;
+	public static AlertDialog.Builder alert;
 	final Context context = this;
 	
 	
@@ -156,15 +155,16 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainActivity = this;
+        cancelableCallback = this;
         setUpMapIfNeeded();
         
-        // Getting reference to the find button
-        mBtnFind = (Button) findViewById(R.id.btn_show);
-        retrackBtn = (Button)findViewById(R.id.retrack);
-        active = (Button)findViewById(R.id.active);
-        pulled = (Button)findViewById(R.id.pulled);
-        create = (Button)findViewById(R.id.create);
-        test = (Button)findViewById(R.id.test);
+        //Set up the map view
+        MapView mapview = new MapView();
+        //Set up the button control
+        MapButtonController mapbuttoncontroller = new MapButtonController(mapview, context);
+        
+        
         map.setMyLocationEnabled(true);
         map.setInfoWindowAdapter(new PlaceItsInfoWindow(getLayoutInflater().inflate(R.layout.placeits_info_window, null)));
         
@@ -173,236 +173,12 @@ GooglePlayServicesClient.OnConnectionFailedListener
         readFileToList(pulldownListFile, pullDown);
         Log.e("hello",""+activeList.size());
         // Getting reference to EditText
-        etPlace = (EditText) findViewById(R.id.et_place);
+       
         
         
         //Start the service for checking location onCreate
         startService(new Intent(this, LocationService.class));
- 
-        
-        // Setting click event listener for the find button
-        mBtnFind.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Getting the place entered
-                String location = etPlace.getText().toString();
- 
-                if(location==null || location.equals("")){
-                    Toast.makeText(getBaseContext(), "No Place is entered", Toast.LENGTH_SHORT).show();
-                    return;
-                }
- 
-                String url = "https://maps.googleapis.com/maps/api/geocode/json?";
- 
-                try {
-                    // encoding special characters like space in the user input place
-                    location = URLEncoder.encode(location, "utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
- 
-                String address = "address=" + location;
- 
-                String sensor = "sensor=false";
- 
-                // url , from where the geocoding data is fetched
-                url = url + address + "&" + sensor;
- 
-                // Instantiating DownloadTask to get places from Google Geocoding service
-                // in a non-ui thread
-                DownloadTask downloadTask = new DownloadTask();
- 
-                // Start downloading the geocoding places
-                downloadTask.execute(url);
-                
-            }
-        });
-        
-        //Set up the retrack button for keeping track of all retrack button
-        retrackBtn.setOnClickListener(new OnClickListener(){
-        	 @Override
-    		 public void onClick(View v) {
-        		 /* Checking errors, if the iterator was never initalized, pop up an dialog
-        		  * box and show what the error is
-        		  */
-        		 if(marker == null){
-        			AlertDialog.Builder temp = new AlertDialog.Builder(context);
-     		        temp.setTitle("PlaceIts not found");
-     		        temp.setMessage("There's no PlaceIts to be retracked. ");
-     		        temp.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-     			        public void onClick(DialogInterface dialog, int whichButton) {
-     				         return;
-     			          }
-     			        });
-     		        temp.show();
-     		        return;
-        		 }
-    			 if (marker.hasNext()) {
-    				 Marker current = marker.next();
-    				 Log.e("test", ""+current.getTitle());
-    				 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, MainActivity.this);
-    				 current.showInfoWindow();
-    				 
-    			 }
-    			 else{
-    				 marker = mMarkers.iterator();
-    				 Marker current = marker.next();
-    				 Log.e("test", ""+current.getTitle());
-    				 map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, MainActivity.this);
-    				 current.showInfoWindow();
-    			 }
-    		 }
-        });
-        
-        //Initialize the create button 
-        create.setOnClickListener(new OnClickListener()
-        {
-			@Override
-			public void onClick(View v) 
-			{
-				AlertDialog.Builder alert1 = new AlertDialog.Builder(context);
-		        
-		        alert1.setTitle("Create A PlaceIt");
-
-		        // Get the layout inflater
-		        LayoutInflater inflater = getLayoutInflater();
-		        // Set an EditText view to get user input 
-		        
-		        // Inflate and set the layout for the dialog
-		        final View view = inflater.inflate(R.layout.create_placeits, null);
-		        final EditText title = (EditText)view.findViewById(R.id.title);
-		        final EditText description = (EditText)view.findViewById(R.id.description);
-		        final EditText location = (EditText)view.findViewById(R.id.location);
-		        final EditText color = (EditText)view.findViewById(R.id.color);
-		        final RadioGroup rg = (RadioGroup)view.findViewById(R.id.radioGroup);
-		        final DatePicker date = (DatePicker)view.findViewById(R.id.datePicker);
-		        // Pass null as the parent view because its going in the dialog layout
-		        alert1.setView(view);
-		        alert1.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
-		        	@SuppressLint("DefaultLocale")
-					public void onClick(DialogInterface dialog, int whichButton) {
-		        		
-		        		String placeItTitle = title.getText().toString();
-		        		if(placeItTitle.isEmpty()){
-			        	  AlertDialog.Builder temp = initializeAlert("No Title Entered", "Please enter a title :)");
-		     		      temp.show();
-		     		      return;
-		        		}
-		        		String placeItDescription = description.getText().toString();
-		        		if(placeItDescription.isEmpty()){
-			        	  AlertDialog.Builder temp = initializeAlert("No Description Entered", "Please enter a description :)");
-		     		      temp.show();
-		     		      return;
-		        		}
-		        		String [] splited = location.getText().toString().split("\\s*,\\s*");
-		        		if (location.toString().isEmpty() ||
-		        				splited.length != 2 ||
-		        				Double.parseDouble(splited[0]) > 90.0 || 
-		        				Double.parseDouble(splited[0]) < -90.0 || 
-		        				Double.parseDouble(splited[1]) > 180 || 
-		        				Double.parseDouble(splited[1]) < -180){
-		        			AlertDialog.Builder temp = initializeAlert("Not a valid location", "Please enter a valid location :)");
-			     		    temp.show();
-			     		    return;
-		        		}
-		        		LatLng position = new LatLng(Double.parseDouble(splited[0]), Double.parseDouble(splited[1]));
-		        		int placeItType = 1;
-		        		/* Get the selected radio button id */
-		        		switch (rg.getCheckedRadioButtonId()){
-		        			case R.id.minutely:
-		        				placeItType = 2;
-		        				break;
-		        			case R.id.weekly:
-		        				placeItType = 3;
-		        				break;
-		        			case R.id.twoweekly:
-		        				placeItType = 4;
-		        				break;
-		        			case R.id.threeweekly:
-		        				placeItType = 5;
-		        				break;
-		        			case R.id.monthly:
-		        				placeItType = 6;
-		        				break;
-		        		}
-		        		
-		        		
-		        		String dateToBeReminded = (date.getMonth()+1) + "/" + date.getDayOfMonth() + "/" + date.getYear();	          
-		        		String currentDateTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-			          
-		        		//Check if the date is valid
-		        		if (checkDate(dateToBeReminded) == false){
-		        			AlertDialog.Builder temp = initializeAlert("Enteted Date is not valid", "Please enter a valid date :)");
-		        			temp.show();
-		        			return;
-		        		}
-			          
-		        		String markerColor = color.getText().toString();
-		        		if( markerColor.toLowerCase().equals("red") 
-		        			|| markerColor.toLowerCase().equals("blue")
-		        			|| markerColor.toLowerCase().equals("azure")
-		        			|| markerColor.toLowerCase().equals("cyan")
-					        || markerColor.toLowerCase().equals("green")
-					        || markerColor.toLowerCase().equals("megenta")
-					        || markerColor.toLowerCase().equals("orange")
-					        || markerColor.toLowerCase().equals("violet")
-					        || markerColor.toLowerCase().equals("rose")
-					        || markerColor.toLowerCase().equals("yellow")
-					   )
-			           {}  
-			           else{
-			        	  AlertDialog.Builder temp = initializeAlert("Entered Color is not valid", "Please enter a valid color");
-		     		      temp.show();
-		     		      return;
-			          }
-			          Marker m = map.addMarker(new MarkerOptions().title(placeItTitle).position(position));
-			          //All information entries are valid
-			          m.setSnippet(placeItDescription + "###"
-			        		  + dateToBeReminded +"###" + currentDateTime);
-			          
-			          if(markerColor.toLowerCase().equals("red"))
-			        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-			          else if(markerColor.toLowerCase().equals("blue"))
-			        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-		        	  else if(markerColor.toLowerCase().equals("azure"))
-		        		  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-		        	  else if(markerColor.toLowerCase().equals("cyan"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-			          else if(markerColor.toLowerCase().equals("green"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-			          else if(markerColor.toLowerCase().equals("magenta"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-			          else if(markerColor.toLowerCase().equals("orange"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-			          else if(markerColor.toLowerCase().equals("violet"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-			          else if(markerColor.toLowerCase().equals("rose"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-			          else if(markerColor.toLowerCase().equals("yellow"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-			          mMarkers.add(m);
-			          PlaceIt tmp = new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime);
-			          tmp.setPlaceItType(placeItType);
-			          activeList.add(tmp);
-			          marker = mMarkers.iterator();
-			          map.moveCamera(CameraUpdateFactory.newLatLngZoom(position,17));
-		              map.animateCamera(CameraUpdateFactory.zoomIn());
-		        	}
-		        });//End of positive button
-		        alert1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						  public void onClick(DialogInterface dialog, int whichButton) {
-						  }
-			    });
-			        
-		        /* Rather than delete, we will set the marker to be invisible and 
-				 * it's never added to the list
-				 */
-				alert1.show();
-			}
-			
-				
-        });//End of on create
-
+      
         //Show markers in the placeit list when app is open
         ShowMarkerWhenAppOpen();
         
@@ -470,183 +246,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
     protected void onStart() {
         super.onStart();
         mLocationClient.connect();
-        /*
-         * Function for user press on map for a long time, it will create a Marker
-         * at where the user pressed on
-         */
-        map.setOnMapLongClickListener(new OnMapLongClickListener()
-        {
-            @Override
-            public void onMapLongClick(LatLng point)
-	        {
-            	MarkerOptions position = new MarkerOptions()
-	                      .position(point)
-	                      .title("Click to add a Title")
-	                      .snippet("latitude: " + point.latitude +"###" + "\n longtitude: " + point.longitude + 
-	                    		  "###" + "\nClick on info window to enter your reminder");
-            	map.addMarker(position);
-	        }
-        });
-        /*
-         * Method for user clicked on the info window, it will ask for entering informations
-         * Only appear if it's not a PlaceIt yet
-         */
-        map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
-
-			@Override
-			public void onInfoWindowClick(final Marker m) 
-			{		
-				//First case for the marker, if it's already a placeit
-				if(mMarkers.contains(m))
-				{
-					return;
-				}
-				
-				alert = new AlertDialog.Builder(context);
-		        
-		        alert.setTitle("Placeit information");
-
-		        // Get the layout inflater
-		        LayoutInflater inflater = getLayoutInflater();
-		        // Set an EditText view to get user input 
-		        
-		        // Inflate and set the layout for the dialog
-		        final View v = inflater.inflate(R.layout.create_placeits, null);
-		        final EditText title = (EditText)v.findViewById(R.id.title);
-		        final EditText description = (EditText)v.findViewById(R.id.description);
-		        final EditText location = (EditText)v.findViewById(R.id.location);
-		        location.setText("" + m.getPosition().latitude + ", " + m.getPosition().latitude, TextView.BufferType.EDITABLE);
-		        //final EditText date = (EditText)v.findViewById(R.id.date);
-		        final DatePicker date = (DatePicker)v.findViewById(R.id.datePicker);
-		        final RadioGroup rg = (RadioGroup)v.findViewById(R.id.radioGroup);
-		        final EditText color = (EditText)v.findViewById(R.id.color);
-		        // Pass null as the parent view because its going in the dialog layout
-		        alert.setView(v);
-		        alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
-		        @SuppressLint("DefaultLocale")
-				public void onClick(DialogInterface dialog, int whichButton) {
-			          String placeItTitle = title.getText().toString();
-			          if(placeItTitle.isEmpty()){
-			        	  AlertDialog.Builder temp = initializeAlert("No Title Entered", "Please enter a title :)");
-		     		      temp.show();
-		     		      return;
-			          }
-			          String placeItDescription = description.getText().toString();
-			          if(placeItDescription.isEmpty()){
-			        	  AlertDialog.Builder temp = initializeAlert("No Description Entered", "Please enter a description :)");
-		     		      temp.show();
-		     		      return;
-			          }
-			          
-			          /* Getting the placeit type */
-			          int placeItType = 1;
-		        		/* Get the selected radio button id */
-		        		switch (rg.getCheckedRadioButtonId()){
-		        			case R.id.minutely:
-		        				placeItType = 2;
-		        				break;
-		        			case R.id.weekly:
-		        				placeItType = 3;
-		        				break;
-		        			case R.id.twoweekly:
-		        				placeItType = 4;
-		        				break;
-		        			case R.id.threeweekly:
-		        				placeItType = 5;
-		        				break;
-		        			case R.id.monthly:
-		        				placeItType = 6;
-		        				break;
-		        		}
-			          
-			          String dateToBeReminded = (date.getMonth() + 1) + "/" + date.getDayOfMonth() + "/" + date.getYear();         
-			          String currentDateTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-			          
-			          //Check if the date is valid
-			          if (checkDate(dateToBeReminded) == false){
-			        	  AlertDialog.Builder temp = initializeAlert("Entered Date is not valid", "Please enter a valid date :)");
-		     		      temp.show();
-		     		      return;
-			          }
-			          
-			          String markerColor = color.getText().toString();
-			          if( markerColor.toLowerCase().equals("red") 
-			           || markerColor.toLowerCase().equals("blue")
-			           || markerColor.toLowerCase().equals("azure")
-		        	   || markerColor.toLowerCase().equals("cyan")
-			           || markerColor.toLowerCase().equals("green")
-			           || markerColor.toLowerCase().equals("megenta")
-			           || markerColor.toLowerCase().equals("orange")
-			           || markerColor.toLowerCase().equals("violet")
-			           || markerColor.toLowerCase().equals("rose")
-			           || markerColor.toLowerCase().equals("yellow")
-			          )
-			          {}  
-			          else{
-			        	  AlertDialog.Builder temp = initializeAlert("Entered Color is not valid", "Please enter a valid color");
-		     		      temp.show();
-		     		      return;
-			          }
-			          //All information entries are valid
-			          m.setTitle(placeItTitle);
-			          m.setSnippet(placeItDescription + "###"
-			        		  + dateToBeReminded +"###" + currentDateTime);
-			          
-			          if(markerColor.toLowerCase().equals("red"))
-			        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-			          else if(markerColor.toLowerCase().equals("blue"))
-			        	  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-		        	  else if(markerColor.toLowerCase().equals("azure"))
-		        		  m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        			  else if(markerColor.toLowerCase().equals("cyan"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-			          else if(markerColor.toLowerCase().equals("green"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-			          else if(markerColor.toLowerCase().equals("magenta"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-			          else if(markerColor.toLowerCase().equals("orange"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-			          else if(markerColor.toLowerCase().equals("violet"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-			          else if(markerColor.toLowerCase().equals("rose"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-			          else if(markerColor.toLowerCase().equals("yellow"))
-			              m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-			          
-			          mMarkers.add(m);
-			          PlaceIt tmp = new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime);
-			          //Set the type of the placeit
-			          tmp.setPlaceItType(placeItType);
-			          Log.e("hello", "the type is" + tmp.getPlaceItType());
-			          activeList.add(tmp);
-			          marker = mMarkers.iterator();
-			          
-		          }
-		        });
-		        //If the marker is stored as a placeit
-		        if(mMarkers.contains(m)){
-		        	//The cancel button will leave it as it is
-			        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			          public void onClick(DialogInterface dialog, int whichButton) {
-			          }
-			        });
-		        }
-		        else{
-		        	//The cancel button will hide the window
-		        	alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				      public void onClick(DialogInterface dialog, int whichButton) {
-				    	  m.setVisible(false);
-				      }
-				    });
-		        }
-		        /* Rather than delete, we will set the marker to be invisible and 
-		         * it's never added to the list
-		         */
-		        alert.show();
-		        m.showInfoWindow();
-			}
-        	
-        });
+        MapOnClickController mp = new MapOnClickController(context);
     }
     
     //Return the ActiveList
@@ -658,23 +258,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	return pullDown;
     }
     
-    /**
-     * Method use to check if user entered a correct date and format
-     * @param date
-     * @return
-     */
-    public boolean checkDate(String date){
-    	DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-    	formatter.setLenient(false);
-    	try{
-    		formatter.parse(date);
-    	}
-    	catch(ParseException e){
-    		return false;
-    	}
-    	return true;
-    }
-    
+
     /**
      * This method is called everytime the app is reopened, it will use the list and
      * repost all the markers on the map
@@ -759,23 +343,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
     }
     
     
-    /**
-     * Method to build a alert dialog for error condition, mainly used in user entries for
-     * Placeit information
-     * @param title
-     * @param message
-     * @return The dialog box that contains the title and message
-     */
-    public AlertDialog.Builder initializeAlert(String title, String message){
-    	AlertDialog.Builder tmp = new AlertDialog.Builder(context);
-    	tmp.setTitle(title);
-	    tmp.setMessage(message);
-	    tmp.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		        public void onClick(DialogInterface dialog, int whichButton) {
-		          }
-		        });
-    	return tmp;
-    }
     /*
      * Called when the Activity is no longer visible.
      */
@@ -846,7 +413,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
 			 mEditor.putBoolean("KEY_UPDATES_ON", false); 
 			 mEditor.commit(); 
 		 }
-        
     }
     /**
      * Method name: setUpMapIfNeeded
