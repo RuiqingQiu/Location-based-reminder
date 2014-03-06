@@ -14,6 +14,5 @@ public class LoginActivity extends Activity{
         LoginView lv = new LoginView();
         LoginController lc = new LoginController(lv);
 	}
-	
 
 }

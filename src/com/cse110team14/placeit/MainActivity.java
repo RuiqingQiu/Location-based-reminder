@@ -144,6 +144,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	public static AlertDialog.Builder alert;
 	final Context context = this;
 	
+	Button test;
 	
 	//Call during the activity is created
     @Override
@@ -159,6 +160,17 @@ GooglePlayServicesClient.OnConnectionFailedListener
         cancelableCallback = this;
         setUpMapIfNeeded();
         
+        test = (Button)findViewById(R.id.test);
+        //TODO: delete
+        test.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Intent myIntent = new Intent(MainActivity.this, RegisterActivity.class);
+				startActivity(myIntent);
+			}
+        	
+        });
         //Set up the map view
         MapView mapview = new MapView();
         //Set up the button control
