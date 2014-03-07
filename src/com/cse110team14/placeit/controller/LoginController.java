@@ -30,130 +30,152 @@ import com.cse110team14.placeit.MainActivity;
 import com.cse110team14.placeit.RegisterActivity;
 import com.cse110team14.placeit.view.LoginView;
 
-
 public class LoginController {
 	private LoginView loginview;
-	
+
 	private String TAG = "loginControl";
 	private Context context;
 	private String input_username;
 	private String input_password;
-	public LoginController(LoginView loginview, Context context){
+
+	public LoginController(LoginView loginview, Context context) {
 		this.loginview = loginview;
 		this.context = context;
 		initializeButton();
 	}
-	public void getUserInput(){
-	  input_username = loginview.getUsername().getText().toString();
-	  input_password = loginview.getPassword().getText().toString();
-	  Log.e("hello", "1" + input_username);
-	  Log.e("hello", "2" + input_password);
+
+	public void getUserInput() {
+		input_username = loginview.getUsername().getText().toString();
+		input_password = loginview.getPassword().getText().toString();
+		Log.e("hello", "1" + input_username);
+		Log.e("hello", "2" + input_password);
 	}
-    public void initializeButton(){
-    	loginview.getSignup().setOnClickListener(new OnClickListener(){
+
+	public void initializeButton() {
+		loginview.getSignup().setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				Intent myIntent = new Intent(LoginActivity.loginActivity.getApplicationContext(), RegisterActivity.class);
+				Intent myIntent = new Intent(LoginActivity.loginActivity
+						.getApplicationContext(), RegisterActivity.class);
 				LoginActivity.loginActivity.startActivity(myIntent);
 			}
-    		
-    	});
-    	
-    	loginview.getLogin().setOnClickListener(new OnClickListener(){
+
+		});
+
+		loginview.getLogin().setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				getUserInput();
 				Log.e("hello", "11" + input_username.isEmpty());
 				Log.e("hello", "22" + input_password.isEmpty());
-				if(input_username.isEmpty() || input_password.isEmpty())
-				{
-					AlertDialog.Builder alert = initializeAlert("Invalid input", "Please enter your username and password");
-				    alert.show();
-				}
-				else{
+				if (input_username.isEmpty() || input_password.isEmpty()) {
+					AlertDialog.Builder alert = initializeAlert(
+							"Invalid input",
+							"Please enter your username and password");
+					alert.show();
+				} else {
 					new CheckUserTask().execute(RegisterActivity.User_url);
-					
+
 				}
-				
+
 			}
-    		
-    	});
-    }
-    
-    private class CheckUserTask extends AsyncTask<String, Void, List<String>> {
-		 @Override
-	     protected List<String> doInBackground(String... url) {
-			 
-	    	 	HttpClient client = new DefaultHttpClient();
-				HttpGet request = new HttpGet(RegisterActivity.User_url);
-				List<String> list = new ArrayList<String>();
+
+		});
+	}
+
+	private class CheckUserTask extends AsyncTask<String, Void, List<String>> {
+		@Override
+		protected List<String> doInBackground(String... url) {
+
+			HttpClient client = new DefaultHttpClient();
+			HttpGet request = new HttpGet(RegisterActivity.User_url);
+			List<String> list = new ArrayList<String>();
+			try {
+				HttpResponse response = client.execute(request);
+				HttpEntity entity = response.getEntity();
+				String data = EntityUtils.toString(entity);
+				Log.d(TAG, data);
+				JSONObject myjson;
+
 				try {
-					HttpResponse response = client.execute(request);
-					HttpEntity entity = response.getEntity();
-					String data = EntityUtils.toString(entity);
-					Log.d(TAG, data);
-					JSONObject myjson;
-					
-					try {
-						myjson = new JSONObject(data);
-						JSONArray array = myjson.getJSONArray("data");
-						for (int i = 0; i < array.length(); i++) {
-							JSONObject obj = array.getJSONObject(i);
-							list.add(obj.get("name").toString());
-							list.add(obj.get("password").toString());
-						}
-						
-					} catch (JSONException e) {
-
-				    	Log.d(TAG, "Error in parsing JSON");
+					myjson = new JSONObject(data);
+					JSONArray array = myjson.getJSONArray("data");
+					for (int i = 0; i < array.length(); i++) {
+						JSONObject obj = array.getJSONObject(i);
+						list.add(obj.get("name").toString());
+						list.add(obj.get("password").toString());
 					}
-					
-				} catch (ClientProtocolException e) {
 
-			    	Log.d(TAG, "ClientProtocolException while trying to connect to GAE");
-				} catch (IOException e) {
+				} catch (JSONException e) {
 
-					Log.d(TAG, "IOException while trying to connect to GAE");
+					Log.d(TAG, "Error in parsing JSON");
 				}
-	         return list;
-	     }
 
-	     protected void onPostExecute(List<String> list) {
-	    	boolean logined = false;
-	    	for(int i = 0; i < list.size(); i+=2){
-	    		if(input_username.equals(list.get(i)) && 
-	    			input_password.equals(list.get(i+1)))
-	    		{
-	    			logined = true;
-	    			LoginActivity.loginActivity.logined = true;
-	    			LoginActivity.loginActivity.username = input_username;
-	    			Intent myIntent = new Intent(LoginActivity.loginActivity.getApplicationContext(), MainActivity.class);
-					LoginActivity.loginActivity.startActivity(myIntent);
-	    		}
-	    	}
-	    	if(!logined){
-		    	AlertDialog.Builder alert = initializeAlert("Error", "User name or Password is incorrect");
-				alert.show();
-	    	}
-	     }
+			} catch (ClientProtocolException e) {
 
-	 }
-    /**
-     * Method to build a alert dialog for error condition, mainly used in user entries for
-     * Placeit information
-     * @param title
-     * @param message
-     * @return The dialog box that contains the title and message
-     */
-    public AlertDialog.Builder initializeAlert(String title, String message){
-    	AlertDialog.Builder tmp = new AlertDialog.Builder(context);
-    	tmp.setTitle(title);
-  	    tmp.setMessage(message);
-  	    tmp.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-  		        public void onClick(DialogInterface dialog, int whichButton) {
-  		          }
-  		        });
-    	return tmp;
-    }
+				Log.d(TAG,
+						"ClientProtocolException while trying to connect to GAE");
+			} catch (IOException e) {
+
+				Log.d(TAG, "IOException while trying to connect to GAE");
+			}
+			return list;
+		}
+
+		protected void onPostExecute(List<String> list) {
+			boolean logined = false;
+//TODO			LoginActivity.loginActivity.logined = MainActivity.mainActivity
+//					.readLoginStatus();
+			
+			// not logged in: stay in login page
+			if (!LoginActivity.loginActivity.logined) {
+				for (int i = 0; i < list.size(); i += 2) {
+					if (input_username.equals(list.get(i))
+							&& input_password.equals(list.get(i + 1))) {
+						logined = true;
+						LoginActivity.loginActivity.logined = true;
+//TODO						MainActivity.mainActivity.saveLoginStatus();
+						LoginActivity.loginActivity.username = input_username;
+						Intent myIntent = new Intent(
+								LoginActivity.loginActivity
+										.getApplicationContext(),
+								MainActivity.class);
+						LoginActivity.loginActivity.startActivity(myIntent);
+					}
+				}
+				if (!logined) {
+					AlertDialog.Builder alert = initializeAlert("Error",
+							"User name or Password is incorrect");
+					alert.show();
+				}
+			} else {
+				// already logined in: goto main
+				Intent myIntent = new Intent(
+						LoginActivity.loginActivity.getApplicationContext(),
+						MainActivity.class);
+				LoginActivity.loginActivity.startActivity(myIntent);
+			}
+		}
+
+	}
+
+	/**
+	 * Method to build a alert dialog for error condition, mainly used in user
+	 * entries for Placeit information
+	 * 
+	 * @param title
+	 * @param message
+	 * @return The dialog box that contains the title and message
+	 */
+	public AlertDialog.Builder initializeAlert(String title, String message) {
+		AlertDialog.Builder tmp = new AlertDialog.Builder(context);
+		tmp.setTitle(title);
+		tmp.setMessage(message);
+		tmp.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+			}
+		});
+		return tmp;
+	}
 }

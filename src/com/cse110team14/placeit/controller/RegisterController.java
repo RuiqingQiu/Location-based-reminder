@@ -40,13 +40,17 @@ public class RegisterController {
 
 				@Override
 				public void onClick(View arg0) {
+					Log.e("A:B", registerview.getPassword().getText().toString() + ":" +registerview.getRepass().getText().toString());
 					if (registerview.getUsername().getText().toString().length() == 0 || 
 						registerview.getPassword().getText().toString().length() == 0)
 					{
 						AlertDialog.Builder alert = initializeAlert("Error", "User and password can't be empty!");
 						alert.show();
 					}
-					else{
+					else if (!registerview.getPassword().getText().toString().equals(registerview.getRepass().getText().toString())){
+						AlertDialog.Builder alert = initializeAlert("Error", "Two password inputs are not consistant!");
+						alert.show();
+					}else{
 						postdata();
 						Intent myIntent = new Intent(RegisterActivity.registerActivity.getApplicationContext(), LoginActivity.class);
 						RegisterActivity.registerActivity.startActivity(myIntent);

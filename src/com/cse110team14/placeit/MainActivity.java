@@ -170,7 +170,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
 				LoginActivity.loginActivity.logined = false;
 				//TODO save to activeListFile.dat
-				saveLoginStatus(loginStatusFile);
+				saveLoginStatus();
 				startActivity(myIntent);
 			}
         	
@@ -368,9 +368,9 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	
     }
     
-    public void saveLoginStatus(String file){
+    public void saveLoginStatus(){
     	try {
-    		FileOutputStream out = openFileOutput(file, Context.MODE_PRIVATE);
+    		FileOutputStream out = openFileOutput(loginStatusFile, Context.MODE_PRIVATE);
     		//write place its to file
     		out.write(Boolean.toString(LoginActivity.loginActivity.logined).getBytes());
     		out.close();
@@ -381,10 +381,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	}
     }
     
-	public boolean readLoginStatus(String file) {
+	public boolean readLoginStatus() {
 		String readString = "";
 		try {
-			FileInputStream in = openFileInput(file);
+			FileInputStream in = openFileInput(loginStatusFile);
 			InputStreamReader isr = new InputStreamReader(in);
 			BufferedReader reader = new BufferedReader(isr);
 			readString = reader.readLine();
