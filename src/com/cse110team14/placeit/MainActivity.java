@@ -170,6 +170,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
 				LoginActivity.loginActivity.logined = false;
 				//TODO save to activeListFile.dat
+				saveLoginStatus(loginStatusFile);
 				startActivity(myIntent);
 			}
         	
@@ -369,12 +370,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	
     }
     
-    public void saveLoginStatus(List<PlaceIt> list, String file){
+    public void saveLoginStatus(String file){
     	try {
     		FileOutputStream out = openFileOutput(file, Context.MODE_PRIVATE);
     		//write place its to file
-    		Iterator<PlaceIt> itr = list.iterator();
-    			out.write(Boolean.toString(LoginActivity.loginActivity.logined).getBytes());
+    		out.write(Boolean.toString(LoginActivity.loginActivity.logined).getBytes());
     		out.close();
     	} catch (FileNotFoundException e) {
     		e.printStackTrace();
@@ -383,7 +383,21 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	}
     }
     
-//    public void
+	public boolean readLoginStatus(String file) {
+		String readString = "";
+		try {
+			FileInputStream in = openFileInput(file);
+			InputStreamReader isr = new InputStreamReader(in);
+			BufferedReader reader = new BufferedReader(isr);
+			readString = reader.readLine();
+			Log.e("SOS", readString);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Boolean.parseBoolean(readString);
+	}
     
     /**
      * Save specific list of placeits to corresponding file, called in onStop
