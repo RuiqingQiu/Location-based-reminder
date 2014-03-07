@@ -18,8 +18,10 @@ import com.cse110team14.placeit.LoginActivity;
 import com.cse110team14.placeit.RegisterActivity;
 import com.cse110team14.placeit.view.RegisterView;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +40,12 @@ public class RegisterController {
 
 				@Override
 				public void onClick(View arg0) {
+					if (registerview.getUsername().getText().toString().length() == 0 || 
+						registerview.getPassword().getText().toString().length() == 0)
+					{
+						AlertDialog.Builder alert = initializeAlert("Error", "User and password can't be empty!");
+						alert.show();
+					}		
 					postdata();
 					Intent myIntent = new Intent(RegisterActivity.registerActivity.getApplicationContext(), LoginActivity.class);
 					RegisterActivity.registerActivity.startActivity(myIntent);
@@ -81,4 +89,22 @@ public class RegisterController {
 		t.start();
 		dialog.show();
 	}
+	
+	/**
+     * Method to build a alert dialog for error condition, mainly used in user entries for
+     * Placeit information
+     * @param title
+     * @param message
+     * @return The dialog box that contains the title and message
+     */
+    public AlertDialog.Builder initializeAlert(String title, String message){
+    	AlertDialog.Builder tmp = new AlertDialog.Builder(context);
+    	tmp.setTitle(title);
+  	    tmp.setMessage(message);
+  	    tmp.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+  		        public void onClick(DialogInterface dialog, int whichButton) {
+  		          }
+  		        });
+    	return tmp;
+    }
 }

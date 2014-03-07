@@ -179,8 +179,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
         MapView mapview = new MapView();
         //Set up the button control
         MapButtonController mapbuttoncontroller = new MapButtonController(mapview, context);
-        
-        
         map.setMyLocationEnabled(true);
         map.setInfoWindowAdapter(new PlaceItsInfoWindow(getLayoutInflater().inflate(R.layout.placeits_info_window, null)));
         
