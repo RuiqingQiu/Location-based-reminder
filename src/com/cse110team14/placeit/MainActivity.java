@@ -166,7 +166,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 
 			@Override
 			public void onClick(View v) {
-				Intent myIntent = new Intent(MainActivity.this, RegisterActivity.class);
+				Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
 				startActivity(myIntent);
 			}
         	
