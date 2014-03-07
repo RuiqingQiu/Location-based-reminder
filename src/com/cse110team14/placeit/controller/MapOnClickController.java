@@ -1,14 +1,37 @@
 package com.cse110team14.placeit.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +40,10 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.cse110team14.placeit.LoginActivity;
 import com.cse110team14.placeit.MainActivity;
 import com.cse110team14.placeit.R;
+import com.cse110team14.placeit.RegisterActivity;
 import com.cse110team14.placeit.R.id;
 import com.cse110team14.placeit.R.layout;
 import com.cse110team14.placeit.model.PlaceIt;
@@ -30,6 +55,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapOnClickController {
+	public static final String PLACEITS_URL = "http://placeitteam14.appspot.com/placeits";
 	private Context context;
 	public MapOnClickController(Context context){
 		this.context = context;
@@ -187,6 +213,8 @@ public class MapOnClickController {
 			          Log.e("hello", "the type is" + tmp.getPlaceItType());
 			          MainActivity.activeList.add(tmp);
 			          MainActivity.marker = MainActivity.mMarkers.iterator();
+			          //Put the data into the database
+			          postdata(tmp);
 			          
 		          }
 		        });
@@ -215,6 +243,64 @@ public class MapOnClickController {
 	    	
 	    });
 	}
+
+	private void postdata(PlaceIt p) {
+		final ProgressDialog dialog = ProgressDialog.show(context,
+				"Posting Data...", "Please wait...", false);
+		final PlaceIt tmp = p;
+		Thread t = new Thread() {
+
+			public void run() {
+				HttpClient client = new DefaultHttpClient();
+				HttpPost post = new HttpPost(PLACEITS_URL);
+
+			    try {
+			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+			      nameValuePairs.add(new BasicNameValuePair("PlaceIts",
+			    		  tmp.getTitle()));
+			      nameValuePairs.add(new BasicNameValuePair("description",
+			    		  tmp.getDescription()));
+			      nameValuePairs.add(new BasicNameValuePair("postDate",
+			    		  tmp.getDate()));
+			      nameValuePairs.add(new BasicNameValuePair("dateToBeReminded",
+			    		  tmp.getDateReminded()));
+			      nameValuePairs.add(new BasicNameValuePair("color",
+			    		  tmp.getColor()));
+			      //This is always a regular placeit
+			      nameValuePairs.add(new BasicNameValuePair("type",
+			    		  "1"));
+			      nameValuePairs.add(new BasicNameValuePair("location",
+			    		  tmp.getLocation().toString()));
+			      nameValuePairs.add(new BasicNameValuePair("placeitType",
+			    		  Integer.toString(tmp.getPlaceItType())));
+			      nameValuePairs.add(new BasicNameValuePair("sneezeType",
+			    		  Integer.toString(tmp.getSneezeType())));
+			      nameValuePairs.add(new BasicNameValuePair("user",
+			    		  LoginActivity.loginActivity.username));
+			      nameValuePairs.add(new BasicNameValuePair("action",
+				          "put"));
+			      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			 
+			      HttpResponse response = client.execute(post);
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			      String line = "";
+			      while ((line = rd.readLine()) != null) {
+			        Log.d("hello", line);
+			      }
+
+			    } catch (IOException e) {
+			    	Log.d("hello", "IOException while trying to conect to GAE");
+			    }
+				dialog.dismiss();
+			}
+		};
+
+		t.start();
+		dialog.show();
+	}
+	
+	
+	
 	 /**
 	   * Method to build a alert dialog for error condition, mainly used in user entries for
 	   * Placeit information
