@@ -1,16 +1,10 @@
 package com.cse110team14.placeit;
-
-import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
-
 import com.google.android.gms.maps.model.LatLng;
-
-import android.location.Location;
 import android.util.Log;
 
 
-public class PlaceIt implements Serializable {
+public class PlaceIt{
 	private String title;
 	private String description;
 	private LatLng location;
