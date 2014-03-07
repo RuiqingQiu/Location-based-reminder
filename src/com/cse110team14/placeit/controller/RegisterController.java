@@ -45,10 +45,12 @@ public class RegisterController {
 					{
 						AlertDialog.Builder alert = initializeAlert("Error", "User and password can't be empty!");
 						alert.show();
-					}		
-					postdata();
-					Intent myIntent = new Intent(RegisterActivity.registerActivity.getApplicationContext(), LoginActivity.class);
-					RegisterActivity.registerActivity.startActivity(myIntent);
+					}
+					else{
+						postdata();
+						Intent myIntent = new Intent(RegisterActivity.registerActivity.getApplicationContext(), LoginActivity.class);
+						RegisterActivity.registerActivity.startActivity(myIntent);
+					}
 				}
 	        	
 	        });
