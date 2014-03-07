@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.cse110team14.*;
+import com.cse110team14.placeit.model.PlaceIt;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -86,6 +88,7 @@ public class LocationService extends Service implements LocationListener,
 	 * connection to the Google Play Service are not able to connect
 	 */
 
+
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		/*
@@ -94,20 +97,6 @@ public class LocationService extends Service implements LocationListener,
 		 * services activity that can resolve error.
 		 */
 		if (connectionResult.hasResolution()) {
-			/*
-			 * try { // Start an Activity that tries to resolve the error
-			 * connectionResult
-			 * .startResolutionForResult(ApplicationClass.getCurrentActivity(),
-			 * CommonUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST);
-			 */
-			/*
-			 * Thrown if Google Play services canceled the original
-			 * PendingIntent
-			 */
-			/*
-			 * } catch (IntentSender.SendIntentException e) { // Log the error
-			 * e.printStackTrace(); }
-			 */
 		} else {
 			// If no resolution is available, display a dialog to the user with
 			// the error.
@@ -148,7 +137,7 @@ public class LocationService extends Service implements LocationListener,
 		myCurrentLocation.setLatitude(latitude);
 		myCurrentLocation.setLongitude(longitude);
 		List<PlaceIt> tmp = new ArrayList<PlaceIt>();
-		tmp.addAll(MainActivity.PlaceIts);
+		tmp.addAll(MainActivity.activeList);
 
 		// This part is for checking if the placeit in the active list is within
 		// range
@@ -168,23 +157,19 @@ public class LocationService extends Service implements LocationListener,
 				if (myCurrentLocation.distanceTo(placeItLocation) < range) {
 					Calendar c1;
 					long previous, current;
-					Log.e("hello", "type: " + pi.getSneezeType());
 					if (pi.getSneezeType() == 1) {
 						// Create the notification and move the placeit to
 						// pulldown
 						createNotification(null, pi);
-						MainActivity.PlaceIts.remove(pi);
-						Log.e("hello", "add to pull down");
+						MainActivity.activeList.remove(pi);
 						MainActivity.pullDown.add(pi);
 					} else if (pi.getSneezeType() == 2) {
 						c1 = pi.getDateRemindedToCalendar();
 						previous = c1.getTimeInMillis();
 						current = System.currentTimeMillis();
-						Log.e("hello", "previous: " + previous);
-						Log.e("hello", "current: " + current);
 						if ((current - previous) > 10000) {
 							createNotification(null, pi);
-							MainActivity.PlaceIts.remove(pi);
+							MainActivity.activeList.remove(pi);
 							MainActivity.pullDown.add(pi);
 						}
 					} else {
@@ -193,7 +178,7 @@ public class LocationService extends Service implements LocationListener,
 						current = System.currentTimeMillis();
 						if ((current - previous) > 45 *60000) {
 							createNotification(null, pi);
-							MainActivity.PlaceIts.remove(pi);
+							MainActivity.activeList.remove(pi);
 							MainActivity.pullDown.add(pi);
 						}
 					}
@@ -218,13 +203,12 @@ public class LocationService extends Service implements LocationListener,
 				c2 = Calendar.getInstance();
 				current = c2.getTimeInMillis();
 				// Put back to active
-				Log.e("hello", "current - previous: " + (current - previous));
 				if ((current - previous) > 60000) {
 					MainActivity.pullDown.remove(pi);
 					pi.setPlaceItType(2);
 					// Update the post time for the placeit
 					pi.setDatePosted();
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 			// One week
@@ -234,16 +218,15 @@ public class LocationService extends Service implements LocationListener,
 				c2 = Calendar.getInstance();
 				current = c2.getTimeInMillis();
 				// Put back to active
-				Log.e("hello", "current - previous: " + (current - previous));
 				if ((current - previous) > oneWeekInMillSec) {
 					MainActivity.pullDown.remove(pi);
 					pi.setPlaceItType(3);
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
-					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 
@@ -260,9 +243,9 @@ public class LocationService extends Service implements LocationListener,
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
-					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 			// Three week
@@ -278,9 +261,9 @@ public class LocationService extends Service implements LocationListener,
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
-					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 			// One Month
@@ -296,16 +279,14 @@ public class LocationService extends Service implements LocationListener,
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
-					pi.setDateReminded(""+ c.get(Calendar.MONTH) +"/" + c.get(Calendar.DAY_OF_MONTH) 
+					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
-					MainActivity.PlaceIts.add(pi);
+					MainActivity.activeList.add(pi);
 				}
 				break;
 			}
 		}
 
-		Log.i("info", "Latitude :: " + latitude);
-		Log.i("info", "Longitude :: " + longitude);
 	}
 
 	/**
@@ -332,8 +313,6 @@ public class LocationService extends Service implements LocationListener,
 	 */
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
-		Log.i("info", "Service is destroyed");
 		mLocationClient.removeLocationUpdates(this);
 		super.onDestroy();
 	}

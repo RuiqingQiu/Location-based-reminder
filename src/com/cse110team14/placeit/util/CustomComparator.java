@@ -1,8 +1,10 @@
-package com.cse110team14.placeit;
+package com.cse110team14.placeit.util;
 
 //Custom Comparator which will help to sort the list of active place-its by comparing the calendar dates
 
 import java.util.Comparator;
+
+import com.cse110team14.placeit.model.PlaceIt;
 
 public class CustomComparator implements Comparator<PlaceIt> {
 

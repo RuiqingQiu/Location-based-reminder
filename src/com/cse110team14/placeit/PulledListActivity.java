@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.util.CustomComparator;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -176,7 +179,7 @@ public class PulledListActivity extends Activity {
 						sorted.remove(clicked);
 						MainActivity.pullDown.remove(clicked);
 						clicked.setDatePosted();
-						MainActivity.PlaceIts.add(clicked);
+						MainActivity.activeList.add(clicked);
 
 						Toast.makeText(
 								PulledListActivity.this,
@@ -197,7 +200,7 @@ public class PulledListActivity extends Activity {
 						MainActivity.pullDown.remove(clicked);
 						clicked.setSneezeType(3);
 						clicked.setDatePosted();
-						MainActivity.PlaceIts.add(clicked);
+						MainActivity.activeList.add(clicked);
 
 						Toast.makeText(
 								PulledListActivity.this,
@@ -217,7 +220,7 @@ public class PulledListActivity extends Activity {
 				MainActivity.pullDown.remove(clicked);
 				clicked.setSneezeType(2);
 				clicked.setDatePosted();
-				MainActivity.PlaceIts.add(clicked);
+				MainActivity.activeList.add(clicked);
 							
 				Toast.makeText(
 						PulledListActivity.this,
