@@ -7,7 +7,7 @@
     
     <string name="active">Active</string>
     <string name="pulled">Pulled</string>
-    <string name="test">Login</string>
+    <string name="test">Log Out</string>
     <string name="create">Create</string>
     <string name="map">Map</string>
     <string name="title">Title: </string>
@@ -21,7 +21,7 @@
     <string name="username">Username: (a&#8211;z/A&#8211;Z letters, or 0&#8211;9 digits)</string>
     <string name="password">Password: (Letter cases matters.)</string>
     <string name="password1">Password: (a&#8211;z/A&#8211;Z letters, or 0&#8211;9 digits)</string>
-    <string name="password2">repeat passord:</string>
+    <string name="password2">repeat password:</string>
     <string name="go_reg">Register Now</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>

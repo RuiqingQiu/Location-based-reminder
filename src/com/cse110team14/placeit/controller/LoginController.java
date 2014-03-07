@@ -126,6 +126,8 @@ public class LoginController {
 	    			input_password.equals(list.get(i+1)))
 	    		{
 	    			logined = true;
+	    			LoginActivity.loginActivity.logined = true;
+	    			LoginActivity.loginActivity.username = input_username;
 	    			Intent myIntent = new Intent(LoginActivity.loginActivity.getApplicationContext(), MainActivity.class);
 					LoginActivity.loginActivity.startActivity(myIntent);
 	    		}
