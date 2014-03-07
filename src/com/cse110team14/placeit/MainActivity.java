@@ -136,6 +136,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	//Initilize the mMarkers list
 	public static List<Marker> mMarkers = new ArrayList<Marker>();
 	public static Iterator<Marker> marker;
+	private String loginStatusFile = "savedLoginStatus.dat";
 	private String activeListFile = "saved_placeits.dat";
 	private String pulldownListFile = "pulldown_placeits.dat";
 	
@@ -167,6 +168,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
 			@Override
 			public void onClick(View v) {
 				Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+				LoginActivity.loginActivity.logined = false;
+				//TODO save to activeListFile.dat
 				startActivity(myIntent);
 			}
         	
@@ -365,6 +368,22 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	
     }
     
+    public void saveLoginStatus(List<PlaceIt> list, String file){
+    	try {
+    		FileOutputStream out = openFileOutput(file, Context.MODE_PRIVATE);
+    		//write place its to file
+    		Iterator<PlaceIt> itr = list.iterator();
+    			out.write(Boolean.toString(LoginActivity.loginActivity.logined).getBytes());
+    		out.close();
+    	} catch (FileNotFoundException e) {
+    		e.printStackTrace();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+//    public void
+    
     /**
      * Save specific list of placeits to corresponding file, called in onStop
      *  method
@@ -461,6 +480,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	public void goToPulledList(View v){
 		startActivity(new Intent(MainActivity.this, PulledListActivity.class));
 	}
+	
 	
 
 	@Override
