@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.cse110team14.placeit.LoginActivity;
+import com.cse110team14.placeit.MainActivity;
 import com.cse110team14.placeit.RegisterActivity;
 import com.cse110team14.placeit.util.EncryptUtils;
 import com.cse110team14.placeit.view.RegisterView;
@@ -39,6 +40,7 @@ public class RegisterController {
 	private String TAG = "registerControl";
 	private RegisterView registerview;
 	private Context context;
+	private boolean pass = false;
 	public RegisterController(RegisterView registerview, Context context){
 		this.registerview = registerview;
 		this.context = context;
@@ -61,8 +63,13 @@ public class RegisterController {
 						alert.show();
 					}else{
 						postdata();
+						if(pass){
+;
 						Intent myIntent = new Intent(RegisterActivity.registerActivity.getApplicationContext(), LoginActivity.class);
 						RegisterActivity.registerActivity.startActivity(myIntent);
+						}else{
+						AlertDialog.Builder alert = initializeAlert("Error", "Username has already registered!");
+						alert.show();}
 					}
 				}
 	        	
@@ -78,7 +85,11 @@ public class RegisterController {
 				HttpPost post = new HttpPost(RegisterActivity.User_url);
 				//TODO check reg_name exist or not
 				
-				
+//				if (checkDuplicateUsername(registerview.getUsername().getText().toString())){
+//					pass = false;
+//				}
+				checkDuplicateUsername(registerview.getUsername().getText().toString());
+				if(pass){
 			    try {
 			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			      nameValuePairs.add(new BasicNameValuePair("User",
@@ -99,6 +110,7 @@ public class RegisterController {
 			    } catch (IOException e) {
 			    	Log.d("hello", "IOException while trying to conect to GAE");
 			    }
+				}//@
 				dialog.dismiss();
 			}
 		};
@@ -107,10 +119,10 @@ public class RegisterController {
 		dialog.show();
 	}
 	
-	public void checkDuplicateUsername(){
+	public void checkDuplicateUsername(String username){
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(RegisterActivity.User_url);
-		List<String> list = new ArrayList<String>();
+//		List<String> list = new ArrayList<String>();
 		try {
 			HttpResponse response = client.execute(request);
 			HttpEntity entity = response.getEntity();
@@ -123,7 +135,11 @@ public class RegisterController {
 				JSONArray array = myjson.getJSONArray("data");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject obj = array.getJSONObject(i);
-					list.add(obj.get("name").toString());
+//					list.add(obj.get("name").toString());
+					if (username.equals(obj.get("name").toString())) {
+//						return true;
+						pass = true;
+					}
 				}
 	
 			} catch (JSONException e) {
@@ -132,15 +148,18 @@ public class RegisterController {
 	
 		} catch (ClientProtocolException e) {
 	
-			Log.d(TAG,
-					"ClientProtocolException while trying to connect to GAE");
+			Log.d(TAG, "ClientProtocolException while trying to connect to GAE");
 		} catch (IOException e) {
 	
 			Log.d(TAG, "IOException while trying to connect to GAE");
 		}
-		//return list;
+		
+//		for (int i = 0; i < list.size(); i += 2) {
+//			if (username.equals(list.get(i))) {
+//				return true;
+//			}
+//		}
 	}
-	
 	
 	/**
      * Method to build a alert dialog for error condition, mainly used in user entries for
