@@ -126,17 +126,12 @@ public class LoginController {
 
 		protected void onPostExecute(List<String> list) {
 			boolean logined = false;
-//TODO			LoginActivity.loginActivity.logined = MainActivity.mainActivity
-//					.readLoginStatus();
 			
-			// not logged in: stay in login page
-			if (!LoginActivity.loginActivity.logined) {
 				for (int i = 0; i < list.size(); i += 2) {
 					if (input_username.equals(list.get(i))
 							&& EncryptUtils.encode(input_password).equals(list.get(i + 1))) {
 						logined = true;
 						LoginActivity.loginActivity.logined = true;
-//TODO						MainActivity.mainActivity.saveLoginStatus();
 						LoginActivity.loginActivity.username = input_username;
 						Intent myIntent = new Intent(
 								LoginActivity.loginActivity
@@ -150,13 +145,6 @@ public class LoginController {
 							"User name or Password is incorrect");
 					alert.show();
 				}
-			} else {
-				// already logined in: goto main
-				Intent myIntent = new Intent(
-						LoginActivity.loginActivity.getApplicationContext(),
-						MainActivity.class);
-				LoginActivity.loginActivity.startActivity(myIntent);
-			}
 		}
 
 	}

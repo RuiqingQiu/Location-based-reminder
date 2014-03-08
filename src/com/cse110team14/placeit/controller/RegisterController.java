@@ -68,7 +68,9 @@ public class RegisterController {
 			public void run() {
 				HttpClient client = new DefaultHttpClient();
 				HttpPost post = new HttpPost(RegisterActivity.User_url);
-
+				//TODO check reg_name exist or not
+				
+				
 			    try {
 			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			      nameValuePairs.add(new BasicNameValuePair("User",

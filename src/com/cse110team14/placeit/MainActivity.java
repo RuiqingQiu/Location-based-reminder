@@ -170,7 +170,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
 				LoginActivity.loginActivity.logined = false;
 				//TODO save to activeListFile.dat
-				saveLoginStatus();
+				saveLoginStatus("");
 				startActivity(myIntent);
 			}
         	
@@ -365,14 +365,21 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onStop();
         saveList(activeList, activeListFile);
         saveList(pullDown, pulldownListFile);
+        saveLoginStatus(LoginActivity.username);
     	
     }
     
-    public void saveLoginStatus(){
+    public void saveLoginStatus(String user){
     	try {
     		FileOutputStream out = openFileOutput(loginStatusFile, Context.MODE_PRIVATE);
     		//write place its to file
-    		out.write(Boolean.toString(LoginActivity.loginActivity.logined).getBytes());
+    		
+    		out.write((Boolean.toString(LoginActivity.loginActivity.logined) + "\n").getBytes());
+    	if(user == null){
+			out.write("\n".getBytes());
+		}else{
+    		out.write(user.getBytes());
+		}
     		out.close();
     	} catch (FileNotFoundException e) {
     		e.printStackTrace();
@@ -380,22 +387,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
     		e.printStackTrace();
     	}
     }
-    
-	public boolean readLoginStatus() {
-		String readString = "";
-		try {
-			FileInputStream in = openFileInput(loginStatusFile);
-			InputStreamReader isr = new InputStreamReader(in);
-			BufferedReader reader = new BufferedReader(isr);
-			readString = reader.readLine();
-			Log.e("SOS", readString);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Boolean.parseBoolean(readString);
-	}
     
     /**
      * Save specific list of placeits to corresponding file, called in onStop
