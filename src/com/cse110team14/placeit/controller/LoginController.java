@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.cse110team14.placeit.LoginActivity;
 import com.cse110team14.placeit.MainActivity;
 import com.cse110team14.placeit.RegisterActivity;
+import com.cse110team14.placeit.util.EncryptUtils;
 import com.cse110team14.placeit.view.LoginView;
 
 public class LoginController {
@@ -132,7 +133,7 @@ public class LoginController {
 			if (!LoginActivity.loginActivity.logined) {
 				for (int i = 0; i < list.size(); i += 2) {
 					if (input_username.equals(list.get(i))
-							&& input_password.equals(list.get(i + 1))) {
+							&& EncryptUtils.encode(input_password).equals(list.get(i + 1))) {
 						logined = true;
 						LoginActivity.loginActivity.logined = true;
 //TODO						MainActivity.mainActivity.saveLoginStatus();

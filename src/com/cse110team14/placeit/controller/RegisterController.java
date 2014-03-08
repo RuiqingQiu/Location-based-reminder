@@ -16,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.cse110team14.placeit.LoginActivity;
 import com.cse110team14.placeit.RegisterActivity;
+import com.cse110team14.placeit.util.EncryptUtils;
 import com.cse110team14.placeit.view.RegisterView;
 
 import android.app.AlertDialog;
@@ -73,7 +74,7 @@ public class RegisterController {
 			      nameValuePairs.add(new BasicNameValuePair("User",
 			    		  registerview.getUsername().getText().toString()));
 			      nameValuePairs.add(new BasicNameValuePair("password",
-			    		  registerview.getPassword().getText().toString()));
+			    		  EncryptUtils.encode(registerview.getPassword().getText().toString())));
 			      nameValuePairs.add(new BasicNameValuePair("action",
 				          "put"));
 			      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
