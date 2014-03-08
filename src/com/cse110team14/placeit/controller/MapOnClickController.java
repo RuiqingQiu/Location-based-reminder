@@ -210,11 +210,13 @@ public class MapOnClickController {
 			          PlaceIt tmp = new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime);
 			          //Set the type of the placeit
 			          tmp.setPlaceItType(placeItType);
+			          //Set list to be type 1 to be in active list
+			          tmp.setListType("1");
 			          Log.e("hello", "the type is" + tmp.getPlaceItType());
 			          MainActivity.activeList.add(tmp);
 			          MainActivity.marker = MainActivity.mMarkers.iterator();
 			          //Put the data into the database
-			          postdata(tmp);
+			          postPlaceIts(tmp);
 			          
 		          }
 		        });
@@ -244,7 +246,7 @@ public class MapOnClickController {
 	    });
 	}
 
-	private void postdata(PlaceIt p) {
+	private void postPlaceIts(PlaceIt p) {
 		final ProgressDialog dialog = ProgressDialog.show(context,
 				"Posting Data...", "Please wait...", false);
 		final PlaceIt tmp = p;
@@ -277,6 +279,8 @@ public class MapOnClickController {
 			    		  Integer.toString(tmp.getSneezeType())));
 			      nameValuePairs.add(new BasicNameValuePair("user",
 			    		  LoginActivity.loginActivity.username));
+			      nameValuePairs.add(new BasicNameValuePair("listType",
+			    		  tmp.getListType()));
 			      nameValuePairs.add(new BasicNameValuePair("action",
 				          "put"));
 			      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
