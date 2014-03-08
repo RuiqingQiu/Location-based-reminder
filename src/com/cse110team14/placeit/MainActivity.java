@@ -170,7 +170,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
 				LoginActivity.loginActivity.logined = false;
 				//TODO save to activeListFile.dat
-				saveLoginStatus(loginStatusFile);
+				saveLoginStatus("");
 				startActivity(myIntent);
 			}
         	
@@ -364,37 +364,37 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onStop();
         saveList(activeList, activeListFile);
         saveList(pullDown, pulldownListFile);
+        saveLoginStatus(LoginActivity.username);
     	
     }
     
-    public void saveLoginStatus(String file){
+    public void saveLoginStatus(String user){
     	try {
-    		FileOutputStream out = openFileOutput(file, Context.MODE_PRIVATE);
-    		//write place its to file
-    		out.write(Boolean.toString(LoginActivity.loginActivity.logined).getBytes());
-    		out.close();
+    		FileOutputStream outputStatus = openFileOutput(loginStatusFile, Context.MODE_PRIVATE);
+
+    		outputStatus.write((Boolean.toString(LoginActivity.loginActivity.logined) + "\n").getBytes());
+	    	if(user != null){
+	    		outputStatus.write(user.getBytes());
+			}
+	    	else{
+	    		// clear activelist file
+		    	FileOutputStream outputActive = openFileOutput(activeListFile, Context.MODE_PRIVATE);
+	    		outputActive.write("\n".getBytes());
+	    		outputActive.close();
+	    		
+	    		// clear pulledlist file
+		    	FileOutputStream outputPulled = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
+		    	outputPulled.write("\n".getBytes());
+		    	outputPulled.close();
+	    	}
+	    	outputStatus.close();
+	    	
     	} catch (FileNotFoundException e) {
     		e.printStackTrace();
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
     }
-    
-	public boolean readLoginStatus(String file) {
-		String readString = "";
-		try {
-			FileInputStream in = openFileInput(file);
-			InputStreamReader isr = new InputStreamReader(in);
-			BufferedReader reader = new BufferedReader(isr);
-			readString = reader.readLine();
-			Log.e("SOS", readString);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Boolean.parseBoolean(readString);
-	}
     
     /**
      * Save specific list of placeits to corresponding file, called in onStop

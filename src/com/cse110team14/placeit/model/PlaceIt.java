@@ -155,4 +155,13 @@ public class PlaceIt extends SimplePlaceIt {
 		dateToBeReminded = date;
 	}
 
+	@Override
+	public void setListType(String type) {
+		listType = type;
+	}
+
+	@Override
+	public String getListType() {
+		return listType;
+	}
 }
