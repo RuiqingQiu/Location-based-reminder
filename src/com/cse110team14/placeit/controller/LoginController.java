@@ -127,24 +127,24 @@ public class LoginController {
 		protected void onPostExecute(List<String> list) {
 			boolean logined = false;
 			
-				for (int i = 0; i < list.size(); i += 2) {
-					if (input_username.equals(list.get(i))
-							&& EncryptUtils.encode(input_password).equals(list.get(i + 1))) {
-						logined = true;
-						LoginActivity.loginActivity.logined = true;
-						LoginActivity.loginActivity.username = input_username;
-						Intent myIntent = new Intent(
-								LoginActivity.loginActivity
-										.getApplicationContext(),
-								MainActivity.class);
-						LoginActivity.loginActivity.startActivity(myIntent);
-					}
+			for (int i = 0; i < list.size(); i += 2) {
+				if (input_username.equals(list.get(i))
+						&& EncryptUtils.encode(input_password).equals(list.get(i + 1))) {
+					logined = true;
+					LoginActivity.loginActivity.logined = true;
+					LoginActivity.loginActivity.username = input_username;
+					Intent myIntent = new Intent(
+							LoginActivity.loginActivity
+									.getApplicationContext(),
+							MainActivity.class);
+					LoginActivity.loginActivity.startActivity(myIntent);
 				}
-				if (!logined) {
-					AlertDialog.Builder alert = initializeAlert("Error",
-							"User name or Password is incorrect");
-					alert.show();
-				}
+			}
+			if (!logined) {
+				AlertDialog.Builder alert = initializeAlert("Error",
+						"User name or Password is incorrect");
+				alert.show();
+			}
 		}
 
 	}

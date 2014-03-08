@@ -6,13 +6,20 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.cse110team14.placeit.LoginActivity;
 import com.cse110team14.placeit.RegisterActivity;
@@ -29,6 +36,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class RegisterController {
+	private String TAG = "registerControl";
 	private RegisterView registerview;
 	private Context context;
 	public RegisterController(RegisterView registerview, Context context){
@@ -98,6 +106,41 @@ public class RegisterController {
 		t.start();
 		dialog.show();
 	}
+	
+	public void checkDuplicateUsername(){
+		HttpClient client = new DefaultHttpClient();
+		HttpGet request = new HttpGet(RegisterActivity.User_url);
+		List<String> list = new ArrayList<String>();
+		try {
+			HttpResponse response = client.execute(request);
+			HttpEntity entity = response.getEntity();
+			String data = EntityUtils.toString(entity);
+			Log.d(TAG, data);
+			JSONObject myjson;
+	
+			try {
+				myjson = new JSONObject(data);
+				JSONArray array = myjson.getJSONArray("data");
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject obj = array.getJSONObject(i);
+					list.add(obj.get("name").toString());
+				}
+	
+			} catch (JSONException e) {
+				Log.d(TAG, "Error in parsing JSON");
+			}
+	
+		} catch (ClientProtocolException e) {
+	
+			Log.d(TAG,
+					"ClientProtocolException while trying to connect to GAE");
+		} catch (IOException e) {
+	
+			Log.d(TAG, "IOException while trying to connect to GAE");
+		}
+		//return list;
+	}
+	
 	
 	/**
      * Method to build a alert dialog for error condition, mainly used in user entries for
