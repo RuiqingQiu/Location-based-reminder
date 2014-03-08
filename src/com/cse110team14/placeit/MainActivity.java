@@ -377,17 +377,18 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	    	if(user != null){
 	    		outputStatus.write(user.getBytes());
 			}
+	    	else{
+	    		// clear activelist file
+		    	FileOutputStream outputActive = openFileOutput(activeListFile, Context.MODE_PRIVATE);
+	    		outputActive.write("\n".getBytes());
+	    		outputActive.close();
+	    		
+	    		// clear pulledlist file
+		    	FileOutputStream outputPulled = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
+		    	outputPulled.write("\n".getBytes());
+		    	outputPulled.close();
+	    	}
 	    	outputStatus.close();
-
-    		// clear activelist file
-	    	FileOutputStream outputActive = openFileOutput(activeListFile, Context.MODE_PRIVATE);
-    		outputActive.write("\n".getBytes());
-    		outputActive.close();
-    		
-    		// clear pulledlist file
-	    	FileOutputStream outputPulled = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
-	    	outputPulled.write("\n".getBytes());
-	    	outputPulled.close();
 	    	
     	} catch (FileNotFoundException e) {
     		e.printStackTrace();
