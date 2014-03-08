@@ -371,16 +371,24 @@ GooglePlayServicesClient.OnConnectionFailedListener
     
     public void saveLoginStatus(String user){
     	try {
-    		FileOutputStream out = openFileOutput(loginStatusFile, Context.MODE_PRIVATE);
-    		//write place its to file
+    		FileOutputStream outputStatus = openFileOutput(loginStatusFile, Context.MODE_PRIVATE);
+
+    		outputStatus.write((Boolean.toString(LoginActivity.loginActivity.logined) + "\n").getBytes());
+	    	if(user != null){
+	    		outputStatus.write(user.getBytes());
+			}
+	    	outputStatus.close();
+
+    		// clear activelist file
+	    	FileOutputStream outputActive = openFileOutput(activeListFile, Context.MODE_PRIVATE);
+    		outputActive.write("\n".getBytes());
+    		outputActive.close();
     		
-    		out.write((Boolean.toString(LoginActivity.loginActivity.logined) + "\n").getBytes());
-    	if(user == null){
-			out.write("\n".getBytes());
-		}else{
-    		out.write(user.getBytes());
-		}
-    		out.close();
+    		// clear pulledlist file
+	    	FileOutputStream outputPulled = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
+	    	outputPulled.write("\n".getBytes());
+	    	outputPulled.close();
+	    	
     	} catch (FileNotFoundException e) {
     		e.printStackTrace();
     	} catch (IOException e) {
