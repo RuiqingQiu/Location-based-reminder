@@ -90,26 +90,26 @@ public class RegisterController {
 //				}
 				checkDuplicateUsername(registerview.getUsername().getText().toString());
 				if(pass){
-			    try {
-			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			      nameValuePairs.add(new BasicNameValuePair("User",
-			    		  registerview.getUsername().getText().toString()));
-			      nameValuePairs.add(new BasicNameValuePair("password",
-			    		  EncryptUtils.encode(registerview.getPassword().getText().toString())));
-			      nameValuePairs.add(new BasicNameValuePair("action",
-				          "put"));
-			      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			 
-			      HttpResponse response = client.execute(post);
-			      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			      String line = "";
-			      while ((line = rd.readLine()) != null) {
-			        Log.d("hello", line);
-			      }
-
-			    } catch (IOException e) {
-			    	Log.d("hello", "IOException while trying to conect to GAE");
-			    }
+				    try {
+				      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+				      nameValuePairs.add(new BasicNameValuePair("User",
+				    		  registerview.getUsername().getText().toString()));
+				      nameValuePairs.add(new BasicNameValuePair("password",
+				    		  EncryptUtils.encode(registerview.getPassword().getText().toString())));
+				      nameValuePairs.add(new BasicNameValuePair("action",
+					          "put"));
+				      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+				 
+				      HttpResponse response = client.execute(post);
+				      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+				      String line = "";
+				      while ((line = rd.readLine()) != null) {
+				        Log.d("hello", line);
+				      }
+	
+				    } catch (IOException e) {
+				    	Log.d("hello", "IOException while trying to conect to GAE");
+				    }
 				}//@
 				dialog.dismiss();
 			}

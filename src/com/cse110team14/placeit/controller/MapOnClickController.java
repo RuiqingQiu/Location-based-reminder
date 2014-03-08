@@ -258,7 +258,7 @@ public class MapOnClickController {
 
 			    try {
 			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			      nameValuePairs.add(new BasicNameValuePair("PlaceIts",
+			      nameValuePairs.add(new BasicNameValuePair("title",
 			    		  tmp.getTitle()));
 			      nameValuePairs.add(new BasicNameValuePair("description",
 			    		  tmp.getDescription()));
@@ -289,7 +289,7 @@ public class MapOnClickController {
 			      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			      String line = "";
 			      while ((line = rd.readLine()) != null) {
-			        Log.d("hello", line);
+			        Log.e("hello", line);
 			      }
 
 			    } catch (IOException e) {

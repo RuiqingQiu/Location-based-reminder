@@ -115,7 +115,9 @@ public class ActiveListActivity<activeListView> extends Activity {
 								MainActivity.pullDown.add(clicked);
 								sorted.remove(clicked);
 								MainActivity.activeList.remove(clicked);
-
+								//Set the list type to be 2 to indicate pulled down
+								clicked.setListType("2");
+								UpdatePlaceItsOnServer.postPlaceIts(clicked);
 								Toast.makeText(
 										ActiveListActivity.this,
 										"Item \""
@@ -142,7 +144,8 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 						sorted.remove(clicked);
 						MainActivity.activeList.remove(clicked);
-
+						clicked.setListType("3");
+						UpdatePlaceItsOnServer.postPlaceIts(clicked);
 						Toast.makeText(
 								ActiveListActivity.this,
 								"Item \"" + clicked.getTitle()
