@@ -22,10 +22,13 @@ import android.widget.Toast;
 
 import com.cse110team14.placeit.MainActivity;
 import com.cse110team14.placeit.R;
+import com.cse110team14.placeit.UpdatePlaceItsOnServer;
 import com.cse110team14.placeit.R.id;
 import com.cse110team14.placeit.R.layout;
+import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
 import com.cse110team14.placeit.util.DownloadTask;
+import com.cse110team14.placeit.util.MultiSelectionSpinner;
 import com.cse110team14.placeit.view.MapView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -250,11 +253,66 @@ public class MapButtonController {
 			          PlaceIt tmp = new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime);
 			          tmp.setPlaceItType(placeItType);
 			          MainActivity.activeList.add(tmp);
+			          //Post data on to the server
+			          tmp.setListType("1");
+					  UpdatePlaceItsOnServer.postPlaceIts(tmp);
 			          MainActivity.marker = MainActivity.mMarkers.iterator();
 			          MainActivity.map.moveCamera(CameraUpdateFactory.newLatLngZoom(position,17));
 		              MainActivity.map.animateCamera(CameraUpdateFactory.zoomIn());
 		        	}
 		        });//End of positive button
+		        MainActivity.alert.setNeutralButton("Create Category PlaceIts", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						
+						  MainActivity.alert= new AlertDialog.Builder(context);
+				        
+				          MainActivity.alert.setTitle("Create A Category PlaceIt");
+						  MultiSelectionSpinner spinner;
+						  LayoutInflater inflater = MainActivity.mainActivity.getLayoutInflater();
+					      final View view = inflater.inflate(R.layout.create_category_placeits, null);
+						  MainActivity.mainActivity.setContentView(R.layout.create_category_placeits);
+						  String[] array = { "one", "two", "three" };
+						  spinner = (MultiSelectionSpinner)view.findViewById(R.id.category_spinner);
+						  spinner.setItems(array);
+						  MainActivity.alert.setView(view);	
+						  
+						  
+						  MainActivity.alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
+					        	@SuppressLint("DefaultLocale")
+								public void onClick(DialogInterface dialog, int whichButton) {
+				
+					        		String placeItTitle = title.getText().toString();
+					        		if(placeItTitle.isEmpty()){
+						        	  AlertDialog.Builder temp = initializeAlert("No Title Entered", "Please enter a title :)");
+					     		      temp.show();
+					     		      return;
+					        		}
+					        		String placeItDescription = description.getText().toString();
+					        		if(placeItDescription.isEmpty()){
+						        	  AlertDialog.Builder temp = initializeAlert("No Description Entered", "Please enter a description :)");
+					     		      temp.show();
+					     		      return;
+					        		}
+					        		String dateToBeReminded = (date.getMonth()+1) + "/" + date.getDayOfMonth() + "/" + date.getYear();	          
+					        		String currentDateTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+						          
+					        		//Check if the date is valid
+					        		if (checkDate(dateToBeReminded) == false){
+					        			AlertDialog.Builder temp = initializeAlert("Enteted Date is not valid", "Please enter a valid date :)");
+					        			temp.show();
+					        			return;
+					        		}
+						          String [] categories = new String[]{"1","2","3"};
+						          
+						          //TODO
+						          CPlaceIts tmp = new CPlaceIts(placeItTitle, placeItDescription ,currentDateTime, dateToBeReminded, categories);
+						          MainActivity.cActiveList.add(tmp);
+					        	}
+					        });//End of positive button
+					}
+				});
 		        MainActivity.alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 						  public void onClick(DialogInterface dialog, int whichButton) {
 						  }

@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import com.cse110team14.placeit.R;
 import com.cse110team14.placeit.controller.MapButtonController;
 import com.cse110team14.placeit.controller.MapOnClickController;
+import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
 import com.cse110team14.placeit.util.DownloadTask;
 import com.cse110team14.placeit.util.GeocodeJSONParser;
@@ -108,7 +109,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	public static GoogleMap map;
 	public static List<PlaceIt> activeList = new ArrayList<PlaceIt>();
 	public static List<PlaceIt> pullDown = new ArrayList<PlaceIt>();
-	
+	public static List<CPlaceIts> cActiveList = new ArrayList<CPlaceIts>();
+	public static List<CPlaceIts> cPullDownList = new ArrayList<CPlaceIts>();
 	//This is for getting the view of the activity
 	public static MainActivity mainActivity;
 	public static CancelableCallback cancelableCallback;
@@ -206,8 +208,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
         //readFileToList(activeListFile, activeList);
         //readFileToList(pulldownListFile, pullDown);
         
-        activeList = DownloadUserData.loadDataToActiveList(LoginActivity.username);
-        pullDown = DownloadUserData.loadDataToPullList(LoginActivity.username);
+        activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
+        pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
         Log.e("hello",""+activeList.size());
         // Getting reference to EditText
        
@@ -283,8 +285,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onStart();
         mLocationClient.connect();
         MapOnClickController mp = new MapOnClickController(context);
-        activeList = DownloadUserData.loadDataToActiveList(LoginActivity.username);
-        pullDown = DownloadUserData.loadDataToPullList(LoginActivity.username);
+        activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
+        pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
     }
     
     //Return the ActiveList
@@ -476,9 +478,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
      * the map has set up, if not create a map based on the fragment in the xml file
      **/
     private void setUpMapIfNeeded() {
-        if (map != null) {
-            return;
-        }
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         if (map == null) {
             return;
