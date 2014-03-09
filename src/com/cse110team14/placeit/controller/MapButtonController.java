@@ -304,7 +304,8 @@ public class MapButtonController {
 					        			temp.show();
 					        			return;
 					        		}
-						          String [] categories = new String[3];
+						          String [] categories = new String[]{"1","2","3"};
+						          
 						          //TODO
 						          CPlaceIts tmp = new CPlaceIts(placeItTitle, placeItDescription ,currentDateTime, dateToBeReminded, categories);
 						          MainActivity.cActiveList.add(tmp);
