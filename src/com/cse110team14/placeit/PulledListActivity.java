@@ -135,6 +135,8 @@ public class PulledListActivity extends Activity {
 						sorted.remove(clicked);
 						MainActivity.pullDown.remove(clicked);
 
+						clicked.setListType("3");
+						UpdatePlaceItsOnServer.postPlaceIts(clicked);
 						Toast.makeText(
 								PulledListActivity.this,
 								"Item \""
@@ -180,7 +182,8 @@ public class PulledListActivity extends Activity {
 						MainActivity.pullDown.remove(clicked);
 						clicked.setDatePosted();
 						MainActivity.activeList.add(clicked);
-
+						clicked.setListType("1");
+						UpdatePlaceItsOnServer.postPlaceIts(clicked);
 						Toast.makeText(
 								PulledListActivity.this,
 								"Item is now active",
@@ -201,7 +204,8 @@ public class PulledListActivity extends Activity {
 						clicked.setSneezeType(3);
 						clicked.setDatePosted();
 						MainActivity.activeList.add(clicked);
-
+						clicked.setListType("1");
+						UpdatePlaceItsOnServer.postPlaceIts(clicked);
 						Toast.makeText(
 								PulledListActivity.this,
 								"Item will be active 45 minutes later.",
@@ -221,6 +225,8 @@ public class PulledListActivity extends Activity {
 				clicked.setSneezeType(2);
 				clicked.setDatePosted();
 				MainActivity.activeList.add(clicked);
+				clicked.setListType("1");
+				UpdatePlaceItsOnServer.postPlaceIts(clicked);
 							
 				Toast.makeText(
 						PulledListActivity.this,

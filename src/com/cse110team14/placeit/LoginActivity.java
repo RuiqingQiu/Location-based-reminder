@@ -29,7 +29,7 @@ public class LoginActivity extends Activity {
 		LoginView lv = new LoginView();
 		LoginController lc = new LoginController(lv, context);
 		logined = readLoginStatus();
-		if( logined == true){
+		if(logined == true){
 			Intent myIntent = new Intent(
 					LoginActivity.this,
 					MainActivity.class);
@@ -38,14 +38,23 @@ public class LoginActivity extends Activity {
 	}
 	
 	public boolean readLoginStatus() {
-		String loginstatus = "";
-		String username ="";
+		String loginstatus = Boolean.toString(false);
+		String username = "";
+		String str = "";
 		try {
 			FileInputStream in = openFileInput(loginStatusFile);
 			InputStreamReader isr = new InputStreamReader(in);
 			BufferedReader reader = new BufferedReader(isr);
-			loginstatus = reader.readLine();
-			username = reader.readLine();	
+			str = reader.readLine();
+//			username = reader.readLine();
+			String []splited = str.split("###");
+		 	loginstatus = splited[0];
+		 	if(splited.length > 1){
+		 	username = splited[1];
+		 	}
+			in.close();
+			isr.close();
+			reader.close();
 			Log.e("SOS", loginstatus);
 			Log.e("SOS", "user name is " + username);
 		} catch (FileNotFoundException e) {
