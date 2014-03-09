@@ -174,18 +174,12 @@ GooglePlayServicesClient.OnConnectionFailedListener
 			@Override
 			public void onClick(View v) {  	
 				try {
-//					boolean b = deleteFile(activeListFile);
-//					Log.e("delete?", Boolean.toString(b));
-//					deleteFile(pulldownListFile);
-//					FileOutputStream outActive = openFileOutput(activeListFile, Context.MODE_PRIVATE);
 					PrintWriter writer = new PrintWriter(activeListFile, "UTF-8");
 					writer.print("");
 					writer.close();
 					PrintWriter writer1 = new PrintWriter(pulldownListFile, "UTF-8");
 					writer1.print("");
 					writer1.close();
-//					outActive.
-//					FileOutputStream outPulled = openFileOutput(file, Context.MODE_PRIVATE);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
