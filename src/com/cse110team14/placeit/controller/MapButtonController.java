@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.cse110team14.placeit.MainActivity;
 import com.cse110team14.placeit.R;
+import com.cse110team14.placeit.UpdatePlaceItsOnServer;
 import com.cse110team14.placeit.R.id;
 import com.cse110team14.placeit.R.layout;
 import com.cse110team14.placeit.model.CPlaceIts;
@@ -252,6 +253,9 @@ public class MapButtonController {
 			          PlaceIt tmp = new PlaceIt(placeItTitle, placeItDescription, markerColor, m.getPosition() ,dateToBeReminded, currentDateTime);
 			          tmp.setPlaceItType(placeItType);
 			          MainActivity.activeList.add(tmp);
+			          //Post data on to the server
+			          tmp.setListType("1");
+					  UpdatePlaceItsOnServer.postPlaceIts(tmp);
 			          MainActivity.marker = MainActivity.mMarkers.iterator();
 			          MainActivity.map.moveCamera(CameraUpdateFactory.newLatLngZoom(position,17));
 		              MainActivity.map.animateCamera(CameraUpdateFactory.zoomIn());
