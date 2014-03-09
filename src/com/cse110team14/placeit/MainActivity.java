@@ -79,6 +79,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -157,6 +158,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+    	//strict mode for internet access
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
+		
         mainActivity = this;
         cancelableCallback = this;
         setUpMapIfNeeded();
@@ -164,14 +170,28 @@ GooglePlayServicesClient.OnConnectionFailedListener
         test = (Button)findViewById(R.id.test);
         //TODO: delete
         test.setOnClickListener(new OnClickListener(){
-
+        	
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v) {  	
+				try {
+					PrintWriter writer = new PrintWriter(activeListFile, "UTF-8");
+					writer.print("");
+					writer.close();
+					PrintWriter writer1 = new PrintWriter(pulldownListFile, "UTF-8");
+					writer1.print("");
+					writer1.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
 				LoginActivity.loginActivity.logined = false;
 				//TODO save to activeListFile.dat
 				saveLoginStatus("");
 				startActivity(myIntent);
+				
+				
+				
 			}
         	
         });
@@ -183,8 +203,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
         map.setInfoWindowAdapter(new PlaceItsInfoWindow(getLayoutInflater().inflate(R.layout.placeits_info_window, null)));
         
         //When the app is opened, read in the file and populate the placeit list
-        readFileToList(activeListFile, activeList);
-        readFileToList(pulldownListFile, pullDown);
+        //readFileToList(activeListFile, activeList);
+        //readFileToList(pulldownListFile, pullDown);
+        
+        activeList = DownloadUserData.loadDataToActiveList(LoginActivity.username);
+        pullDown = DownloadUserData.loadDataToPullList(LoginActivity.username);
         Log.e("hello",""+activeList.size());
         // Getting reference to EditText
        
@@ -260,6 +283,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onStart();
         mLocationClient.connect();
         MapOnClickController mp = new MapOnClickController(context);
+        activeList = DownloadUserData.loadDataToActiveList(LoginActivity.username);
+        pullDown = DownloadUserData.loadDataToPullList(LoginActivity.username);
     }
     
     //Return the ActiveList
@@ -326,6 +351,9 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				readStringToList(readString, list);
 				readString = reader.readLine();
 			}
+			in.close(); //@@@@@
+			isr.close(); //
+			reader.close(); //
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -372,21 +400,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	try {
     		FileOutputStream outputStatus = openFileOutput(loginStatusFile, Context.MODE_PRIVATE);
 
-    		outputStatus.write((Boolean.toString(LoginActivity.loginActivity.logined) + "\n").getBytes());
-	    	if(user != null){
-	    		outputStatus.write(user.getBytes());
-			}
-	    	else{
-	    		// clear activelist file
-		    	FileOutputStream outputActive = openFileOutput(activeListFile, Context.MODE_PRIVATE);
-	    		outputActive.write("\n".getBytes());
-	    		outputActive.close();
-	    		
-	    		// clear pulledlist file
-		    	FileOutputStream outputPulled = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
-		    	outputPulled.write("\n".getBytes());
-		    	outputPulled.close();
-	    	}
+    		outputStatus.write((Boolean.toString(LoginActivity.loginActivity.logined) + "###" + user + "\n").getBytes());
 	    	outputStatus.close();
 	    	
     	} catch (FileNotFoundException e) {

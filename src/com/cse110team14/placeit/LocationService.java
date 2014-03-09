@@ -19,6 +19,7 @@ import com.cse110team14.*;
 import com.cse110team14.placeit.controller.LoginController;
 import com.cse110team14.placeit.controller.MapOnClickController;
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.util.PlacesTask;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -179,7 +180,7 @@ public class LocationService extends Service implements LocationListener,
 						MainActivity.pullDown.add(pi);
 						//Pi is list type 2 meaning pulled down
 						pi.setListType("2");
-						postPlaceIts(pi);
+						UpdatePlaceItsOnServer.postPlaceIts(pi);
 					} else if (pi.getSneezeType() == 2) {
 						c1 = pi.getDateRemindedToCalendar();
 						previous = c1.getTimeInMillis();
@@ -188,6 +189,9 @@ public class LocationService extends Service implements LocationListener,
 							createNotification(null, pi);
 							MainActivity.activeList.remove(pi);
 							MainActivity.pullDown.add(pi);
+							//Pi is list type 2 meaning pulled down
+							pi.setListType("2");
+							UpdatePlaceItsOnServer.postPlaceIts(pi);
 						}
 					} else {
 						c1 = pi.getDateRemindedToCalendar();
@@ -197,11 +201,28 @@ public class LocationService extends Service implements LocationListener,
 							createNotification(null, pi);
 							MainActivity.activeList.remove(pi);
 							MainActivity.pullDown.add(pi);
+							//Pi is list type 2 meaning pulled down
+							pi.setListType("2");
+							UpdatePlaceItsOnServer.postPlaceIts(pi);
 						}
 					}
 				}
 			}
 		}
+		//iterate through categorical place its like above
+		//check if near Place for categorical place it.
+        /*StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        sb.append("location="+myCurrentLocation.getLatitude()+","+myCurrentLocation.getLongitude());
+        sb.append("&radius=880");
+        sb.append("&types="+type);
+        sb.append("&sensor=true");
+        sb.append("&key=YOUR_API_KEY");
+
+        // Creating a new non-ui thread task to download json data
+        PlaceParserTask placesTask = new PlacesTask();
+
+        // Invokes the "doInBackground()" method of the class PlaceTask
+        placesTask.execute(sb.toString());*/
 
 		// This part is for checking if the placeit in the pulldown lists need
 		// to be put back
@@ -226,6 +247,10 @@ public class LocationService extends Service implements LocationListener,
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
+					
 				}
 				break;
 			// One week
@@ -244,6 +269,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 				}
 				break;
 
@@ -263,6 +291,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 				}
 				break;
 			// Three week
@@ -281,6 +312,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 				}
 				break;
 			// One Month
@@ -299,6 +333,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 				}
 				break;
 			}
@@ -363,60 +400,5 @@ public class LocationService extends Service implements LocationListener,
 		noti.flags |= Notification.FLAG_AUTO_CANCEL;
 		notificationManager.notify(notifyID, noti);
 	}
-	
-	
-	private void postPlaceIts(PlaceIt p) {
-		final PlaceIt tmp = p;
-		Thread t = new Thread() {
-
-			public void run() {
-				HttpClient client = new DefaultHttpClient();
-				HttpPost post = new HttpPost(MapOnClickController.PLACEITS_URL);
-
-			    try {
-			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			      nameValuePairs.add(new BasicNameValuePair("PlaceIts",
-			    		  tmp.getTitle()));
-			      nameValuePairs.add(new BasicNameValuePair("description",
-			    		  tmp.getDescription()));
-			      nameValuePairs.add(new BasicNameValuePair("postDate",
-			    		  tmp.getDate()));
-			      nameValuePairs.add(new BasicNameValuePair("dateToBeReminded",
-			    		  tmp.getDateReminded()));
-			      nameValuePairs.add(new BasicNameValuePair("color",
-			    		  tmp.getColor()));
-			      //This is always a regular placeit
-			      nameValuePairs.add(new BasicNameValuePair("type",
-			    		  "1"));
-			      nameValuePairs.add(new BasicNameValuePair("location",
-			    		  tmp.getLocation().toString()));
-			      nameValuePairs.add(new BasicNameValuePair("placeitType",
-			    		  Integer.toString(tmp.getPlaceItType())));
-			      nameValuePairs.add(new BasicNameValuePair("sneezeType",
-			    		  Integer.toString(tmp.getSneezeType())));
-			      nameValuePairs.add(new BasicNameValuePair("user",
-			    		  LoginActivity.loginActivity.username));
-			      nameValuePairs.add(new BasicNameValuePair("listType",
-			    		  tmp.getListType()));
-			      nameValuePairs.add(new BasicNameValuePair("action",
-				          "put"));
-			      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			 
-			      HttpResponse response = client.execute(post);
-			      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			      String line = "";
-			      while ((line = rd.readLine()) != null) {
-			        Log.d("hello", line);
-			      }
-
-			    } catch (IOException e) {
-			    	Log.d("hello", "IOException while trying to conect to GAE");
-			    }
-			}
-		};
-		t.start();
-	}
-	
-	
 	
 }
