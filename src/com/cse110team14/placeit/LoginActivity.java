@@ -45,7 +45,9 @@ public class LoginActivity extends Activity {
 			InputStreamReader isr = new InputStreamReader(in);
 			BufferedReader reader = new BufferedReader(isr);
 			loginstatus = reader.readLine();
-			username = reader.readLine();	
+			username = reader.readLine();
+			in.close();
+			isr.close();
 			Log.e("SOS", loginstatus);
 			Log.e("SOS", "user name is " + username);
 		} catch (FileNotFoundException e) {

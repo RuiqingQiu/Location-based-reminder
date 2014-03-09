@@ -164,14 +164,34 @@ GooglePlayServicesClient.OnConnectionFailedListener
         test = (Button)findViewById(R.id.test);
         //TODO: delete
         test.setOnClickListener(new OnClickListener(){
-
+        	
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v) {  	
+				try {
+//					boolean b = deleteFile(activeListFile);
+//					Log.e("delete?", Boolean.toString(b));
+//					deleteFile(pulldownListFile);
+//					FileOutputStream outActive = openFileOutput(activeListFile, Context.MODE_PRIVATE);
+					PrintWriter writer = new PrintWriter(activeListFile, "UTF-8");
+					writer.print("");
+					writer.close();
+					PrintWriter writer1 = new PrintWriter(pulldownListFile, "UTF-8");
+					writer1.print("");
+					writer1.close();
+//					outActive.
+//					FileOutputStream outPulled = openFileOutput(file, Context.MODE_PRIVATE);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
 				LoginActivity.loginActivity.logined = false;
 				//TODO save to activeListFile.dat
 				saveLoginStatus("");
 				startActivity(myIntent);
+				
+				
+				
 			}
         	
         });
@@ -327,6 +347,9 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				readStringToList(readString, list);
 				readString = reader.readLine();
 			}
+			in.close(); //@@@@@
+			isr.close(); //
+			reader.close(); //
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -373,21 +396,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	try {
     		FileOutputStream outputStatus = openFileOutput(loginStatusFile, Context.MODE_PRIVATE);
 
-    		outputStatus.write((Boolean.toString(LoginActivity.loginActivity.logined) + "\n").getBytes());
-	    	if(user != null){
-	    		outputStatus.write(user.getBytes());
-			}
-	    	else{
-	    		// clear activelist file
-		    	FileOutputStream outputActive = openFileOutput(activeListFile, Context.MODE_PRIVATE);
-	    		outputActive.write("\n".getBytes());
-	    		outputActive.close();
-	    		
-	    		// clear pulledlist file
-		    	FileOutputStream outputPulled = openFileOutput(pulldownListFile, Context.MODE_PRIVATE);
-		    	outputPulled.write("\n".getBytes());
-		    	outputPulled.close();
-	    	}
+    		outputStatus.write((Boolean.toString(LoginActivity.loginActivity.logined) + "###" + user + "\n").getBytes());
 	    	outputStatus.close();
 	    	
     	} catch (FileNotFoundException e) {
