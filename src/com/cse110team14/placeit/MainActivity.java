@@ -477,9 +477,6 @@ GooglePlayServicesClient.OnConnectionFailedListener
      * the map has set up, if not create a map based on the fragment in the xml file
      **/
     private void setUpMapIfNeeded() {
-        if (map != null) {
-            return;
-        }
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         if (map == null) {
             return;

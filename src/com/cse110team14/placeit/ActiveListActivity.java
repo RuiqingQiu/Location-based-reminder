@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.model.SimplePlaceIt;
+import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.util.CustomComparator;
 
 import android.app.Activity;
@@ -26,12 +28,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ActiveListActivity<activeListView> extends Activity {
-	private Iterator<PlaceIt> piIterator;
-	private List<PlaceIt> sorted;
+	private Iterator<SimplePlaceIt> piIterator;
+	private List<SimplePlaceIt> sorted;
 
 	List<HashMap<String, String>> activeListMap;
 
-	private PlaceIt clicked;
+	private SimplePlaceIt clicked;
 	private int id;
 
 	/**
@@ -49,7 +51,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 		super.onCreate(savedInstanceState);
 
-		sorted = new ArrayList<PlaceIt>();
+		sorted = new ArrayList<SimplePlaceIt>();
 
 		final List<PlaceIt> active = MainActivity.getActiveList();
 		for (Iterator<PlaceIt> i = active.iterator(); i.hasNext();)
@@ -77,9 +79,19 @@ public class ActiveListActivity<activeListView> extends Activity {
 
 				ActiveListActivity.this.id = (int) id;
 				clicked = sorted.get((int) id);
-
-				Dialog detailsDialog = createDetailsDialog();
-				detailsDialog.show();
+				//Regular placeit
+				if(clicked.getRorC() == 1){
+					clicked = (PlaceIt)sorted.get((int)id);
+					Dialog detailsDialog = createDetailsDialog(clicked);
+					detailsDialog.show();
+				}
+				//category placeit
+				else if(clicked.getRorC() == 2)
+				{
+					clicked = (CPlaceIts)sorted.get((int)id);
+					//Dialog detailsDialog = createDetailsDialog();
+					//detailsDialog.show();
+				}
 			}
 		});
 	}
@@ -92,7 +104,8 @@ public class ActiveListActivity<activeListView> extends Activity {
 	 * 
 	 * @return the dialog showing actions and details of a place-it
 	 */
-	public Dialog createDetailsDialog() {
+	public Dialog createDetailsDialog(SimplePlaceIt p1) {
+		final PlaceIt clicked = (PlaceIt) p1;
 		Dialog dia = new AlertDialog.Builder(ActiveListActivity.this)
 				.setTitle("Title: " + clicked.getTitle())
 				.setItems(
@@ -107,11 +120,9 @@ public class ActiveListActivity<activeListView> extends Activity {
 						null)
 				.setPositiveButton("Move To Pulled-Down",
 						new OnClickListener() {
-
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-
 								MainActivity.pullDown.add(clicked);
 								sorted.remove(clicked);
 								MainActivity.activeList.remove(clicked);
@@ -167,7 +178,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 	 */
 	public void refresh() {
 		activeListMap = new ArrayList<HashMap<String, String>>();
-		for (PlaceIt curr : sorted) {
+		for (SimplePlaceIt curr : sorted) {
 			HashMap<String, String> map = new HashMap<String, String>();
 
 			map.put("ItemTitle", "Title: " + curr.getTitle());
