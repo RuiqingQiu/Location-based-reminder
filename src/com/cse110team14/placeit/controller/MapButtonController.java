@@ -260,13 +260,18 @@ public class MapButtonController {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+						
+						  MainActivity.alert= new AlertDialog.Builder(context);
+				        
+				          MainActivity.alert.setTitle("Create A Category PlaceIt");
 						  MultiSelectionSpinner spinner;
 						  LayoutInflater inflater = MainActivity.mainActivity.getLayoutInflater();
-					      final View view = inflater.inflate(R.layout.create_placeits, null);
+					      final View view = inflater.inflate(R.layout.create_category_placeits, null);
 						  MainActivity.mainActivity.setContentView(R.layout.create_category_placeits);
 						  String[] array = { "one", "two", "three" };
 						  spinner = (MultiSelectionSpinner)view.findViewById(R.id.category_spinner);
 						  spinner.setItems(array);
+						  MainActivity.alert.setView(view);						  
 					}
 				});
 		        MainActivity.alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
