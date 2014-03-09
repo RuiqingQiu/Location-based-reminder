@@ -77,6 +77,7 @@ public class RegisterController {
 			public void run() {
 				HttpClient client = new DefaultHttpClient();
 				HttpPost post = new HttpPost(RegisterActivity.User_url);
+<<<<<<< HEAD
 			    try {
 			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			      nameValuePairs.add(new BasicNameValuePair("User",
@@ -99,6 +100,36 @@ public class RegisterController {
 			    }
 //				}//@
 			    
+=======
+				//TODO check reg_name exist or not
+				
+//				if (checkDuplicateUsername(registerview.getUsername().getText().toString())){
+//					pass = false;
+//				}
+				checkDuplicateUsername(registerview.getUsername().getText().toString());
+				if(pass){
+				    try {
+				      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+				      nameValuePairs.add(new BasicNameValuePair("User",
+				    		  registerview.getUsername().getText().toString()));
+				      nameValuePairs.add(new BasicNameValuePair("password",
+				    		  EncryptUtils.encode(registerview.getPassword().getText().toString())));
+				      nameValuePairs.add(new BasicNameValuePair("action",
+					          "put"));
+				      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+				 
+				      HttpResponse response = client.execute(post);
+				      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+				      String line = "";
+				      while ((line = rd.readLine()) != null) {
+				        Log.d("hello", line);
+				      }
+	
+				    } catch (IOException e) {
+				    	Log.d("hello", "IOException while trying to conect to GAE");
+				    }
+				}//@
+>>>>>>> 17f2678e933ade29bf14a6bc6b912373c5fa2e4a
 				dialog.dismiss();
 			}
 		};

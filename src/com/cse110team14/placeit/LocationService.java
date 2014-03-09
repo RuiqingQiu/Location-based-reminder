@@ -1,16 +1,30 @@
 package com.cse110team14.placeit;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
 import com.cse110team14.*;
+import com.cse110team14.placeit.controller.LoginController;
+import com.cse110team14.placeit.controller.MapOnClickController;
 import com.cse110team14.placeit.model.PlaceIt;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -163,6 +177,9 @@ public class LocationService extends Service implements LocationListener,
 						createNotification(null, pi);
 						MainActivity.activeList.remove(pi);
 						MainActivity.pullDown.add(pi);
+						//Pi is list type 2 meaning pulled down
+						pi.setListType("2");
+						UpdatePlaceItsOnServer.postPlaceIts(pi);
 					} else if (pi.getSneezeType() == 2) {
 						c1 = pi.getDateRemindedToCalendar();
 						previous = c1.getTimeInMillis();
@@ -171,6 +188,9 @@ public class LocationService extends Service implements LocationListener,
 							createNotification(null, pi);
 							MainActivity.activeList.remove(pi);
 							MainActivity.pullDown.add(pi);
+							//Pi is list type 2 meaning pulled down
+							pi.setListType("2");
+							UpdatePlaceItsOnServer.postPlaceIts(pi);
 						}
 					} else {
 						c1 = pi.getDateRemindedToCalendar();
@@ -180,6 +200,9 @@ public class LocationService extends Service implements LocationListener,
 							createNotification(null, pi);
 							MainActivity.activeList.remove(pi);
 							MainActivity.pullDown.add(pi);
+							//Pi is list type 2 meaning pulled down
+							pi.setListType("2");
+							UpdatePlaceItsOnServer.postPlaceIts(pi);
 						}
 					}
 				}
@@ -209,6 +232,10 @@ public class LocationService extends Service implements LocationListener,
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
+					
 				}
 				break;
 			// One week
@@ -227,6 +254,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 				}
 				break;
 
@@ -246,6 +276,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 				}
 				break;
 			// Three week
@@ -264,6 +297,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 				}
 				break;
 			// One Month
@@ -282,6 +318,9 @@ public class LocationService extends Service implements LocationListener,
 					pi.setDateReminded(""+ (c.get(Calendar.MONTH)+1) +"/" + c.get(Calendar.DAY_OF_MONTH) 
 							+ "/" + c.get(Calendar.YEAR));
 					MainActivity.activeList.add(pi);
+					//Change the server placeit status to be 1 as it's moved to active list
+					pi.setListType("1");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 				}
 				break;
 			}
@@ -346,4 +385,5 @@ public class LocationService extends Service implements LocationListener,
 		noti.flags |= Notification.FLAG_AUTO_CANCEL;
 		notificationManager.notify(notifyID, noti);
 	}
+	
 }

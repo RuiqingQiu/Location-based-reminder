@@ -7,6 +7,8 @@ public abstract class SimplePlaceIt {
 	protected String postDate;
 	protected String dateToBeReminded;
 	protected String color;
+	//List type 1 is in active and 2 is in pulleddown
+	protected String listType;
 
 	/**
 	 * Get method for title
@@ -34,4 +36,7 @@ public abstract class SimplePlaceIt {
 	 * @return the string representation of the color
 	 */
 	public abstract String getColor();
+	
+	public abstract void setListType(String type);
+	public abstract String getListType();
 }
