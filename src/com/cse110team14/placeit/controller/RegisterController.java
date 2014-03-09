@@ -32,6 +32,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,7 +41,7 @@ public class RegisterController {
 	private String TAG = "registerControl";
 	private RegisterView registerview;
 	private Context context;
-	private boolean pass = false;
+	private boolean registered = true;
 	public RegisterController(RegisterView registerview, Context context){
 		this.registerview = registerview;
 		this.context = context;
@@ -62,14 +63,7 @@ public class RegisterController {
 						AlertDialog.Builder alert = initializeAlert("Error", "Two password inputs are not consistant!");
 						alert.show();
 					}else{
-						postdata();
-						if(pass){
-;
-						Intent myIntent = new Intent(RegisterActivity.registerActivity.getApplicationContext(), LoginActivity.class);
-						RegisterActivity.registerActivity.startActivity(myIntent);
-						}else{
-						AlertDialog.Builder alert = initializeAlert("Error", "Username has already registered!");
-						alert.show();}
+						new CheckDuplicateUserTask().execute(RegisterActivity.User_url);
 					}
 				}
 	        	
@@ -83,13 +77,6 @@ public class RegisterController {
 			public void run() {
 				HttpClient client = new DefaultHttpClient();
 				HttpPost post = new HttpPost(RegisterActivity.User_url);
-				//TODO check reg_name exist or not
-				
-//				if (checkDuplicateUsername(registerview.getUsername().getText().toString())){
-//					pass = false;
-//				}
-				checkDuplicateUsername(registerview.getUsername().getText().toString());
-				if(pass){
 			    try {
 			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			      nameValuePairs.add(new BasicNameValuePair("User",
@@ -110,7 +97,8 @@ public class RegisterController {
 			    } catch (IOException e) {
 			    	Log.d("hello", "IOException while trying to conect to GAE");
 			    }
-				}//@
+//				}//@
+			    
 				dialog.dismiss();
 			}
 		};
@@ -119,47 +107,6 @@ public class RegisterController {
 		dialog.show();
 	}
 	
-	public void checkDuplicateUsername(String username){
-		HttpClient client = new DefaultHttpClient();
-		HttpGet request = new HttpGet(RegisterActivity.User_url);
-//		List<String> list = new ArrayList<String>();
-		try {
-			HttpResponse response = client.execute(request);
-			HttpEntity entity = response.getEntity();
-			String data = EntityUtils.toString(entity);
-			Log.d(TAG, data);
-			JSONObject myjson;
-	
-			try {
-				myjson = new JSONObject(data);
-				JSONArray array = myjson.getJSONArray("data");
-				for (int i = 0; i < array.length(); i++) {
-					JSONObject obj = array.getJSONObject(i);
-//					list.add(obj.get("name").toString());
-					if (username.equals(obj.get("name").toString())) {
-//						return true;
-						pass = true;
-					}
-				}
-	
-			} catch (JSONException e) {
-				Log.d(TAG, "Error in parsing JSON");
-			}
-	
-		} catch (ClientProtocolException e) {
-	
-			Log.d(TAG, "ClientProtocolException while trying to connect to GAE");
-		} catch (IOException e) {
-	
-			Log.d(TAG, "IOException while trying to connect to GAE");
-		}
-		
-//		for (int i = 0; i < list.size(); i += 2) {
-//			if (username.equals(list.get(i))) {
-//				return true;
-//			}
-//		}
-	}
 	
 	/**
      * Method to build a alert dialog for error condition, mainly used in user entries for
@@ -178,4 +125,67 @@ public class RegisterController {
   		        });
     	return tmp;
     }
+    
+	private class CheckDuplicateUserTask extends AsyncTask<String, Void, List<String>> {
+		@Override
+		protected List<String> doInBackground(String... url) {
+
+			HttpClient client = new DefaultHttpClient();
+			HttpGet request = new HttpGet(RegisterActivity.User_url);
+			List<String> list = new ArrayList<String>();
+			try {
+				HttpResponse response = client.execute(request);
+				HttpEntity entity = response.getEntity();
+				String data = EntityUtils.toString(entity);
+				Log.d(TAG, data);
+				JSONObject myjson;
+
+				try {
+					myjson = new JSONObject(data);
+					JSONArray array = myjson.getJSONArray("data");
+					for (int i = 0; i < array.length(); i++) {
+						JSONObject obj = array.getJSONObject(i);
+						list.add(obj.get("name").toString());
+					}
+
+				} catch (JSONException e) {
+
+					Log.d(TAG, "Error in parsing JSON");
+				}
+
+			} catch (ClientProtocolException e) {
+
+				Log.d(TAG,
+						"ClientProtocolException while trying to connect to GAE");
+			} catch (IOException e) {
+
+				Log.d(TAG, "IOException while trying to connect to GAE");
+			}
+			return list;
+		}
+
+		protected void onPostExecute(List<String> list) {
+			String username = registerview.getUsername().getText().toString();
+			registered = false;
+			for (int i = 0; i < list.size(); i++) {
+				if (username.equals(list.get(i))) {
+					
+					registered = true;
+				}
+				Log.e("register", username);
+				Log.e("register", list.get(i));
+			}
+			Log.e("registerd=", Boolean.toString(registered));
+			if(!registered){
+				postdata();
+				Intent myIntent = new Intent(RegisterActivity.registerActivity.getApplicationContext(), LoginActivity.class);
+				RegisterActivity.registerActivity.startActivity(myIntent);
+			}else{
+				AlertDialog.Builder alert = initializeAlert("Error", "Username has already registered!");
+				alert.show();
+				registered = false;
+			}
+		}
+
+	}
 }
