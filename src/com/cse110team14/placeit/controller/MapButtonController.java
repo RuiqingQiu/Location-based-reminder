@@ -26,6 +26,7 @@ import com.cse110team14.placeit.R.id;
 import com.cse110team14.placeit.R.layout;
 import com.cse110team14.placeit.model.PlaceIt;
 import com.cse110team14.placeit.util.DownloadTask;
+import com.cse110team14.placeit.util.MultiSelectionSpinner;
 import com.cse110team14.placeit.view.MapView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -255,6 +256,19 @@ public class MapButtonController {
 		              MainActivity.map.animateCamera(CameraUpdateFactory.zoomIn());
 		        	}
 		        });//End of positive button
+		        MainActivity.alert.setNeutralButton("Create Category PlaceIts", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						  MultiSelectionSpinner spinner;
+						  LayoutInflater inflater = MainActivity.mainActivity.getLayoutInflater();
+					      final View view = inflater.inflate(R.layout.create_placeits, null);
+						  MainActivity.mainActivity.setContentView(R.layout.create_category_placeits);
+						  String[] array = { "one", "two", "three" };
+						  spinner = (MultiSelectionSpinner)view.findViewById(R.id.category_spinner);
+						  spinner.setItems(array);
+					}
+				});
 		        MainActivity.alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 						  public void onClick(DialogInterface dialog, int whichButton) {
 						  }
