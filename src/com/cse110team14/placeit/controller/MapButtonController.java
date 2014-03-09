@@ -273,10 +273,11 @@ public class MapButtonController {
 						  LayoutInflater inflater = MainActivity.mainActivity.getLayoutInflater();
 					      final View view = inflater.inflate(R.layout.create_category_placeits, null);
 						  MainActivity.mainActivity.setContentView(R.layout.create_category_placeits);
-						  String[] array = { "one", "two", "three" };
+						  String[] array = { "one", "two", "three", "one", "two", "three", "one", "two", "three", "one", "two", "three", "one", "two", "three", "one", "two", "three"  };
 						  spinner = (MultiSelectionSpinner)view.findViewById(R.id.category_spinner);
+//						  spinner.setItems(array);
+						  MainActivity.alert.setView(view);
 						  spinner.setItems(array);
-						  MainActivity.alert.setView(view);	
 						  
 						  
 						  MainActivity.alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
@@ -304,8 +305,8 @@ public class MapButtonController {
 					        			temp.show();
 					        			return;
 					        		}
-						          String [] categories = new String[]{"1","2","3"};
-						          
+//					        	  String [] categories = new String[]{"1","2","3"};
+						          String [] categories = new String[3];
 						          //TODO
 						          CPlaceIts tmp = new CPlaceIts(placeItTitle, placeItDescription ,currentDateTime, dateToBeReminded, categories);
 						          MainActivity.cActiveList.add(tmp);
