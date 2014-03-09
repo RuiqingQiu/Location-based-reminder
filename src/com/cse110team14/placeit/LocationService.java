@@ -19,6 +19,7 @@ import com.cse110team14.*;
 import com.cse110team14.placeit.controller.LoginController;
 import com.cse110team14.placeit.controller.MapOnClickController;
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.util.PlacesTask;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -208,6 +209,20 @@ public class LocationService extends Service implements LocationListener,
 				}
 			}
 		}
+		//iterate through categorical place its like above
+		//check if near Place for categorical place it.
+        /*StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        sb.append("location="+myCurrentLocation.getLatitude()+","+myCurrentLocation.getLongitude());
+        sb.append("&radius=880");
+        sb.append("&types="+type);
+        sb.append("&sensor=true");
+        sb.append("&key=YOUR_API_KEY");
+
+        // Creating a new non-ui thread task to download json data
+        PlaceParserTask placesTask = new PlacesTask();
+
+        // Invokes the "doInBackground()" method of the class PlaceTask
+        placesTask.execute(sb.toString());*/
 
 		// This part is for checking if the placeit in the pulldown lists need
 		// to be put back

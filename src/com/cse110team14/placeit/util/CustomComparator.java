@@ -5,8 +5,9 @@ package com.cse110team14.placeit.util;
 import java.util.Comparator;
 
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.model.SimplePlaceIt;
 
-public class CustomComparator implements Comparator<PlaceIt> {
+public class CustomComparator implements Comparator<SimplePlaceIt> {
 
 	/**
 	 * compare 2 place-its by time to remind
@@ -19,7 +20,7 @@ public class CustomComparator implements Comparator<PlaceIt> {
 	 *         Calendar is after the other one.
 	 */
 	@Override
-	public int compare(PlaceIt lhs, PlaceIt rhs) {
+	public int compare(SimplePlaceIt lhs, SimplePlaceIt rhs) {
 		return lhs.getDateRemindedToCalendar().compareTo(
 				rhs.getDateRemindedToCalendar());
 	}

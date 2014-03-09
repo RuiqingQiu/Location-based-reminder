@@ -29,6 +29,7 @@ public class LoginActivity extends Activity {
 		LoginView lv = new LoginView();
 		LoginController lc = new LoginController(lv, context);
 		logined = readLoginStatus();
+		
 		if(logined == true){
 			Intent myIntent = new Intent(
 					LoginActivity.this,
