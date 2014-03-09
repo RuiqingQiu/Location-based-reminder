@@ -77,7 +77,6 @@ public class RegisterController {
 			public void run() {
 				HttpClient client = new DefaultHttpClient();
 				HttpPost post = new HttpPost(RegisterActivity.User_url);
-<<<<<<< HEAD
 			    try {
 			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			      nameValuePairs.add(new BasicNameValuePair("User",
@@ -97,18 +96,8 @@ public class RegisterController {
 
 			    } catch (IOException e) {
 			    	Log.d("hello", "IOException while trying to conect to GAE");
-			    }
-//				}//@
-			    
-=======
-				//TODO check reg_name exist or not
-				
-//				if (checkDuplicateUsername(registerview.getUsername().getText().toString())){
-//					pass = false;
-//				}
-				checkDuplicateUsername(registerview.getUsername().getText().toString());
-				if(pass){
-				    try {
+			    }				
+				 try {
 				      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 				      nameValuePairs.add(new BasicNameValuePair("User",
 				    		  registerview.getUsername().getText().toString()));
@@ -128,8 +117,6 @@ public class RegisterController {
 				    } catch (IOException e) {
 				    	Log.d("hello", "IOException while trying to conect to GAE");
 				    }
-				}//@
->>>>>>> 17f2678e933ade29bf14a6bc6b912373c5fa2e4a
 				dialog.dismiss();
 			}
 		};
