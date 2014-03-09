@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class DownloadUserData {
 	private static String TAG = "DownloadUserData";
-	public static List<PlaceIt> loadDataToActiveList(String username){
+	public static List<PlaceIt> loadRegularDataToActiveList(String username){
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(MapOnClickController.PLACEITS_URL);
 		List<PlaceIt> list = new ArrayList<PlaceIt>();
@@ -92,7 +92,7 @@ public class DownloadUserData {
 		return list;
 	}
 	
-	public static List<PlaceIt> loadDataToPullList(String username){
+	public static List<PlaceIt> loadRegularDataToPullList(String username){
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(MapOnClickController.PLACEITS_URL);
 		List<PlaceIt> list = new ArrayList<PlaceIt>();

@@ -208,8 +208,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
         //readFileToList(activeListFile, activeList);
         //readFileToList(pulldownListFile, pullDown);
         
-        activeList = DownloadUserData.loadDataToActiveList(LoginActivity.username);
-        pullDown = DownloadUserData.loadDataToPullList(LoginActivity.username);
+        activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
+        pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
         Log.e("hello",""+activeList.size());
         // Getting reference to EditText
        
@@ -286,8 +286,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onStart();
         mLocationClient.connect();
         MapOnClickController mp = new MapOnClickController(context);
-        activeList = DownloadUserData.loadDataToActiveList(LoginActivity.username);
-        pullDown = DownloadUserData.loadDataToPullList(LoginActivity.username);
+        activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
+        pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
     }
     
     //Return the ActiveList
