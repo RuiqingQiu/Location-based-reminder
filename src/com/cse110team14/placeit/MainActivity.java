@@ -79,6 +79,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -157,6 +158,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+    	//strict mode for internet access
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
+		
         mainActivity = this;
         cancelableCallback = this;
         setUpMapIfNeeded();
@@ -203,8 +209,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
         map.setInfoWindowAdapter(new PlaceItsInfoWindow(getLayoutInflater().inflate(R.layout.placeits_info_window, null)));
         
         //When the app is opened, read in the file and populate the placeit list
-        readFileToList(activeListFile, activeList);
-        readFileToList(pulldownListFile, pullDown);
+        //readFileToList(activeListFile, activeList);
+        //readFileToList(pulldownListFile, pullDown);
+        
+        activeList = DownloadUserData.loadDataToActiveList(LoginActivity.username);
+        pullDown = DownloadUserData.loadDataToPullList(LoginActivity.username);
         Log.e("hello",""+activeList.size());
         // Getting reference to EditText
        
@@ -281,6 +290,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onStart();
         mLocationClient.connect();
         MapOnClickController mp = new MapOnClickController(context);
+        activeList = DownloadUserData.loadDataToActiveList(LoginActivity.username);
+        pullDown = DownloadUserData.loadDataToPullList(LoginActivity.username);
     }
     
     //Return the ActiveList
