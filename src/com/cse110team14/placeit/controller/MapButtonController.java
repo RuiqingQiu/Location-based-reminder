@@ -314,11 +314,11 @@ public class MapButtonController {
 					        	}
 					        });//End of positive button
 						  	MainActivity.c_alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-							  public void onClick(DialogInterface dialog, int whichButton) {
-							  }
+								  public void onClick(DialogInterface dialog, int whichButton) {
+								  }
 							 
 						  	});
-						  	 MainActivity.c_alert.show();
+						  	MainActivity.c_alert.show();
 					}
 				});
 		        MainActivity.alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cse110team14.placeit.controller.MapOnClickController;
+import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
 import com.cse110team14.placeit.util.EncryptUtils;
 import com.google.android.gms.maps.model.LatLng;
@@ -62,18 +63,13 @@ public class DownloadUserData {
 					String type = obj.get("type").toString();
 				    String placeitType = obj.get("placeitType").toString(); 
 				    String sneezeType = obj.get("sneezeType").toString();
-				    //If it's type 1, regular placeit
-				    if(type.equals("1")){
-				    	PlaceIt p = new PlaceIt(title, description, color,location, dateToBeReminded, postDate);
-				    	p.setPlaceItType(Integer.parseInt(placeitType));
-				    	p.setSneezeType(Integer.parseInt(sneezeType));
-				    	p.setListType(listType);
-						list.add(p);
-						Log.e("userData", p.getTitle());
-				    }
-				    //If it's type 2, categorical placeit
-				    else{
-				    }
+
+				    PlaceIt p = new PlaceIt(title, description, color,location, dateToBeReminded, postDate);
+				    p.setPlaceItType(Integer.parseInt(placeitType));
+				    p.setSneezeType(Integer.parseInt(sneezeType));
+				    p.setListType(listType);
+					list.add(p);
+					Log.e("userData", p.getTitle());
 				}
 
 			} catch (JSONException e) {
@@ -141,6 +137,112 @@ public class DownloadUserData {
 				    //If it's type 2, categorical placeit
 				    else{
 				    }
+				}
+
+			} catch (JSONException e) {
+
+				Log.d(TAG, "Error in parsing JSON");
+			}
+
+		} catch (ClientProtocolException e) {
+
+			Log.d(TAG,
+					"ClientProtocolException while trying to connect to GAE");
+		} catch (IOException e) {
+
+			Log.d(TAG, "IOException while trying to connect to GAE");
+		}
+		return list;
+	}
+	
+	
+	public static List<CPlaceIts> loadCategoryDataToActiveList(String username){
+		HttpClient client = new DefaultHttpClient();
+		HttpGet request = new HttpGet(UpdatePlaceItsOnServer.CPLACEITS_URL);
+		List<CPlaceIts> list = new ArrayList<CPlaceIts>();
+		try {
+			HttpResponse response = client.execute(request);
+			HttpEntity entity = response.getEntity();
+			String data = EntityUtils.toString(entity);
+			JSONObject myjson;
+
+			try {
+				myjson = new JSONObject(data);
+				JSONArray array = myjson.getJSONArray("data");
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject obj = array.getJSONObject(i);
+					String user = obj.get("user").toString();
+					String listType = obj.get("listType").toString();
+					if(!username.equals(user) || !listType.equals("1") )
+						continue;
+					String title = obj.get("title").toString();
+					String description = obj.get("description").toString();
+					
+					String dateToBeReminded = obj.get("dateToBeReminded").toString();
+					String postDate = obj.get("postDate").toString();
+					String type = obj.get("type").toString();
+					String categories = obj.get("categories").toString();
+				    String []categoriesArray = categories.split("###");
+				    //If it's type 1, regular placeit
+				   
+				    CPlaceIts p = new CPlaceIts(title, description, postDate,
+				    			dateToBeReminded, categoriesArray);
+				    p.setListType(listType);
+					list.add(p);
+					Log.e("userData", p.getTitle());
+				   
+				}
+
+			} catch (JSONException e) {
+
+				Log.d(TAG, "Error in parsing JSON");
+			}
+
+		} catch (ClientProtocolException e) {
+
+			Log.d(TAG,
+					"ClientProtocolException while trying to connect to GAE");
+		} catch (IOException e) {
+
+			Log.d(TAG, "IOException while trying to connect to GAE");
+		}
+		return list;
+	}
+	
+	public static List<CPlaceIts> loadCategoryDataToPulldownList(String username){
+		HttpClient client = new DefaultHttpClient();
+		HttpGet request = new HttpGet(UpdatePlaceItsOnServer.CPLACEITS_URL);
+		List<CPlaceIts> list = new ArrayList<CPlaceIts>();
+		try {
+			HttpResponse response = client.execute(request);
+			HttpEntity entity = response.getEntity();
+			String data = EntityUtils.toString(entity);
+			JSONObject myjson;
+
+			try {
+				myjson = new JSONObject(data);
+				JSONArray array = myjson.getJSONArray("data");
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject obj = array.getJSONObject(i);
+					String user = obj.get("user").toString();
+					String listType = obj.get("listType").toString();
+					if(!username.equals(user) || !listType.equals("2") )
+						continue;
+					String title = obj.get("title").toString();
+					String description = obj.get("description").toString();
+					
+					String dateToBeReminded = obj.get("dateToBeReminded").toString();
+					String postDate = obj.get("postDate").toString();
+					String type = obj.get("type").toString();
+					String categories = obj.get("categories").toString();
+				    String []categoriesArray = categories.split("###");
+				    //If it's type 1, regular placeit
+				   
+				    CPlaceIts p = new CPlaceIts(title, description, postDate,
+				    			dateToBeReminded, categoriesArray);
+				    p.setListType(listType);
+					list.add(p);
+					Log.e("userData", p.getTitle());
 				}
 
 			} catch (JSONException e) {

@@ -211,6 +211,10 @@ GooglePlayServicesClient.OnConnectionFailedListener
         
         activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
         pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
+        
+        cActiveList = DownloadUserData.loadCategoryDataToActiveList(LoginActivity.username);
+    	cPullDownList = DownloadUserData.loadCategoryDataToPulldownList(LoginActivity.username);
+        
         Log.e("hello",""+activeList.size());
         // Getting reference to EditText
        

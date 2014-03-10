@@ -12,12 +12,12 @@ public class SimplePlaceIt {
 	protected String listType;
 	protected int RCType;
 
-	public SimplePlaceIt(String title, String description, String postDate, String dateToBeReminded){
+	public SimplePlaceIt(String title, String description, String postDate, String dateToBeReminded, int type){
 		this.title = title;
 		this.description = description;
 		this.postDate = postDate;
 		this.dateToBeReminded = dateToBeReminded;
-		RCType = 0;
+		RCType = type;
 	}
 	/**
 	 * Get method for title
