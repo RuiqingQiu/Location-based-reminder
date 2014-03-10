@@ -26,7 +26,7 @@ public class PlaceIt extends SimplePlaceIt {
 
 	public PlaceIt(String title, String description, String color,
 			LatLng location, String dateToBeReminded, String postDate) {
-		super(title, description, postDate, dateToBeReminded);
+		super(title, description, postDate, dateToBeReminded, 1);
 		this.location = location;
 		//Default to be 1, one time only placeit
 		this.placeitType = 1;

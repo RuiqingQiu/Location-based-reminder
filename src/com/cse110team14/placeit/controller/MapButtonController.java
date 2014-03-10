@@ -265,21 +265,21 @@ public class MapButtonController {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						
-						  MainActivity.alert= new AlertDialog.Builder(context);
+						  MainActivity.c_alert= new AlertDialog.Builder(context);
 				        
-				          MainActivity.alert.setTitle("Create A Category PlaceIt");
+				          MainActivity.c_alert.setTitle("Create A Category PlaceIt");
 						  MultiSelectionSpinner spinner;
 						  LayoutInflater inflater = MainActivity.mainActivity.getLayoutInflater();
 					      final View view = inflater.inflate(R.layout.create_category_placeits, null);
-						  MainActivity.mainActivity.setContentView(R.layout.create_category_placeits);
-						  String[] array = { "one", "two", "three" };
+						  String[] array = { "one", "two", "three", "one", "two", "three", "one", "two", "three", "one", "two", "three", "one", "two", "three", "one", "two", "three"  };
 						  spinner = (MultiSelectionSpinner)view.findViewById(R.id.category_spinner);
+						  MainActivity.c_alert.setView(view);
 						  spinner.setItems(array);
-						  MainActivity.alert.setView(view);	
 						  
-						  
-						  MainActivity.alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
+						  final EditText title = (EditText)view.findViewById(R.id.title);
+					      final EditText description = (EditText)view.findViewById(R.id.description);
+					      final DatePicker date = (DatePicker)view.findViewById(R.id.datePicker);
+						  MainActivity.c_alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
 					        	@SuppressLint("DefaultLocale")
 								public void onClick(DialogInterface dialog, int whichButton) {
 				
@@ -304,13 +304,21 @@ public class MapButtonController {
 					        			temp.show();
 					        			return;
 					        		}
-						          String [] categories = new String[]{"1","2","3"};
-						          
+					        	  String [] categories = new String[]{"1","2","3"};
+						          //String [] categories = new String[3];
 						          //TODO
 						          CPlaceIts tmp = new CPlaceIts(placeItTitle, placeItDescription ,currentDateTime, dateToBeReminded, categories);
 						          MainActivity.cActiveList.add(tmp);
+						          tmp.setListType("1");
+						          UpdatePlaceItsOnServer.postCPlaceIts(tmp);
 					        	}
 					        });//End of positive button
+						  	MainActivity.c_alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+								  public void onClick(DialogInterface dialog, int whichButton) {
+								  }
+							 
+						  	});
+						  	MainActivity.c_alert.show();
 					}
 				});
 		        MainActivity.alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

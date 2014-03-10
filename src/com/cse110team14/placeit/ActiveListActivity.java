@@ -54,9 +54,11 @@ public class ActiveListActivity<activeListView> extends Activity {
 		sorted = new ArrayList<SimplePlaceIt>();
 
 		final List<PlaceIt> active = MainActivity.getActiveList();
+		final List<CPlaceIts> c_active = MainActivity.cActiveList;
 		for (Iterator<PlaceIt> i = active.iterator(); i.hasNext();)
 			sorted.add(i.next());
-
+		for(Iterator<CPlaceIts> i = c_active.iterator(); i.hasNext();)
+			sorted.add(i.next());
 		Collections.sort(sorted, new CustomComparator());
 
 		setContentView(R.layout.activity_activelist);
@@ -89,8 +91,8 @@ public class ActiveListActivity<activeListView> extends Activity {
 				else if(clicked.getRorC() == 2)
 				{
 					clicked = (CPlaceIts)sorted.get((int)id);
-					//Dialog detailsDialog = createDetailsDialog();
-					//detailsDialog.show();
+					Dialog detailsDialog = createDetailsDialog(clicked);
+					detailsDialog.show();
 				}
 			}
 		});
@@ -105,8 +107,9 @@ public class ActiveListActivity<activeListView> extends Activity {
 	 * @return the dialog showing actions and details of a place-it
 	 */
 	public Dialog createDetailsDialog(SimplePlaceIt p1) {
-		final PlaceIt clicked = (PlaceIt) p1;
-		Dialog dia = new AlertDialog.Builder(ActiveListActivity.this)
+		if(p1.getRorC() == 1){
+			final PlaceIt clicked = (PlaceIt) p1;
+			Dialog dia = new AlertDialog.Builder(ActiveListActivity.this)
 				.setTitle("Title: " + clicked.getTitle())
 				.setItems(
 						new String[] {
@@ -166,7 +169,71 @@ public class ActiveListActivity<activeListView> extends Activity {
 						startActivity(getIntent());
 					}
 				}).create();
-		return dia;
+			return dia;
+		}
+		//If a C-PlaceIts is clicked
+		else{
+			final CPlaceIts clicked = (CPlaceIts) p1;
+			Dialog dia = new AlertDialog.Builder(ActiveListActivity.this)
+				.setTitle("Title: " + clicked.getTitle())
+				.setItems(
+						new String[] {
+								"Description: " + clicked.getDescription(),
+								"Date to be Reminded: "
+										+ clicked.getDateReminded(),
+								"Post Date and time: " + clicked.getDate(),
+								"Categories: " + clicked.getCategoriesToString() },
+						null)
+				.setPositiveButton("Move To Pulled-Down",
+						new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								MainActivity.cPullDownList.add(clicked);
+								sorted.remove(clicked);
+								MainActivity.activeList.remove(clicked);
+								//Set the list type to be 2 to indicate pulled down
+								clicked.setListType("2");
+								UpdatePlaceItsOnServer.postCPlaceIts(clicked);
+								Toast.makeText(
+										ActiveListActivity.this,
+										"Item \""
+												+ clicked.getTitle()
+												+ "\" is now moved to Pulled-Down list",
+										Toast.LENGTH_LONG).show();
+								finish();
+								startActivity(getIntent());
+							}
+						}).setNeutralButton("OK", new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(
+								ActiveListActivity.this,
+								"Reminding item \"" + clicked.getTitle()
+										+ "\" completed.", Toast.LENGTH_LONG)
+								.show();
+					}
+				}).setNegativeButton("Discard", new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+						sorted.remove(clicked);
+						MainActivity.activeList.remove(clicked);
+						clicked.setListType("3");
+						UpdatePlaceItsOnServer.postCPlaceIts(clicked);
+						Toast.makeText(
+								ActiveListActivity.this,
+								"Item \"" + clicked.getTitle()
+										+ "\" is now discarded.",
+								Toast.LENGTH_LONG).show();
+						finish();
+						startActivity(getIntent());
+					}
+				}).create();
+			return dia;
+		}
 	}
 
 	/**
