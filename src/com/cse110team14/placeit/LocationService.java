@@ -18,6 +18,7 @@ import org.apache.http.message.BasicNameValuePair;
 import com.cse110team14.*;
 import com.cse110team14.placeit.controller.LoginController;
 import com.cse110team14.placeit.controller.MapOnClickController;
+import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
 import com.cse110team14.placeit.util.PlacesTask;
 
@@ -59,6 +60,8 @@ public class LocationService extends Service implements LocationListener,
 	// Half a mile in meter
 	private int range = 804;
 	private long oneWeekInMillSec = 604800000;
+	
+	public static List<LatLng> possiblePlaces = new ArrayList<LatLng>();
 
 	public LocationService() {
 
@@ -328,18 +331,18 @@ public class LocationService extends Service implements LocationListener,
 		
 		//iterate through categorical place its like above
 		//check if near Place for categorical place it.
-		/*StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-		sb.append("location="+myCurrentLocation.getLatitude()+","+myCurrentLocation.getLongitude());
-		sb.append("&radius=880");
-		sb.append("&types="+type);
-		sb.append("&sensor=true");
-		sb.append("&key=YOUR_API_KEY");
-
-		// Creating a new non-ui thread task to download json data
-		PlaceParserTask placesTask = new PlacesTask();
-
-		// Invokes the "doInBackground()" method of the class PlaceTask
-		placesTask.execute(sb.toString());*/
+		for(CPlaceIts c : MainActivity.cActiveList){
+			StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+			sb.append("location="+myCurrentLocation.getLatitude()+","+myCurrentLocation.getLongitude());
+			sb.append("&radius=880");
+			sb.append("&types="+c.getCategoriesToString());
+			sb.append("&sensor=true");
+			sb.append("&key=AIzaSyBib1HfBY_1qBKmEFDtfmNQ1TQI5vR6CzY");
+			// Creating a new non-ui thread task to download json data
+			PlacesTask placesTask = new PlacesTask();
+			// Invokes the "doInBackground()" method of the class PlaceTask
+			placesTask.execute(sb.toString());
+		}
 	}
 
 	/**
