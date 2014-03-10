@@ -175,7 +175,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
         test.setOnClickListener(new OnClickListener(){
         	
 			@Override
-			public void onClick(View v) {  	
+			public void onClick(View v) { 
+				activeList = new ArrayList<PlaceIt>();
+				pullDown = new ArrayList<PlaceIt>();
+				cActiveList = new ArrayList<CPlaceIts>();
+				cPullDownList = new ArrayList<CPlaceIts>();
 				try {
 					PrintWriter writer = new PrintWriter(activeListFile, "UTF-8");
 					writer.print("");
@@ -293,6 +297,8 @@ GooglePlayServicesClient.OnConnectionFailedListener
         MapOnClickController mp = new MapOnClickController(context);
         activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
         pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
+        cActiveList = DownloadUserData.loadCategoryDataToActiveList(LoginActivity.username);
+    	cPullDownList = DownloadUserData.loadCategoryDataToPulldownList(LoginActivity.username);
     }
     
     //Return the ActiveList

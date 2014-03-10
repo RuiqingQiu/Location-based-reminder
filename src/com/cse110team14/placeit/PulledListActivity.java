@@ -223,7 +223,7 @@ public class PulledListActivity extends Activity {
 							int which) {
 
 						sorted.remove(clicked);
-						MainActivity.pullDown.remove(clicked);
+						MainActivity.cPullDownList.remove(clicked);
 
 						clicked.setListType("3");
 						UpdatePlaceItsOnServer.postCPlaceIts(clicked);
