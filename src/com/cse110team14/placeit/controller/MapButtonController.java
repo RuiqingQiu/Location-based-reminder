@@ -265,22 +265,20 @@ public class MapButtonController {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						
-						  MainActivity.alert= new AlertDialog.Builder(context);
+						  MainActivity.c_alert= new AlertDialog.Builder(context);
 				        
-				          MainActivity.alert.setTitle("Create A Category PlaceIt");
+				          MainActivity.c_alert.setTitle("Create A Category PlaceIt");
 						  MultiSelectionSpinner spinner;
 						  LayoutInflater inflater = MainActivity.mainActivity.getLayoutInflater();
 					      final View view = inflater.inflate(R.layout.create_category_placeits, null);
 						  MainActivity.mainActivity.setContentView(R.layout.create_category_placeits);
 						  String[] array = { "one", "two", "three", "one", "two", "three", "one", "two", "three", "one", "two", "three", "one", "two", "three", "one", "two", "three"  };
 						  spinner = (MultiSelectionSpinner)view.findViewById(R.id.category_spinner);
-//						  spinner.setItems(array);
-						  MainActivity.alert.setView(view);
+						  MainActivity.c_alert.setView(view);
 						  spinner.setItems(array);
 						  
 						  
-						  MainActivity.alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
+						  MainActivity.c_alert.setPositiveButton("Create the PlaceIt", new DialogInterface.OnClickListener() {
 					        	@SuppressLint("DefaultLocale")
 								public void onClick(DialogInterface dialog, int whichButton) {
 				
@@ -312,6 +310,12 @@ public class MapButtonController {
 						          MainActivity.cActiveList.add(tmp);
 					        	}
 					        });//End of positive button
+						  	MainActivity.c_alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							  public void onClick(DialogInterface dialog, int whichButton) {
+							  }
+							 
+						  	});
+						  	 MainActivity.c_alert.show();
 					}
 				});
 		        MainActivity.alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

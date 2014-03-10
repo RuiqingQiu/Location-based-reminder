@@ -21,7 +21,7 @@ import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
 
 public class UpdatePlaceItsOnServer {
-	
+	public static final String CPLACEITS_URL = "http://placeitteam14.appspot.com/cplaceits";
 	public static void postPlaceIts(PlaceIt p) {
 		final PlaceIt tmp = p;
 		Thread t = new Thread() {
@@ -80,7 +80,7 @@ public class UpdatePlaceItsOnServer {
 
 			public void run() {
 				HttpClient client = new DefaultHttpClient();
-				HttpPost post = new HttpPost(MapOnClickController.PLACEITS_URL);
+				HttpPost post = new HttpPost(CPLACEITS_URL);
 
 			    try {
 			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);

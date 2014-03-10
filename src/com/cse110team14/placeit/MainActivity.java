@@ -146,6 +146,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	
 	//Variables for all Widgets in MainActivity
 	public static AlertDialog.Builder alert;
+	public static AlertDialog.Builder c_alert;
 	final Context context = this;
 	
 	Button test;
