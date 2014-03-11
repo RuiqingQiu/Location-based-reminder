@@ -21,7 +21,7 @@ public class CPlaceIts extends SimplePlaceIt{
 	public String getCategoriesToString(){
 		String tmp = categories[0];
 		for(int i = 1; i < categories.length; i++){
-			tmp = tmp + ", " + categories[i];
+			tmp = tmp + "|" + categories[i];
 		}
 		return tmp;
 	}

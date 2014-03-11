@@ -191,7 +191,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 									int which) {
 								MainActivity.cPullDownList.add(clicked);
 								sorted.remove(clicked);
-								MainActivity.activeList.remove(clicked);
+								MainActivity.cActiveList.remove(clicked);
 								//Set the list type to be 2 to indicate pulled down
 								clicked.setListType("2");
 								UpdatePlaceItsOnServer.postCPlaceIts(clicked);
@@ -220,7 +220,7 @@ public class ActiveListActivity<activeListView> extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 
 						sorted.remove(clicked);
-						MainActivity.activeList.remove(clicked);
+						MainActivity.cActiveList.remove(clicked);
 						clicked.setListType("3");
 						UpdatePlaceItsOnServer.postCPlaceIts(clicked);
 						Toast.makeText(

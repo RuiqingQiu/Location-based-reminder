@@ -349,6 +349,16 @@ public class MapButtonController {
 					        		}
 						          String[] categories = new String[3];
 						          List<String> selected = spinner.getSelectedStrings();
+				        		  if (selected.size() == 0){
+				        			AlertDialog.Builder temp = initializeAlert("No category has been selected", "Please select at least 1 category :)");
+				        			temp.show();
+				        			return;
+				        		  }
+				        		  if (selected.size() > 3){
+					        			AlertDialog.Builder temp = initializeAlert("You can not select more than 3 categories", " Please select again :)");
+					        			temp.show();
+					        			return;
+					        	  }
 						          for(int i = 0; i < categories.length; i++){
 						        	  categories[i] = selected.get(i);
 						          }
