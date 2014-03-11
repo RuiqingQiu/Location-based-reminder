@@ -55,13 +55,15 @@ public class LocationService extends Service implements LocationListener,
 	private LocationRequest mLocationRequest;
 	private LocationClient mLocationClient;
 	// Give each notification an ID
-	private int notifyID = 1;
-	private int pCount = 1;
+	public static int notifyID = 1;
+	public static int pCount = 1;
 	// Half a mile in meter
 	private int range = 804;
 	private long oneWeekInMillSec = 604800000;
 	
 	public static List<LatLng> possiblePlaces = new ArrayList<LatLng>();
+	public static Location myCurrentLocation;
+	public static CPlaceIts currentCPlaceIt;
 
 	public LocationService() {
 
@@ -151,7 +153,7 @@ public class LocationService extends Service implements LocationListener,
 	public void onLocationChanged(Location location) {
 		double latitude = location.getLatitude();
 		double longitude = location.getLongitude();
-		Location myCurrentLocation = new Location("");
+		myCurrentLocation = new Location("");
 		myCurrentLocation.setLatitude(latitude);
 		myCurrentLocation.setLongitude(longitude);
 		List<PlaceIt> tmp = new ArrayList<PlaceIt>();
@@ -332,12 +334,14 @@ public class LocationService extends Service implements LocationListener,
 		//iterate through categorical place its like above
 		//check if near Place for categorical place it.
 		for(CPlaceIts c : MainActivity.cActiveList){
+			currentCPlaceIt = c;
 			StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
 			sb.append("location="+myCurrentLocation.getLatitude()+","+myCurrentLocation.getLongitude());
 			sb.append("&radius=880");
 			sb.append("&types="+c.getCategoriesToString());
 			sb.append("&sensor=true");
 			sb.append("&key=AIzaSyBib1HfBY_1qBKmEFDtfmNQ1TQI5vR6CzY");
+			Log.e("hello", "Inside location service C_active");
 			// Creating a new non-ui thread task to download json data
 			PlacesTask placesTask = new PlacesTask();
 			// Invokes the "doInBackground()" method of the class PlaceTask
@@ -402,5 +406,33 @@ public class LocationService extends Service implements LocationListener,
 		noti.flags |= Notification.FLAG_AUTO_CANCEL;
 		notificationManager.notify(notifyID, noti);
 	}
-	
+	@SuppressLint("NewApi")
+	public void createNotification(View view, CPlaceIts p) {
+		if (MainActivity.notificationSent == false)
+			pCount = 1;
+		// Prepare intent which is triggered if the
+		// notification is selected
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		intent.setClass(getApplicationContext(), MainActivity.class);
+
+		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+		long[] vibrate = { 500, 500, 500, 500, 500, 500, 500, 500, 500 };
+		Uri alarmSound = RingtoneManager
+				.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		// Build notification
+		// Actions are just fake
+		Notification noti = new Notification.Builder(this)
+				.setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
+				.setContentText("Description: " + p.getDescription())
+				.setSound(alarmSound).setVibrate(vibrate)
+				.setSmallIcon(R.drawable.ic_launcher).setNumber(pCount)
+				.setContentIntent(pIntent).build();
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		pCount++;
+		MainActivity.notificationSent = true;
+		// hide the notification after its selected
+		noti.flags |= Notification.FLAG_AUTO_CANCEL;
+		notificationManager.notify(notifyID, noti);
+	}
 }
