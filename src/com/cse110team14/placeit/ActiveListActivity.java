@@ -9,6 +9,7 @@ import java.util.List;
 import com.cse110team14.placeit.model.PlaceIt;
 import com.cse110team14.placeit.model.SimplePlaceIt;
 import com.cse110team14.placeit.model.CPlaceIts;
+import com.cse110team14.placeit.server_side.UpdatePlaceItsOnServer;
 import com.cse110team14.placeit.util.CustomComparator;
 
 import android.app.Activity;

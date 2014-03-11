@@ -90,7 +90,7 @@ public class LoginController {
 		protected List<String> doInBackground(String... url) {
 
 			HttpClient client = new DefaultHttpClient();
-			HttpGet request = new HttpGet(RegisterActivity.User_url);
+			HttpGet request = new HttpGet(RegisterActivity.User_url+ "?q=" + input_username );
 			List<String> list = new ArrayList<String>();
 			try {
 				HttpResponse response = client.execute(request);
@@ -103,6 +103,7 @@ public class LoginController {
 					myjson = new JSONObject(data);
 					JSONArray array = myjson.getJSONArray("data");
 					for (int i = 0; i < array.length(); i++) {
+						Log.e("login", "array length: " + array.length());
 						JSONObject obj = array.getJSONObject(i);
 						list.add(obj.get("name").toString());
 						list.add(obj.get("password").toString());

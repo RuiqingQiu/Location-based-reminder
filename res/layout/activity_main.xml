@@ -46,7 +46,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/active"
-        android:layout_toLeftOf="@+id/pulled"
+        android:layout_toLeftOf="@+id/btn_show"
         android:ems="10"
         android:hint="@string/hint"
         android:inputType="text" >
@@ -63,22 +63,30 @@
         android:text="@string/test" />
 
     <Button
-        android:id="@+id/retrack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btn_show"
-        android:layout_alignLeft="@+id/test"
-        android:layout_alignRight="@+id/test"
-        android:text="@string/retrack" />
-
-    <Button
         android:id="@+id/btn_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/pulled"
         android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/pulled"
         android:layout_marginTop="18dp"
+        android:layout_toLeftOf="@+id/retrack"
         android:text="@string/find" />
+
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/test"
+        android:layout_alignRight="@+id/test"
+        android:text="Refresh" />
+
+    <Button
+        android:id="@+id/retrack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/refresh"
+        android:layout_alignBottom="@+id/refresh"
+        android:layout_toLeftOf="@+id/refresh"
+        android:text="@string/retrack" />
     
 </RelativeLayout>

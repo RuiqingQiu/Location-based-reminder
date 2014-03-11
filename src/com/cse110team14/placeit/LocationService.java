@@ -20,6 +20,7 @@ import com.cse110team14.placeit.controller.LoginController;
 import com.cse110team14.placeit.controller.MapOnClickController;
 import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.server_side.UpdatePlaceItsOnServer;
 import com.cse110team14.placeit.util.PlacesTask;
 
 import android.annotation.SuppressLint;
@@ -234,6 +235,9 @@ public class LocationService extends Service implements LocationListener,
 				if ((current - previous) > 60000) {
 					MainActivity.pullDown.remove(pi);
 					pi.setPlaceItType(2);
+					//The old one is discarded as the postTime is changed
+					pi.setListType("3");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					MainActivity.activeList.add(pi);
@@ -253,6 +257,9 @@ public class LocationService extends Service implements LocationListener,
 				if ((current - previous) > oneWeekInMillSec) {
 					MainActivity.pullDown.remove(pi);
 					pi.setPlaceItType(3);
+					//The old one is discarded as the postTime is changed
+					pi.setListType("3");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
@@ -275,6 +282,9 @@ public class LocationService extends Service implements LocationListener,
 				if ((current - previous) > 2 * oneWeekInMillSec) {
 					MainActivity.pullDown.remove(pi);
 					pi.setPlaceItType(4);
+					//The old one is discarded as the postTime is changed
+					pi.setListType("3");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
@@ -296,6 +306,9 @@ public class LocationService extends Service implements LocationListener,
 				if ((current - previous) > 3 * oneWeekInMillSec) {
 					MainActivity.pullDown.remove(pi);
 					pi.setPlaceItType(5);
+					//The old one is discarded as the postTime is changed
+					pi.setListType("3");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
@@ -317,6 +330,9 @@ public class LocationService extends Service implements LocationListener,
 				if ((current - previous) > 4 * oneWeekInMillSec) {
 					MainActivity.pullDown.remove(pi);
 					pi.setPlaceItType(6);
+					//The old one is discarded as the postTime is changed
+					pi.setListType("3");
+					UpdatePlaceItsOnServer.postPlaceIts(pi);
 					// Update the post time for the placeit
 					pi.setDatePosted();
 					Calendar c = Calendar.getInstance();
@@ -406,29 +422,31 @@ public class LocationService extends Service implements LocationListener,
 		noti.flags |= Notification.FLAG_AUTO_CANCEL;
 		notificationManager.notify(notifyID, noti);
 	}
+	
 	@SuppressLint("NewApi")
-	public void createNotification(View view, CPlaceIts p) {
+	public static void createNotification(View view, CPlaceIts p, String closestLocation) {
 		if (MainActivity.notificationSent == false)
 			pCount = 1;
 		// Prepare intent which is triggered if the
 		// notification is selected
 		Intent intent = new Intent(Intent.ACTION_MAIN);
-		intent.setClass(getApplicationContext(), MainActivity.class);
+		intent.setClass(MainActivity.mainActivity.getApplicationContext(), MainActivity.class);
 
-		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		PendingIntent pIntent = PendingIntent.getActivity(MainActivity.mainActivity.getApplicationContext(), 0, intent, 0);
 
 		long[] vibrate = { 500, 500, 500, 500, 500, 500, 500, 500, 500 };
 		Uri alarmSound = RingtoneManager
 				.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		// Build notification
 		// Actions are just fake
-		Notification noti = new Notification.Builder(this)
+		Notification noti = new Notification.Builder(MainActivity.mainActivity.getApplicationContext())
 				.setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
 				.setContentText("Description: " + p.getDescription())
+				.setContentText("Closest Address: " + closestLocation)
 				.setSound(alarmSound).setVibrate(vibrate)
 				.setSmallIcon(R.drawable.ic_launcher).setNumber(pCount)
 				.setContentIntent(pIntent).build();
-		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		NotificationManager notificationManager = (NotificationManager) MainActivity.mainActivity.getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 		pCount++;
 		MainActivity.notificationSent = true;
 		// hide the notification after its selected

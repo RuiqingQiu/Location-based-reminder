@@ -17,6 +17,7 @@ public class MapView {
 	Button pulled;
 	Button create;
 	Button test;
+	Button refresh;
 	EditText etPlace;
 	
 	public MapView(){
@@ -28,6 +29,7 @@ public class MapView {
         pulled = (Button)view.findViewById(R.id.pulled);
         create = (Button)view.findViewById(R.id.create);
         test = (Button)view.findViewById(R.id.test);
+        refresh = (Button)view.findViewById(R.id.refresh);
         etPlace = (EditText) view.findViewById(R.id.et_place);
         
 	}
@@ -46,8 +48,10 @@ public class MapView {
 	public Button getCreateButton(){
 		return create;
 	}
+	public Button getRefreshButton(){
+		return refresh;
+	}
 	public EditText getEditPlace(){
 		return etPlace;
-
 	}
 }

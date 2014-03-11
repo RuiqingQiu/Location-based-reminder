@@ -125,6 +125,8 @@ class PlaceParserTask extends AsyncTask<String, Integer, List<HashMap<String,Str
     @Override
     protected void onPostExecute(List<HashMap<String,String>> list){
         Log.e("hello", "Enter placetask");
+        double min = 880.0;
+        HashMap<String, String> targetPlace = null;
         for(int i=0;i<list.size();i++){
             
             // Getting a place from the places list
@@ -147,39 +149,24 @@ class PlaceParserTask extends AsyncTask<String, Integer, List<HashMap<String,Str
             String vicinity = hmPlace.get("vicinity");
             LatLng latLng = new LatLng(lat, lng);
             Log.e("hello", "distance: "+LocationService.myCurrentLocation.distanceTo(placeLocation));
-            if (LocationService.myCurrentLocation.distanceTo(placeLocation) < 880){
-            	createNotification(null, LocationService.currentCPlaceIt);
+            double distance = LocationService.myCurrentLocation.distanceTo(placeLocation);
+            if (distance < 880){
+            	if(distance < min){
+            		min = distance;
+            		targetPlace = hmPlace;
+            	}
             }
+        }//End of for loop
+        Log.e("place search", "min: " + min);
+        Log.e("place search", "vicinity: " + targetPlace.get("vicinity"));
+        //If there's somewhere found
+        if(min != 0.0 && targetPlace != null){
+        	String closestLocation = targetPlace.get("vicinity");
+        	//Remove from the list
+        	LocationService.createNotification(null, LocationService.currentCPlaceIt, closestLocation);
+        	//Move the placeit to pulldown
+        	MainActivity.cActiveList.remove(LocationService.currentCPlaceIt);
+        	MainActivity.cPullDownList.add(LocationService.currentCPlaceIt);
         }
     }
-	public void createNotification(View view, CPlaceIts p) {
-		Context context = null;
-		if (MainActivity.notificationSent == false)
-			LocationService.pCount = 1;
-		// Prepare intent which is triggered if the
-		// notification is selected
-		Intent intent = new Intent(Intent.ACTION_MAIN);
-		intent.setClass(null, MainActivity.class);
-
-		PendingIntent pIntent = PendingIntent.getActivity(null, 0, intent, 0);
-
-		long[] vibrate = { 500, 500, 500, 500, 500, 500, 500, 500, 500 };
-		Uri alarmSound = RingtoneManager
-				.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		// Build notification
-		// Actions are just fake
-		Notification noti = new Notification.Builder(null)
-				.setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
-				.setContentText("Description: " + p.getDescription())
-				.setSound(alarmSound).setVibrate(vibrate)
-				.setSmallIcon(R.drawable.ic_launcher).setNumber(LocationService.pCount)
-				.setContentIntent(pIntent).build();
-		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		LocationService.pCount++;
-		MainActivity.notificationSent = true;
-		// hide the notification after its selected
-		noti.flags |= Notification.FLAG_AUTO_CANCEL;
-		notificationManager.notify(LocationService.notifyID, noti);
-		Log.e("PlacesTask", "PLACE NOTIFICATION SENT");
-	}
 }
