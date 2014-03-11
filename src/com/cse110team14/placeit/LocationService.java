@@ -424,7 +424,7 @@ public class LocationService extends Service implements LocationListener,
 	}
 	
 	@SuppressLint("NewApi")
-	public static void createNotification(View view, CPlaceIts p, String closestLocation) {
+	public static void createNotification(View view, CPlaceIts p, String closestLocation, String address) {
 		if (MainActivity.notificationSent == false)
 			pCount = 1;
 		// Prepare intent which is triggered if the
@@ -442,7 +442,9 @@ public class LocationService extends Service implements LocationListener,
 		Notification noti = new Notification.Builder(MainActivity.mainActivity.getApplicationContext())
 				.setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
 				.setContentText("Description: " + p.getDescription())
-				.setContentText("Closest Address: " + closestLocation)
+				.setContentText("Name: " + closestLocation)
+				.setContentText("Closest Address: " + address)
+				
 				.setSound(alarmSound).setVibrate(vibrate)
 				.setSmallIcon(R.drawable.ic_launcher).setNumber(pCount)
 				.setContentIntent(pIntent).build();

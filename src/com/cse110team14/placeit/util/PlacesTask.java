@@ -17,6 +17,7 @@ import com.cse110team14.placeit.MainActivity;
 import com.cse110team14.placeit.R;
 import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.server_side.UpdatePlaceItsOnServer;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -161,12 +162,16 @@ class PlaceParserTask extends AsyncTask<String, Integer, List<HashMap<String,Str
         Log.e("place search", "vicinity: " + targetPlace.get("vicinity"));
         //If there's somewhere found
         if(min != 0.0 && targetPlace != null){
-        	String closestLocation = targetPlace.get("vicinity");
+        	String closestLocation = "Place: " + targetPlace.get("place_name");
+        	String address = targetPlace.get("vicinity");
         	//Remove from the list
-        	LocationService.createNotification(null, LocationService.currentCPlaceIt, closestLocation);
+        	LocationService.createNotification(null, LocationService.currentCPlaceIt, closestLocation, address);
         	//Move the placeit to pulldown
         	MainActivity.cActiveList.remove(LocationService.currentCPlaceIt);
         	MainActivity.cPullDownList.add(LocationService.currentCPlaceIt);
+        	LocationService.currentCPlaceIt.setListType("2");
+        	//Update the placeit on server
+        	UpdatePlaceItsOnServer.postCPlaceIts(LocationService.currentCPlaceIt);
         }
     }
 }
