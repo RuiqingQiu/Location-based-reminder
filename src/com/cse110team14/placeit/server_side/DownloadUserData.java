@@ -77,7 +77,7 @@ public class DownloadUserData {
 					    p.setListType(listType);
 						active.add(p);
 						Log.e("userData", p.getTitle());
-					}else{
+					}else if(listType.equals("2")){
 						String title = obj.get("title").toString();
 						String description = obj.get("description").toString();
 						String color = obj.get("color").toString();
@@ -101,6 +101,9 @@ public class DownloadUserData {
 					    p.setListType(listType);
 						pulldown.add(p);
 						Log.e("userData", p.getTitle());
+					}
+					else{
+						continue;
 					}
 				}
 
@@ -151,7 +154,7 @@ public class DownloadUserData {
 					    p.setListType(listType);
 						c_active.add(p);
 						Log.e("userData", p.getTitle());
-					}else{
+					}else if(listType.equals("2")){
 						String title = obj.get("title").toString();
 						String description = obj.get("description").toString();
 						
@@ -167,6 +170,8 @@ public class DownloadUserData {
 					    p.setListType(listType);
 						c_active.add(p);
 						Log.e("userData", p.getTitle());
+					}else{
+						continue;
 					}
 				   
 				}
