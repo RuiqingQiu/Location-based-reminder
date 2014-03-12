@@ -21,13 +21,15 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.cse110team14.placeit.LoginActivity;
 import com.cse110team14.placeit.MainActivity;
 import com.cse110team14.placeit.R;
-import com.cse110team14.placeit.UpdatePlaceItsOnServer;
 import com.cse110team14.placeit.R.id;
 import com.cse110team14.placeit.R.layout;
 import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.server_side.DownloadUserData;
+import com.cse110team14.placeit.server_side.UpdatePlaceItsOnServer;
 import com.cse110team14.placeit.util.DownloadTask;
 import com.cse110team14.placeit.util.MultiSelectionSpinner;
 import com.cse110team14.placeit.view.MapView;
@@ -85,7 +87,21 @@ public class MapButtonController {
               
           }
       });
-      
+      mapview.getRefreshButton().setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				DownloadUserData d = new DownloadUserData(LoginActivity.username);
+				MainActivity.activeList = d.getActive();
+				MainActivity.pullDown = d.getPulldown();
+				MainActivity.cActiveList = d.getCActive();
+				MainActivity.cPullDownList = d.getCPulldown();
+		        /*MainActivity.activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
+		        MainActivity.pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
+		        MainActivity.cActiveList = DownloadUserData.loadCategoryDataToActiveList(LoginActivity.username);
+		        MainActivity.cPullDownList = DownloadUserData.loadCategoryDataToPulldownList(LoginActivity.username);*/
+			}
+      	
+      });
       //Set up the retrack button for keeping track of all retrack button
       mapview.getRetrackButton().setOnClickListener(new OnClickListener(){
       	 @Override
@@ -347,8 +363,10 @@ public class MapButtonController {
 					        			temp.show();
 					        			return;
 					        		}
-						          String[] categories = new String[3];
+						          
 						          List<String> selected = spinner.getSelectedStrings();
+						          String[] categories = new String[selected.size()];
+						          
 				        		  if (selected.size() == 0){
 				        			AlertDialog.Builder temp = initializeAlert("No category has been selected", "Please select at least 1 category :)");
 				        			temp.show();

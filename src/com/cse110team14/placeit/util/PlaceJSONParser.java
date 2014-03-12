@@ -2,7 +2,7 @@ package com.cse110team14.placeit.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
- 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,6 +49,7 @@ public class PlaceJSONParser {
     private HashMap<String, String> getPlace(JSONObject jPlace){
  
         HashMap<String, String> place = new HashMap<String, String>();
+        String formatted_address = "-NA-";
         String placeName = "-NA-";
         String vicinity="-NA-";
         String latitude="";
@@ -64,10 +65,16 @@ public class PlaceJSONParser {
             if(!jPlace.isNull("vicinity")){
                 vicinity = jPlace.getString("vicinity");
             }
+            
+            // Extracting formatted address, if available
+            if(!jPlace.isNull("formatted_address")){
+                formatted_address = jPlace.getString("formatted_address");
+            }
  
             latitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
  
+            place.put("formatted_address", formatted_address);
             place.put("place_name", placeName);
             place.put("vicinity", vicinity);
             place.put("lat", latitude);

@@ -1,4 +1,4 @@
-package com.cse110team14.placeit;
+package com.cse110team14.placeit.server_side;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.util.Log;
 
+import com.cse110team14.placeit.LoginActivity;
 import com.cse110team14.placeit.controller.MapOnClickController;
 import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;

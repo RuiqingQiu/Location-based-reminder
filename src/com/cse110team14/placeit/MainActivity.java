@@ -35,6 +35,7 @@ import com.cse110team14.placeit.controller.MapButtonController;
 import com.cse110team14.placeit.controller.MapOnClickController;
 import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
+import com.cse110team14.placeit.server_side.DownloadUserData;
 import com.cse110team14.placeit.util.DownloadTask;
 import com.cse110team14.placeit.util.GeocodeJSONParser;
 import com.cse110team14.placeit.view.MapView;
@@ -139,17 +140,18 @@ GooglePlayServicesClient.OnConnectionFailedListener
 	//Initilize the mMarkers list
 	public static List<Marker> mMarkers = new ArrayList<Marker>();
 	public static Iterator<Marker> marker;
-	private String loginStatusFile = "savedLoginStatus.dat";
+	public static String loginStatusFile = "savedLoginStatus.dat";
 	private String activeListFile = "saved_placeits.dat";
 	private String pulldownListFile = "pulldown_placeits.dat";
-	
+	private String cActiveListFile = "c_active_placeits.dat";
+	private String cPulldownListFile = "c_pulldown_placeits.dat";
 	
 	//Variables for all Widgets in MainActivity
 	public static AlertDialog.Builder alert;
 	public static AlertDialog.Builder c_alert;
 	final Context context = this;
 	
-	Button test;
+	Button logout;
 	
 	//Call during the activity is created
     @Override
@@ -170,12 +172,13 @@ GooglePlayServicesClient.OnConnectionFailedListener
         cancelableCallback = this;
         setUpMapIfNeeded();
         
-        test = (Button)findViewById(R.id.test);
+        logout = (Button)findViewById(R.id.test);
         //TODO: delete
-        test.setOnClickListener(new OnClickListener(){
-        	
+        logout.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) { 
+				
+				//Clear the list as the user logout
 				activeList = new ArrayList<PlaceIt>();
 				pullDown = new ArrayList<PlaceIt>();
 				cActiveList = new ArrayList<CPlaceIts>();
@@ -194,14 +197,12 @@ GooglePlayServicesClient.OnConnectionFailedListener
 				Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
 				LoginActivity.loginActivity.logined = false;
 				//TODO save to activeListFile.dat
-				saveLoginStatus("");
-				startActivity(myIntent);
-				
-				
-				
+				OutputFileWriter.saveLoginStatus("");
+				startActivity(myIntent);	
 			}
         	
         });
+        
         //Set up the map view
         MapView mapview = new MapView();
         //Set up the button control
@@ -213,11 +214,11 @@ GooglePlayServicesClient.OnConnectionFailedListener
         //readFileToList(activeListFile, activeList);
         //readFileToList(pulldownListFile, pullDown);
         
-        activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
-        pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
-        
-        cActiveList = DownloadUserData.loadCategoryDataToActiveList(LoginActivity.username);
-    	cPullDownList = DownloadUserData.loadCategoryDataToPulldownList(LoginActivity.username);
+        DownloadUserData d = new DownloadUserData(LoginActivity.username);
+		MainActivity.activeList = d.getActive();
+		MainActivity.pullDown = d.getPulldown();
+		MainActivity.cActiveList = d.getCActive();
+		MainActivity.cPullDownList = d.getCPulldown();
         
         Log.e("hello",""+activeList.size());
         // Getting reference to EditText
@@ -294,10 +295,15 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onStart();
         mLocationClient.connect();
         MapOnClickController mp = new MapOnClickController(context);
-        activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
-        pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
-        cActiveList = DownloadUserData.loadCategoryDataToActiveList(LoginActivity.username);
-    	cPullDownList = DownloadUserData.loadCategoryDataToPulldownList(LoginActivity.username);
+        //If all lists are equal to 0, then try to load data from the server
+        if(activeList.size() == 0 && pullDown.size() == 0
+        	&& cActiveList.size() == 0 && cPullDownList.size() == 0){
+                DownloadUserData d = new DownloadUserData(LoginActivity.username);
+        		MainActivity.activeList = d.getActive();
+        		MainActivity.pullDown = d.getPulldown();
+        		MainActivity.cActiveList = d.getCActive();
+        		MainActivity.cPullDownList = d.getCPulldown();	
+        }
     }
     
     //Return the ActiveList
@@ -403,52 +409,14 @@ GooglePlayServicesClient.OnConnectionFailedListener
     @Override
     protected void onStop() {
         super.onStop();
-        saveList(activeList, activeListFile);
-        saveList(pullDown, pulldownListFile);
-        saveLoginStatus(LoginActivity.username);
-    	
+        OutputFileWriter.saveRegularPlaceItsList(activeList, activeListFile);
+        OutputFileWriter.saveRegularPlaceItsList(pullDown, pulldownListFile);
+        OutputFileWriter.saveCategoryPlaceItsList(cActiveList, cActiveListFile);
+        OutputFileWriter.saveCategoryPlaceItsList(cPullDownList, cPulldownListFile);
+        OutputFileWriter.saveLoginStatus(LoginActivity.username);	
     }
     
-    public void saveLoginStatus(String user){
-    	try {
-    		FileOutputStream outputStatus = openFileOutput(loginStatusFile, Context.MODE_PRIVATE);
-
-    		outputStatus.write((Boolean.toString(LoginActivity.loginActivity.logined) + "###" + user + "\n").getBytes());
-	    	outputStatus.close();
-	    	
-    	} catch (FileNotFoundException e) {
-    		e.printStackTrace();
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-    
-    /**
-     * Save specific list of placeits to corresponding file, called in onStop
-     *  method
-     */
-    public void saveList(List<PlaceIt> list, String file){
-    	try {
-    		FileOutputStream out = openFileOutput(file, Context.MODE_PRIVATE);
-    		//write place its to file
-    		Iterator<PlaceIt> itr = list.iterator();
-    		while(itr.hasNext()){
-    			PlaceIt element = itr.next();
-    			String str = element.getTitle() + "###" + element.getDescription() + "###" + element.getDateReminded()
-    					+"###" + element.getDate() + "###" + element.getLocation().latitude +"###" +
-    					element.getLocation().longitude + "###" + element.getColor()+ "###" + element.getPlaceItType() + 
-    					"###" + element.getSneezeType() + "\n"; 
-    			out.write(str.getBytes());
-    		}
-    		out.close();
-    	} catch (FileNotFoundException e) {
-    		e.printStackTrace();
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-    
-    
+     
     /**
      * Called when app is on pause, it will start the location service
      */

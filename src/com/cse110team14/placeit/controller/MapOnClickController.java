@@ -108,7 +108,7 @@ public class MapOnClickController {
 		        final EditText title = (EditText)v.findViewById(R.id.title);
 		        final EditText description = (EditText)v.findViewById(R.id.description);
 		        final EditText location = (EditText)v.findViewById(R.id.location);
-		        location.setText("" + m.getPosition().latitude + ", " + m.getPosition().latitude, TextView.BufferType.EDITABLE);
+		        location.setText("" + m.getPosition().latitude + ", " + m.getPosition().longitude, TextView.BufferType.EDITABLE);
 		        //final EditText date = (EditText)v.findViewById(R.id.date);
 		        final DatePicker date = (DatePicker)v.findViewById(R.id.datePicker);
 		        final RadioGroup rg = (RadioGroup)v.findViewById(R.id.radioGroup);
