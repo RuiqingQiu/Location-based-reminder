@@ -158,11 +158,11 @@ class PlaceParserTask extends AsyncTask<String, Integer, List<HashMap<String,Str
             	}
             }
         }//End of for loop
-        Log.e("place search", "min: " + min);
-        Log.e("place search", "vicinity: " + targetPlace.get("vicinity"));
+        //Log.e("place search", "min: " + min);
+        //Log.e("place search", "vicinity: " + targetPlace.get("vicinity"));
         //If there's somewhere found
         if(min != 0.0 && targetPlace != null){
-        	String closestLocation = "Place: " + targetPlace.get("place_name");
+        	String closestLocation = targetPlace.get("place_name");
         	String address = targetPlace.get("vicinity");
         	//Remove from the list
         	LocationService.createNotification(null, LocationService.currentCPlaceIt, closestLocation, address);

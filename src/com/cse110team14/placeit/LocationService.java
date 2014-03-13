@@ -440,10 +440,10 @@ public class LocationService extends Service implements LocationListener,
 		// Build notification
 		// Actions are just fake
 		Notification noti = new Notification.Builder(MainActivity.mainActivity.getApplicationContext())
-				.setContentTitle("PlaceIt Notificaiton: " + p.getTitle())
-				.setContentText("Description: " + p.getDescription())
-				.setContentText("Name: " + closestLocation)
-				.setContentText("Closest Address: " + address)
+				.setContentTitle(p.getTitle() + " @ " + closestLocation)
+//				.setContentText("Description: " + p.getDescription())
+//				.setContentText("Name: " + closestLocation)
+				.setContentText("Address: " + address)
 				
 				.setSound(alarmSound).setVibrate(vibrate)
 				.setSmallIcon(R.drawable.ic_launcher).setNumber(pCount)

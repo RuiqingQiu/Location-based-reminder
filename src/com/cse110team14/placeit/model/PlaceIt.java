@@ -1,9 +1,11 @@
+
 package com.cse110team14.placeit.model;
 
 import java.util.Calendar;
 
 import com.google.android.gms.maps.model.LatLng;
 import android.util.Log;
+
 
 
 public class PlaceIt extends SimplePlaceIt {
