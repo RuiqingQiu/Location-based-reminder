@@ -168,7 +168,7 @@ public class DownloadUserData {
 					    CPlaceIts p = new CPlaceIts(title, description, postDate,
 					    			dateToBeReminded, categoriesArray);
 					    p.setListType(listType);
-						c_active.add(p);
+						c_pulldown.add(p);
 						Log.e("userData", p.getTitle());
 					}else{
 						continue;
