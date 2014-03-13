@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="DefaultLocale">
+        <ignore path="src/com/cse110team14/placeit/MainActivity.java" />
+    </issue>
+</lint>

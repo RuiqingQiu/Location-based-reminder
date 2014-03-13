@@ -91,10 +91,14 @@ public class MapButtonController {
 			@Override
 			public void onClick(View arg0) {
 				DownloadUserData d = new DownloadUserData(LoginActivity.username);
-				MainActivity.activeList = d.getActive();
-				MainActivity.pullDown = d.getPulldown();
-				MainActivity.cActiveList = d.getCActive();
-				MainActivity.cPullDownList = d.getCPulldown();
+				MainActivity.activeList.clear();
+				MainActivity.activeList.addAll(d.getActive());
+				MainActivity.pullDown.clear();
+				MainActivity.pullDown.addAll(d.getPulldown());
+				MainActivity.cActiveList.clear();
+				MainActivity.cActiveList.addAll(d.getCActive());
+				MainActivity.cPullDownList.clear();
+				MainActivity.cPullDownList.addAll(d.getCPulldown());
 		        /*MainActivity.activeList = DownloadUserData.loadRegularDataToActiveList(LoginActivity.username);
 		        MainActivity.pullDown = DownloadUserData.loadRegularDataToPullList(LoginActivity.username);
 		        MainActivity.cActiveList = DownloadUserData.loadCategoryDataToActiveList(LoginActivity.username);
