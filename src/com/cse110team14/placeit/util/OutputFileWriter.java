@@ -1,4 +1,4 @@
-package com.cse110team14.placeit;
+package com.cse110team14.placeit.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -8,6 +8,8 @@ import java.util.List;
 
 import android.content.Context;
 
+import com.cse110team14.placeit.LoginActivity;
+import com.cse110team14.placeit.MainActivity;
 import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
 

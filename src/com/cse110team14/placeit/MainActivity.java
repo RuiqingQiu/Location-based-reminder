@@ -38,6 +38,7 @@ import com.cse110team14.placeit.model.PlaceIt;
 import com.cse110team14.placeit.server_side.DownloadUserData;
 import com.cse110team14.placeit.util.DownloadTask;
 import com.cse110team14.placeit.util.GeocodeJSONParser;
+import com.cse110team14.placeit.util.OutputFileWriter;
 import com.cse110team14.placeit.view.MapView;
 import com.cse110team14.placeit.view.PlaceItsInfoWindow;
 import com.google.android.gms.common.ConnectionResult;
