@@ -14,6 +14,10 @@ public class LoginView {
 	EditText password;
 	Button login;
 	Button signup;
+	
+	/*
+	 * constructor of login view, initialize components with view find in xml
+	 */
 	public LoginView(){
 		view = LoginActivity.loginActivity.getWindow().getDecorView().getRootView();
 		username = (EditText)view.findViewById(R.id.user_name);
@@ -21,15 +25,31 @@ public class LoginView {
 		login = (Button)view.findViewById(R.id.login);
 		signup = (Button)view.findViewById(R.id.register);
 	}
+	
+	/*
+	 * return the EditText componet for username
+	 */
 	public EditText getUsername(){
 		return username;
 	}
+	
+	/*
+	 * return the EditText componet for password
+	 */
 	public EditText getPassword(){
 		return password;
 	}
+	
+	/*
+	 * return the button componet for submit login
+	 */
 	public Button getLogin(){
 		return login;
 	}
+	
+	/*
+	 * return the button componet for switch to register view
+	 */
 	public Button getSignup(){
 		return signup;
 	}

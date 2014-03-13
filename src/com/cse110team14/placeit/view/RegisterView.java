@@ -16,6 +16,9 @@ public class RegisterView {
 	private EditText reg_password;
 	private EditText reg_repass;
 	
+	/*
+	 * constructor of register view, initialize components with view find in xml
+	 */
 	public RegisterView(){
 		view = RegisterActivity.registerActivity.getWindow().getDecorView().getRootView();
 		reg_username = (EditText)view.findViewById(R.id.reg_name);
@@ -23,15 +26,31 @@ public class RegisterView {
 	    reg_repass = (EditText)view.findViewById(R.id.reg_repass);
 	    register = (Button) view.findViewById(R.id.reg);
 	}
+	
+	/*
+	 * return the EditText component for username
+	 */
 	public EditText getUsername(){
 		return reg_username;
 	}
+	
+	/*
+	 * return the EditText component for password
+	 */
 	public EditText getPassword(){
 		return reg_password;
 	}
+	
+	/*
+	 * return the EditText component for repeat password
+	 */
 	public EditText getRepass(){
 		return reg_repass;
 	}
+	
+	/*
+	 * return the button component for submit register
+	 */
 	public Button getRegister(){
 		return register;
 	}

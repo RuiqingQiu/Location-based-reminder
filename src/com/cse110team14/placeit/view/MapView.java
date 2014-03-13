@@ -20,6 +20,9 @@ public class MapView {
 	Button refresh;
 	EditText etPlace;
 	
+	/*
+	 * constructor of map view with buttons, initialize components with view find in xml
+	 */
 	public MapView(){
 		View view = MainActivity.mainActivity.getWindow().getDecorView().getRootView();
         // Getting reference to the find button
@@ -33,24 +36,52 @@ public class MapView {
         etPlace = (EditText) view.findViewById(R.id.et_place);
         
 	}
+	
+	/*
+	 * return the button component for start a search
+	 */
 	public Button getFindButtion(){
 		return mBtnFind;
 	}
+	
+	/*
+	 * return the button component for retrack placeits
+	 */
 	public Button getRetrackButton(){
 		return retrackBtn;
 	}
+	
+	/*
+	 * return the button component for active list display
+	 */
 	public Button getActiveButton(){
 		return active;
 	}
+	
+	/*
+	 * return the button component for pulled-down list display
+	 */
 	public Button getPulledButton(){
 		return pulled;
 	}
+	
+	/*
+	 * return the button component for creating a placeit
+	 */
 	public Button getCreateButton(){
 		return create;
 	}
+	
+	/*
+	 * return the button component for refresh user data and display
+	 */
 	public Button getRefreshButton(){
 		return refresh;
 	}
+	
+	/*
+	 * return the text field for search text input
+	 */
 	public EditText getEditPlace(){
 		return etPlace;
 	}

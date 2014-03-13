@@ -12,10 +12,17 @@ import com.google.android.gms.maps.model.Marker;
 public class PlaceItsInfoWindow implements InfoWindowAdapter{
 
 	private final View myContentsView;
-	  
+	
+	/*
+	 * constructor of placeit information view, initialize components with view find in xml
+	 */
 	public PlaceItsInfoWindow(View view){
 	   myContentsView = view;
 	}
+	
+	/*
+	 * read data from storage and display
+	 */
 	@Override
 	public View getInfoContents(Marker marker) {
 		String snippet = marker.getSnippet();
