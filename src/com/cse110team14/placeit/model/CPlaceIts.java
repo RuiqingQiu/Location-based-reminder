@@ -2,6 +2,10 @@ package com.cse110team14.placeit.model;
 
 import java.util.Calendar;
 
+/**
+ * Class CPlaceIts
+ * Description: a class for storing categorical placeits, added categories field
+ */
 public class CPlaceIts extends SimplePlaceIt{
 	//Can hold at most 3 categories
 	private String[] categories = new String[3];

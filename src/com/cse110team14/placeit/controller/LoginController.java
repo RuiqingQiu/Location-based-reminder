@@ -31,6 +31,10 @@ import com.cse110team14.placeit.RegisterActivity;
 import com.cse110team14.placeit.util.EncryptUtils;
 import com.cse110team14.placeit.view.LoginView;
 
+/**
+ * Class: LoginController. 
+ * Description: initilaize all the buttons and login handlers for login page
+ */
 public class LoginController {
 	private LoginView loginview;
 
@@ -45,6 +49,9 @@ public class LoginController {
 		initializeButton();
 	}
 
+	/**
+	 * Get user input from the EditText field
+	 */
 	public void getUserInput() {
 		input_username = loginview.getUsername().getText().toString();
 		input_password = loginview.getPassword().getText().toString();
@@ -52,6 +59,9 @@ public class LoginController {
 		Log.e("hello", "2" + input_password);
 	}
 
+	/**
+	 * Method for initialize buttons in login page
+	 */
 	public void initializeButton() {
 		loginview.getSignup().setOnClickListener(new OnClickListener() {
 
@@ -85,6 +95,10 @@ public class LoginController {
 		});
 	}
 
+	/**
+	 * Class CheckUserTask is an AsyncTask for checking if the user is 
+	 * in the database which means they have register.
+	 */
 	private class CheckUserTask extends AsyncTask<String, Void, List<String>> {
 		@Override
 		protected List<String> doInBackground(String... url) {
@@ -103,7 +117,6 @@ public class LoginController {
 					myjson = new JSONObject(data);
 					JSONArray array = myjson.getJSONArray("data");
 					for (int i = 0; i < array.length(); i++) {
-						Log.e("login", "array length: " + array.length());
 						JSONObject obj = array.getJSONObject(i);
 						list.add(obj.get("name").toString());
 						list.add(obj.get("password").toString());

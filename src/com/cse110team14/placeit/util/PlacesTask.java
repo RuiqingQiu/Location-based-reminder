@@ -151,6 +151,7 @@ class PlaceParserTask extends AsyncTask<String, Integer, List<HashMap<String,Str
             LatLng latLng = new LatLng(lat, lng);
             Log.e("hello", "distance: "+LocationService.myCurrentLocation.distanceTo(placeLocation));
             double distance = LocationService.myCurrentLocation.distanceTo(placeLocation);
+            //Check anything within range
             if (distance < 880){
             	if(distance < min){
             		min = distance;
@@ -158,8 +159,6 @@ class PlaceParserTask extends AsyncTask<String, Integer, List<HashMap<String,Str
             	}
             }
         }//End of for loop
-        //Log.e("place search", "min: " + min);
-        //Log.e("place search", "vicinity: " + targetPlace.get("vicinity"));
         //If there's somewhere found
         if(min != 0.0 && targetPlace != null){
         	String closestLocation = targetPlace.get("place_name");

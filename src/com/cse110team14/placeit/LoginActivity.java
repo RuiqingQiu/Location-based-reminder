@@ -22,6 +22,10 @@ public class LoginActivity extends Activity {
 	public static String username;
 	private String loginStatusFile = "savedLoginStatus.dat";
 
+	/**
+	 * Method onCreate will set the login content and if user is already logined in
+	 * then go to MainActivity that will display the map
+	 */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		loginActivity = this;
@@ -37,7 +41,11 @@ public class LoginActivity extends Activity {
 			startActivity(myIntent);
 		}
 	}
-	
+	/**
+	 * Read local login status for the user to indicate if the user logined in 
+	 * last time
+	 * @return boolean to indicate if the user is logined in
+	 */
 	public boolean readLoginStatus() {
 		String loginstatus = Boolean.toString(false);
 		String username = "";
@@ -47,7 +55,6 @@ public class LoginActivity extends Activity {
 			InputStreamReader isr = new InputStreamReader(in);
 			BufferedReader reader = new BufferedReader(isr);
 			str = reader.readLine();
-//			username = reader.readLine();
 			String []splited = str.split("###");
 		 	loginstatus = splited[0];
 		 	if(splited.length > 1){

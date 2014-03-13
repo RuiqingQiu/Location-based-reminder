@@ -7,7 +7,11 @@ import com.google.android.gms.maps.model.LatLng;
 import android.util.Log;
 
 
-
+/**
+ * Class PlaceIt
+ * Description: PlaceIt class is for storing regular placeit, added 
+ * location, placeitType, snoozeType and color.
+ */
 public class PlaceIt extends SimplePlaceIt {
 	//Regular placeit will remind people based on location
 	private LatLng location;

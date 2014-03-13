@@ -39,6 +39,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+/**
+ * Class MapButtonController
+ * Description: A class for the controller for the map button
+ */
 public class MapButtonController {
   private MapView mapview;
   private Context context;
@@ -48,6 +52,9 @@ public class MapButtonController {
 	  context = alertcontext;
   }
   
+  /**
+   * Method for initialize buttons in mainActivity page
+   */
   public void initializeButton(){
 	// Setting click event listener for the find button
       mapview.getFindButtion().setOnClickListener(new OnClickListener() {

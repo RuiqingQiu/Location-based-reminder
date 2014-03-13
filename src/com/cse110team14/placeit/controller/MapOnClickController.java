@@ -62,6 +62,9 @@ public class MapOnClickController {
 		initializeMapControl();
 	}
 	
+	/**
+	 * Method for initialize map control in mainActivity page
+	 */
 	public void initializeMapControl(){
 	    /*
 	     * Function for user press on map for a long time, it will create a Marker

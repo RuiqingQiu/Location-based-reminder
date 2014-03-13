@@ -48,6 +48,10 @@ public class RegisterController {
 		this.context = context;
 		initializeButton();
 	}
+	
+	/**
+	 * Method for initialize buttons in register page
+	 */
 	private void initializeButton(){
 		 registerview.getRegister().setOnClickListener(new OnClickListener(){
 
@@ -70,6 +74,10 @@ public class RegisterController {
 	        	
 	        });
 	}
+	
+	/**
+	 * Post data to user server to put the user into the database
+	 */
 	private void postdata() {
 		final ProgressDialog dialog = ProgressDialog.show(context,
 				"Posting Data...", "Please wait...", false);
@@ -126,6 +134,10 @@ public class RegisterController {
     	return tmp;
     }
     
+    /**
+     * Class for check duplicate user
+     * Description: check if the desired username is a duplicate
+     */
 	private class CheckDuplicateUserTask extends AsyncTask<String, Void, List<String>> {
 		@Override
 		protected List<String> doInBackground(String... url) {

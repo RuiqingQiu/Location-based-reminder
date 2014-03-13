@@ -34,7 +34,9 @@ public class RegisterActivity extends Activity {
 	public static RegisterActivity registerActivity;
 	public static String User_url = "http://placeitteam14.appspot.com/user";
 	private Context context = this;
-	
+	/**
+	 * Method: onCreate to create content for the register page
+	 */
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);

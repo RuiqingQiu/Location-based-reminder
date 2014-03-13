@@ -392,7 +392,12 @@ public class LocationService extends Service implements LocationListener,
 		mLocationClient.removeLocationUpdates(this);
 		super.onDestroy();
 	}
-
+	/**
+	 * Method for creating notification for regular placeits. 
+	 * the function will be called inside class LocationService
+	 * @param view
+	 * @param p
+	 */
 	@SuppressLint("NewApi")
 	public void createNotification(View view, PlaceIt p) {
 		if (MainActivity.notificationSent == false)
@@ -423,6 +428,14 @@ public class LocationService extends Service implements LocationListener,
 		notificationManager.notify(notifyID, noti);
 	}
 	
+	/**
+	 * This function is for creating notification for Category placeits that will be called
+	 * in class PlacesTask.
+	 * @param view
+	 * @param p
+	 * @param closestLocation
+	 * @param address
+	 */
 	@SuppressLint("NewApi")
 	public static void createNotification(View view, CPlaceIts p, String closestLocation, String address) {
 		if (MainActivity.notificationSent == false)
@@ -441,10 +454,7 @@ public class LocationService extends Service implements LocationListener,
 		// Actions are just fake
 		Notification noti = new Notification.Builder(MainActivity.mainActivity.getApplicationContext())
 				.setContentTitle(p.getTitle() + " @ " + closestLocation)
-//				.setContentText("Description: " + p.getDescription())
-//				.setContentText("Name: " + closestLocation)
-				.setContentText("Address: " + address)
-				
+				.setContentText("Address: " + address)			
 				.setSound(alarmSound).setVibrate(vibrate)
 				.setSmallIcon(R.drawable.ic_launcher).setNumber(pCount)
 				.setContentIntent(pIntent).build();

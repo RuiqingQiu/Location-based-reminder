@@ -21,6 +21,11 @@ import com.cse110team14.placeit.controller.MapOnClickController;
 import com.cse110team14.placeit.model.CPlaceIts;
 import com.cse110team14.placeit.model.PlaceIt;
 
+/**
+ * Class UpdatePlaceItsOnServer
+ * Description: this class is used for posting regular placeit and categorical placeit information
+ * onto the server
+ */
 public class UpdatePlaceItsOnServer {
 	public static final String CPLACEITS_URL = "http://placeitteam14.appspot.com/cplaceits";
 	public static void postPlaceIts(PlaceIt p) {

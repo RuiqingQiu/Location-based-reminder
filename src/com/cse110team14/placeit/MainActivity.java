@@ -296,15 +296,7 @@ GooglePlayServicesClient.OnConnectionFailedListener
         super.onStart();
         mLocationClient.connect();
         MapOnClickController mp = new MapOnClickController(context);
-        //If all lists are equal to 0, then try to load data from the server
-        /*if(activeList.size() == 0 && pullDown.size() == 0
-        	&& cActiveList.size() == 0 && cPullDownList.size() == 0){
-                DownloadUserData d = new DownloadUserData(LoginActivity.username);
-        		MainActivity.activeList = d.getActive();
-        		MainActivity.pullDown = d.getPulldown();
-        		MainActivity.cActiveList = d.getCActive();
-        		MainActivity.cPullDownList = d.getCPulldown();	
-        }*/
+        //On start, Download the data and update the lists
         DownloadUserData d = new DownloadUserData(LoginActivity.username);
 		MainActivity.activeList = d.getActive();
 		MainActivity.pullDown = d.getPulldown();
@@ -364,7 +356,12 @@ GooglePlayServicesClient.OnConnectionFailedListener
     	marker = mMarkers.iterator();
     }
 
-	public void readFileToList(String file, List<PlaceIt> list) {
+	/**
+	 * Method: for milestone 1.0 to store PlaceIts to file but now used in 2.0
+	 * @param file
+	 * @param list
+	 */
+    public void readFileToList(String file, List<PlaceIt> list) {
 		list.clear();
 		try {
 			FileInputStream in = openFileInput(file);

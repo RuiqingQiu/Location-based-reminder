@@ -2,7 +2,11 @@ package com.cse110team14.placeit.model;
 
 import java.util.Calendar;
 
-
+/**
+ * Class SimplePlaceIt
+ * Description: PlaceIts shared attributes, containing title,
+ * description, post date, reminded date and its type
+ */
 public class SimplePlaceIt {
 	protected String title;
 	protected String description;
