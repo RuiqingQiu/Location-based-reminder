@@ -297,14 +297,19 @@ GooglePlayServicesClient.OnConnectionFailedListener
         mLocationClient.connect();
         MapOnClickController mp = new MapOnClickController(context);
         //If all lists are equal to 0, then try to load data from the server
-        if(activeList.size() == 0 && pullDown.size() == 0
+        /*if(activeList.size() == 0 && pullDown.size() == 0
         	&& cActiveList.size() == 0 && cPullDownList.size() == 0){
                 DownloadUserData d = new DownloadUserData(LoginActivity.username);
         		MainActivity.activeList = d.getActive();
         		MainActivity.pullDown = d.getPulldown();
         		MainActivity.cActiveList = d.getCActive();
         		MainActivity.cPullDownList = d.getCPulldown();	
-        }
+        }*/
+        DownloadUserData d = new DownloadUserData(LoginActivity.username);
+		MainActivity.activeList = d.getActive();
+		MainActivity.pullDown = d.getPulldown();
+		MainActivity.cActiveList = d.getCActive();
+		MainActivity.cPullDownList = d.getCPulldown();
     }
     
     //Return the ActiveList
