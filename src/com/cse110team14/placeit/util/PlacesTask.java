@@ -115,7 +115,7 @@ class PlaceParserTask extends AsyncTask<String, Integer, List<HashMap<String,Str
 
             /** Getting the parsed data as a List construct */
             places = placeJsonParser.parse(jObject);
-
+            Log.e("hello", "in doInBackground" + places.size());
         }catch(Exception e){
             Log.d("Exception",e.toString());
         }
