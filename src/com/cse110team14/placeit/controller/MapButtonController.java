@@ -120,6 +120,7 @@ public class MapButtonController {
       		 /* Checking errors, if the iterator was never initalized, pop up an dialog
       		  * box and show what the error is
       		  */
+      		 MainActivity.marker = MainActivity.mMarkers.iterator();
       		 if(MainActivity.marker == null){
       			AlertDialog.Builder temp = new AlertDialog.Builder(MainActivity.mainActivity.getApplicationContext());
    		        temp.setTitle("PlaceIts not found");
@@ -138,13 +139,6 @@ public class MapButtonController {
   				 MainActivity.map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, MainActivity.cancelableCallback);
   				 current.showInfoWindow();
   				 
-  			 }
-  			 else{
-  				 MainActivity.marker = MainActivity.mMarkers.iterator();
-  				 Marker current = MainActivity.marker.next();
-  				 Log.e("test", ""+current.getTitle());
-  				 MainActivity.map.animateCamera(CameraUpdateFactory.newLatLng(current.getPosition()), 2000, MainActivity.cancelableCallback);
-  				 current.showInfoWindow();
   			 }
   		 }
       });
